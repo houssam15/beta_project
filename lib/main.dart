@@ -1,10 +1,8 @@
-import 'package:alpha_flutter_project/feature/counter/app.dart';
-import 'package:alpha_flutter_project/feature/counter/counter_observer.dart';
-import 'package:alpha_flutter_project/feature/timer/app.dart';
-import 'package:bloc/bloc.dart';
+import 'package:alpha_flutter_project/simple_bloc_observer.dart';
 import 'package:flutter/widgets.dart';
-
+import 'package:flutter_bloc/flutter_bloc.dart';
 
 void main() {
-  runApp(TimerApp());
+  Bloc.observer = const SimpleBlocObserver();
+  runApp(const App());
 }
