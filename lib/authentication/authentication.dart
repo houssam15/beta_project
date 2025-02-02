@@ -1,0 +1,10 @@
+//external library
+export 'package:equatable/equatable.dart';
+export 'package:flutter_bloc/flutter_bloc.dart';
+//internal packages
+export 'package:authentication_repository/authentication_repository.dart';
+export 'package:user_repository/user_repository.dart';
+//module exports
+export "presentation/presentation.dart";
+export "../authentication/domain/domain.dart";
+export "data/data.dart";
