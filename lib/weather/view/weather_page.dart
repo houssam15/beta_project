@@ -8,9 +8,9 @@ import "package:alpha_flutter_project/weather/widgets/widgets.dart";
 class WeatherPage extends StatelessWidget {
   const WeatherPage({super.key});
 
-  static Route<void> route() {
+  /*static Route<void> route() {
     return MaterialPageRoute<void>(builder: (_) => const WeatherPage());
-  }
+  }*/
 
   NavigatorState get _navigator => navigatorKey.currentState!;
 

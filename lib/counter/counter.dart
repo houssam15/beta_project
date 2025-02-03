@@ -1,2 +1,3 @@
-export '../counter/cubit/counter_cubit.dart';
-export '../counter/view/view.dart';
+export "counter_app.dart";
+export 'cubit/counter_cubit.dart';
+export 'view/view.dart';

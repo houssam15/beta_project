@@ -7,6 +7,7 @@ export "package:flutter/material.dart";
 //internal packages
 export 'package:authentication_repository/authentication_repository.dart';
 //module exports
+export "login_app.dart";
 export "data/data.dart";
 export "presentation/presentation.dart";
 export "domain/domain.dart";
