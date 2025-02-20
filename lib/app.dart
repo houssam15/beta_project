@@ -1,7 +1,15 @@
-import "package:alpha_flutter_project/feature.dart";
+import "package:flutter/material.dart";
+import 'package:flutter_bloc/flutter_bloc.dart';
 import "package:alpha_flutter_project/login/login.dart";
 import "package:alpha_flutter_project/splash/splash.dart";
 import "package:alpha_flutter_project/home/home.dart";
+import "package:alpha_flutter_project/weather/weather.dart";
+import "package:weather_repository/weather_repository.dart";
+import "package:user_repository/user_repository.dart";
+import "package:alpha_flutter_project/authentication/authentication.dart";
+
+import "counter/counter_app.dart";
+import "flutter_infinite_list/infinite_list_app.dart";
 
 final navigatorKey = GlobalKey<NavigatorState>();
 
@@ -64,20 +72,21 @@ class _AppViewState extends State<AppView> {
   Widget build(BuildContext context) {
     return MaterialApp(
       navigatorKey: navigatorKey,
+      routes:{
+        HomeApp.route:(context) => const HomeApp(),
+        WeatherApp.route:(context)=> WeatherApp(),
+        LoginApp.route:(context) => const LoginApp(),
+        InfiniteListApp.route:(context) => const InfiniteListApp(),
+        CounterApp.route:(context) => CounterApp()
+      },
       builder: (context, child) {
         return BlocListener<AuthenticationBloc, AuthenticationState>(
           listener: (context, state) {
             switch (state.status) {
               case AuthenticationStatus.authenticated:
-                _navigator.pushAndRemoveUntil<void>(
-                  HomePage.route(),
-                  (route) => false,
-                );
+                _navigator.pushNamedAndRemoveUntil(HomeApp.route, (route) => false);
               case AuthenticationStatus.unauthenticated:
-                _navigator.pushAndRemoveUntil<void>(
-                  LoginPage.route(),
-                  (route) => false,
-                );
+                _navigator.pushNamedAndRemoveUntil(LoginApp.route, (route) => false);
               case AuthenticationStatus.unknown:
                 break;
             }
@@ -85,7 +94,7 @@ class _AppViewState extends State<AppView> {
           child: child,
         );
       },
-      onGenerateRoute: (_) => SplashPage.route(),
+      onGenerateRoute: (_) => SplashPage.route()
     );
   }
 }

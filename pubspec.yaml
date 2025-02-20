@@ -30,6 +30,7 @@ dependencies:
   weather_repository:
     path: packages/weather_repository
   google_fonts: ^6.2.1
+  flutter_admin_scaffold: ^1.4.0
 
 dev_dependencies:
   bloc_test: ^10.0.0

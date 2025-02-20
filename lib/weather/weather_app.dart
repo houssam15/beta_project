@@ -7,17 +7,17 @@ import 'package:weather_repository/weather_repository.dart'
     show WeatherCondition;
 
 import 'package:google_fonts/google_fonts.dart';
+import "package:alpha_flutter_project/home/home.dart";
 
 class WeatherApp extends StatelessWidget {
-  const WeatherApp({required WeatherRepository weatherRepository, super.key})
-      : _weatherRepository = weatherRepository;
+  static final String route = "/weather";
+  const WeatherApp({ super.key});
 
-  final WeatherRepository _weatherRepository;
 
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
-      create: (_) => WeatherCubit(_weatherRepository),
+      create: (_) => WeatherCubit(WeatherRepository()),
       child: const WeatherAppView(),
     );
   }
@@ -31,17 +31,22 @@ class WeatherAppView extends StatelessWidget {
     final seedColor = context.select(
           (WeatherCubit cubit) => cubit.state.weather.toColor
     );
-    return MaterialApp(
-      theme: ThemeData(
-        appBarTheme: const AppBarTheme(
-          backgroundColor: Colors.transparent,
-          elevation: 0
+    return
+      HomeLayout(
+        selectedRoute:WeatherApp.route,
+        body: MaterialApp(
+          debugShowCheckedModeBanner: false,
+        theme: ThemeData(
+          appBarTheme: const AppBarTheme(
+            backgroundColor: Colors.transparent,
+            elevation: 0
+          ),
+          colorScheme: ColorScheme.fromSeed(seedColor: seedColor),
+          textTheme:GoogleFonts.rajdhaniTextTheme()
         ),
-        colorScheme: ColorScheme.fromSeed(seedColor: seedColor),
-        textTheme:GoogleFonts.rajdhaniTextTheme()
-      ),
-      home: const WeatherPage(),
-    );
+        home: const WeatherPage(),
+            ),
+      );
   }
 }
 
