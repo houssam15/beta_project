@@ -1,3 +1,4 @@
+import "package:alpha_flutter_project/file_uploader/file_uploader_app.dart";
 import "package:flutter/material.dart";
 import 'package:flutter_bloc/flutter_bloc.dart';
 import "package:alpha_flutter_project/login/login.dart";
@@ -72,21 +73,23 @@ class _AppViewState extends State<AppView> {
   Widget build(BuildContext context) {
     return MaterialApp(
       navigatorKey: navigatorKey,
+      initialRoute: FileUploaderApp.route,
       routes:{
         HomeApp.route:(context) => const HomeApp(),
         WeatherApp.route:(context)=> WeatherApp(),
         LoginApp.route:(context) => const LoginApp(),
         InfiniteListApp.route:(context) => const InfiniteListApp(),
-        CounterApp.route:(context) => CounterApp()
+        CounterApp.route:(context) => const CounterApp(),
+        FileUploaderApp.route:(context) => const FileUploaderApp()
       },
       builder: (context, child) {
         return BlocListener<AuthenticationBloc, AuthenticationState>(
           listener: (context, state) {
             switch (state.status) {
               case AuthenticationStatus.authenticated:
-                _navigator.pushNamedAndRemoveUntil(HomeApp.route, (route) => false);
+                //_navigator.pushNamedAndRemoveUntil(HomeApp.route, (route) => false);
               case AuthenticationStatus.unauthenticated:
-                _navigator.pushNamedAndRemoveUntil(LoginApp.route, (route) => false);
+                //_navigator.pushNamedAndRemoveUntil(LoginApp.route, (route) => false);
               case AuthenticationStatus.unknown:
                 break;
             }

@@ -19,8 +19,7 @@ class HomePage extends StatelessWidget {
       child: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
-          UserId(),
-          LogoutButton(),
+          Text("dashboard")
         ],
       ),
     );

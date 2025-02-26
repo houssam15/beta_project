@@ -22,7 +22,9 @@ dependencies:
   authentication_repository:
     path: packages/authentication_repository
   user_repository:
-    path: packages/user_repository  
+    path: packages/user_repository
+  file_uploader_repository:
+    path: packages/file_uploader_repository
   formz: ^0.8.0
   hydrated_bloc: ^10.0.0
   json_annotation: ^4.8.1
@@ -31,7 +33,8 @@ dependencies:
     path: packages/weather_repository
   google_fonts: ^6.2.1
   flutter_admin_scaffold: ^1.4.0
-
+  dotted_border: ^2.1.0
+  permission_handler: ^11.4.0
 dev_dependencies:
   bloc_test: ^10.0.0
   build_runner: ^2.0.0

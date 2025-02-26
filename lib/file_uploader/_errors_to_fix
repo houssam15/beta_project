@@ -1,0 +1,48 @@
+FileUploaderState(FileUploaderStatus.pictureOrVideo, PermissionsState(, Permissions, ShowMessageOptions.snackBar), unknown error, UploadSourceType.camera, MediaType.none, File: 'no_path', 0.0) }
+
+======== Exception caught by widgets library =======================================================
+The following assertion was thrown while applying parent data.:
+Incorrect use of ParentDataWidget.
+
+The ParentDataWidget Flexible(flex: 1) wants to apply ParentData of type FlexParentData to a RenderObject, which has been set up to accept ParentData of incompatible type BoxParentData.
+
+Usually, this means that the Flexible widget has the wrong ancestor RenderObjectWidget. Typically, Flexible widgets are placed directly inside Flex widgets.
+The offending Flexible is currently placed inside a Center widget.
+
+The ownership chain for the RenderObject that received the incompatible parent data was:
+  Column ← Flexible ← Center ← BlocListener<FileUploaderBloc, FileUploaderState> ← BlocBuilder<FileUploaderBloc, FileUploaderState> ← BlocListener<FileUploaderBloc, FileUploaderState> ← Center ← Padding ← DecoratedBox ← ConstrainedBox ← ⋯
+When the exception was thrown, this was the stack:
+#0      RenderObjectElement._updateParentData.<anonymous closure> (package:flutter/src/widgets/framework.dart:6689:11)
+#1      RenderObjectElement._updateParentData (package:flutter/src/widgets/framework.dart:6706:6)
+#2      RenderObjectElement.attachRenderObject (package:flutter/src/widgets/framework.dart:6749:7)
+#3      RenderObjectElement.mount (package:flutter/src/widgets/framework.dart:6611:5)
+#4      MultiChildRenderObjectElement.mount (package:flutter/src/widgets/framework.dart:7056:11)
+...     Normal element mounting (7 frames)
+#11     Element.inflateWidget (package:flutter/src/widgets/framework.dart:4480:16)
+#12     Element.updateChild (package:flutter/src/widgets/framework.dart:3957:20)
+#13     SingleChildRenderObjectElement.update (package:flutter/src/widgets/framework.dart:6921:14)
+#14     Element.updateChild (package:flutter/src/widgets/framework.dart:3941:15)
+#15     ComponentElement.performRebuild (package:flutter/src/widgets/framework.dart:5656:16)
+#16     StatefulElement.performRebuild (package:flutter/src/widgets/framework.dart:5794:11)
+#17     Element.rebuild (package:flutter/src/widgets/framework.dart:5347:7)
+#18     StatefulElement.update (package:flutter/src/widgets/framework.dart:5817:5)
+#19     Element.updateChild (package:flutter/src/widgets/framework.dart:3941:15)
+#20     ComponentElement.performRebuild (package:flutter/src/widgets/framework.dart:5656:16)
+#21     StatefulElement.performRebuild (package:flutter/src/widgets/framework.dart:5794:11)
+#22     Element.rebuild (package:flutter/src/widgets/framework.dart:5347:7)
+#23     BuildScope._tryRebuild (package:flutter/src/widgets/framework.dart:2694:15)
+#24     BuildScope._flushDirtyElements (package:flutter/src/widgets/framework.dart:2753:11)
+#25     BuildOwner.buildScope (package:flutter/src/widgets/framework.dart:3048:18)
+#26     WidgetsBinding.drawFrame (package:flutter/src/widgets/binding.dart:1176:21)
+#27     RendererBinding._handlePersistentFrameCallback (package:flutter/src/rendering/binding.dart:475:5)
+#28     SchedulerBinding._invokeFrameCallback (package:flutter/src/scheduler/binding.dart:1397:15)
+#29     SchedulerBinding.handleDrawFrame (package:flutter/src/scheduler/binding.dart:1318:9)
+#30     SchedulerBinding._handleDrawFrame (package:flutter/src/scheduler/binding.dart:1176:5)
+#31     _invoke (dart:ui/hooks.dart:312:13)
+#32     PlatformDispatcher._drawFrame (dart:ui/platform_dispatcher.dart:427:5)
+#33     _drawFrame (dart:ui/hooks.dart:283:31)
+
+
+
+
+file upload peogress dosn't work
