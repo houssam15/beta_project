@@ -1,5 +1,4 @@
-import 'package:alpha_flutter_project/lib.dart';
-
+import "package:flutter_bloc/flutter_bloc.dart";
 
 class SimpleBlocObserver extends BlocObserver {
   const SimpleBlocObserver();

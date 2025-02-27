@@ -1,9 +1,0 @@
-//external packages
-export "package:flutter/material.dart";
-//internal packages
-export "package:authentication_repository/authentication_repository.dart";
-export "package:user_repository/user_repository.dart";
-export "package:alpha_flutter_project/authentication/authentication.dart";
-export 'package:alpha_flutter_project/app.dart';
-//view packages
-export "package:flutter_bloc/flutter_bloc.dart";

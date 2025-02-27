@@ -5,12 +5,11 @@ import "package:alpha_flutter_project/login/login.dart";
 import "package:alpha_flutter_project/splash/splash.dart";
 import "package:alpha_flutter_project/home/home.dart";
 import "package:alpha_flutter_project/weather/weather.dart";
-import "package:weather_repository/weather_repository.dart";
 import "package:user_repository/user_repository.dart";
 import "package:alpha_flutter_project/authentication/authentication.dart";
-
 import "counter/counter_app.dart";
 import "flutter_infinite_list/infinite_list_app.dart";
+import "package:alpha_flutter_project/social_media_publication_form/social_media_publication_form.dart";
 
 final navigatorKey = GlobalKey<NavigatorState>();
 
@@ -73,14 +72,15 @@ class _AppViewState extends State<AppView> {
   Widget build(BuildContext context) {
     return MaterialApp(
       navigatorKey: navigatorKey,
-      initialRoute: FileUploaderApp.route,
+      initialRoute: SocialMediaPublicationForm.route,
       routes:{
         HomeApp.route:(context) => const HomeApp(),
         WeatherApp.route:(context)=> WeatherApp(),
         LoginApp.route:(context) => const LoginApp(),
         InfiniteListApp.route:(context) => const InfiniteListApp(),
         CounterApp.route:(context) => const CounterApp(),
-        FileUploaderApp.route:(context) => const FileUploaderApp()
+        FileUploaderApp.route:(context) => const FileUploaderApp(),
+        SocialMediaPublicationForm.route:(context) => const SocialMediaPublicationForm()
       },
       builder: (context, child) {
         return BlocListener<AuthenticationBloc, AuthenticationState>(

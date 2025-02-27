@@ -7,6 +7,7 @@ import 'package:flutter_admin_scaffold/admin_scaffold.dart';
 import "package:alpha_flutter_project/weather/weather.dart";
 import "package:alpha_flutter_project/flutter_infinite_list/infinite_list_app.dart";
 import "package:alpha_flutter_project/counter/counter.dart";
+import "package:alpha_flutter_project/social_media_publication_form/social_media_publication_form.dart";
 class HomeLayout extends StatefulWidget {
   final Widget body;
   final String selectedRoute;
@@ -17,7 +18,7 @@ class HomeLayout extends StatefulWidget {
 }
 
 class _HomeLayoutState extends State<HomeLayout> {
-  String title = "";
+  String title = " App & Features";
   @override
   Widget build(BuildContext context) {
     return AdminScaffold(
@@ -39,6 +40,7 @@ class _HomeLayoutState extends State<HomeLayout> {
               AdminMenuItem(title: 'Infinite list app', route: InfiniteListApp.route),
               AdminMenuItem(title: 'Counter app', route: CounterApp.route),
               AdminMenuItem(title: 'File Uploader', route: FileUploaderApp.route),
+              AdminMenuItem(title: 'Social media publication form', route: SocialMediaPublicationForm.route),
             ],
           ),
         ],
