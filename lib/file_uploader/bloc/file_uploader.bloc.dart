@@ -84,10 +84,18 @@ class FileUploaderBloc extends Bloc<FileUploaderEvent,FileUploaderState>{
   }
 
   Future<void> _uploadToServer(FileUploaderUploadToServer event, Emitter<FileUploaderState> emit) async{
-    await for (int progress in _fileUploaderRepository.uploadFileToServer(state.file)) {
-      emit(state.copyWith(status: FileUploaderStatus.progress, progress: progress));
+    try {
+      await for (int progress in _fileUploaderRepository.uploadFileToServer(state.file)) {
+        emit(state.copyWith(status: FileUploaderStatus.progress, progress: progress));
+        if (progress == 100) {
+          emit(state.copyWith(status: FileUploaderStatus.success));
+        }
+      }
+    } catch (error) {
+      // Dispatch an error event or state when an error occurs
+      if (kDebugMode) print("Upload failed with error: $error");
+      emit(state.copyWith(status: FileUploaderStatus.progressFailure, errorMessage: error.toString()));
     }
-    emit(state.copyWith(status: FileUploaderStatus.success));
   }
 
 }

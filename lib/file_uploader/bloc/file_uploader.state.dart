@@ -1,7 +1,7 @@
 
 part of 'file_uploader.bloc.dart';
 
-enum FileUploaderStatus{initial,success,permissionsDenied,failure,progress,loading,picking,cameraOrGallery,pictureOrVideo,readyToUpload}
+enum FileUploaderStatus{initial,success,permissionsDenied,failure,progress,progressFailure,loading,picking,cameraOrGallery,pictureOrVideo,readyToUpload}
 
 final class FileUploaderState extends Equatable{
 
@@ -24,6 +24,7 @@ final class FileUploaderState extends Equatable{
   String errorMessage;
   File file;
   int progress;
+
 
   FileUploaderState copyWith({
     FileUploaderStatus? status,

@@ -19,7 +19,8 @@ class FileUploaderPage extends StatefulWidget {
 
 class _FileUploaderPageState extends State<FileUploaderPage> {
   Config get _config => Config();
-  int? _progress;
+  String? _progress;
+  String? _progressError;
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -50,7 +51,8 @@ class _FileUploaderPageState extends State<FileUploaderPage> {
                       const SizedBox(
                         height: 30
                       ),
-                      Flexible(
+                      Expanded(
+                          flex: 5,
                           child: DottedBorder(
                             borderType: BorderType.RRect,
                             radius: const Radius.circular(10),
@@ -58,7 +60,6 @@ class _FileUploaderPageState extends State<FileUploaderPage> {
                             strokeCap: StrokeCap.round,
                             color: Theme.of(context).colorScheme.outline.withOpacity(0.5),
                             child: Container(
-                              height: 130,
                               decoration: BoxDecoration(
                                 color: Theme.of(context).scaffoldBackgroundColor
                               ),
@@ -79,10 +80,10 @@ class _FileUploaderPageState extends State<FileUploaderPage> {
                                                     ),
                                                   )
                                               )
-                                          );                                  
+                                          );
                                         }else{
                                           showDialog(
-                                              context: context, 
+                                              context: context,
                                               builder: (context) => AlertDialog(
                                                 title:Text(state.permissionsState.title),
                                                 content: Container(
@@ -115,7 +116,7 @@ class _FileUploaderPageState extends State<FileUploaderPage> {
                                                 ),
                                                 actions: [
                                                     TextButton(
-                                                        onPressed: () => Navigator.of(context).pop(), 
+                                                        onPressed: () => Navigator.of(context).pop(),
                                                         child: Text("cancel")
                                                     ),
                                                     TextButton(
@@ -145,11 +146,27 @@ class _FileUploaderPageState extends State<FileUploaderPage> {
                                                 )
                                             )
                                         );
+                                      case  FileUploaderStatus.progressFailure :
+                                        ScaffoldMessenger.of(context).hideCurrentSnackBar();
+                                        ScaffoldMessenger.of(context).showSnackBar(
+                                            SnackBar(
+                                                backgroundColor:Theme.of(context).colorScheme.errorContainer,
+                                                content:Text(
+                                                  state.errorMessage,
+                                                  style: TextStyle(
+                                                      color: Theme.of(context).colorScheme.error
+                                                  ),
+                                                )
+                                            )
+                                        );
+                                        setState(() {
+                                          _progress = "server error";
+                                        });
                                       case FileUploaderStatus.progress:
                                         setState(() {
-                                          _progress = state.progress;
+                                          _progress = state.progress.toString();
                                         });
-                                      default:   
+                                      default:
                                     }
 
                                   },
@@ -325,7 +342,12 @@ class _FileUploaderPageState extends State<FileUploaderPage> {
                                                 ),
                                                 SizedBox(height: 5),
                                                 _progress != null
-                                                ?Text("progress : $_progress%")
+                                                ?Text(
+                                                    _progressError==null? "progress : $_progress%":_progressError!,
+                                                    style: TextStyle(
+                                                      color: _progressError==null?null:Theme.of(context).colorScheme.error
+                                                    ),
+                                                )
                                                 :TextButton(
                                                     onPressed: (){
                                                       context.read<FileUploaderBloc>().add(FileUploaderUploadToServer());
@@ -336,7 +358,7 @@ class _FileUploaderPageState extends State<FileUploaderPage> {
                                             ),
                                           );
                                         default : return Text("Unknown status");
-                                  
+
                                       }
                                     }
                                   ),
@@ -348,25 +370,29 @@ class _FileUploaderPageState extends State<FileUploaderPage> {
                       if(_config.nextPageAppRoute != null)
                       ...[
                         SizedBox(height: 10,),
-                        BlocBuilder<FileUploaderBloc,FileUploaderState>(
-                          buildWhen: (previous, current) {
-                            return [FileUploaderStatus.success,FileUploaderStatus.initial].contains(current.status);
-                          },
-                          builder: (context, state) => Container(
-                            height: 20,
-                            child: Align(
+                        Expanded(
+                          flex: 1,
+                          child: BlocBuilder<FileUploaderBloc,FileUploaderState>(
+                            buildWhen: (previous, current) {
+                              return [FileUploaderStatus.success,FileUploaderStatus.initial].contains(current.status);
+                            },
+                            builder: (context, state) => Align(
                               alignment: Alignment.centerRight,
-                              child: ElevatedButton.icon(
-                                label: Text(""),
-                                onPressed: state.status==FileUploaderStatus.initial ? null: (){
+                              child: ElevatedButton(
+                                child: Text("Next",style: TextStyle(fontSize: 10),),
+                                onPressed: state.status==FileUploaderStatus.initial ? null: () {
                                   Navigator.of(context).pushNamed(_config.nextPageAppRoute!);
                                 },
-                                style: ElevatedButton.styleFrom(
-                                  backgroundColor: state.status == FileUploaderStatus.initial
-                                      ? Theme.of(context).colorScheme.tertiary.withOpacity(0.2) // Disabled color
-                                      : Theme.of(context).colorScheme.tertiary, // Normal color
+                                style: ButtonStyle(
+                                  backgroundColor: MaterialStateProperty.resolveWith<Color?>(
+                                      (Set<WidgetState> states){
+                                        if (states.contains(WidgetState.disabled)) {
+                                          return Colors.grey; // Disabled state
+                                        }
+                                        return Colors.blue; // Enabled state
+                                      }
+                                  )
                                 ),
-                                icon:Icon(Icons.navigate_next_outlined),
                               ),
                             ),
                           ),
@@ -396,6 +422,6 @@ extension FileExtensions on File {
 
   /// Returns the file name (with extension) of this file.
   String getFilename() {
-    return path.basename(this.path);
+    return "${path.basename(this.path).substring(0,10)}...${path.basename(this.path).split(".").last}";
   }
 }

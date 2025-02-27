@@ -33,6 +33,7 @@ class AppTheme{
   );
 
   TextTheme get textTheme => GoogleFonts.aBeeZeeTextTheme().copyWith(
+
     headlineLarge: GoogleFonts.aBeeZee(
       fontSize: 24,
       fontWeight: FontWeight.bold,

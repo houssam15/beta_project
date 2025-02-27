@@ -27,7 +27,10 @@ class FileChunkedUploader{
                 'Content-Type': config.contentType,
                 'File-Name':file.uri.pathSegments.last,
                 'File-uuid': _getUuid()
-                }
+                },
+                connectTimeout: Duration(seconds: 3), // 3 seconds for connection
+                receiveTimeout: Duration(seconds: 3), // 3 seconds for receiving data
+                sendTimeout: Duration(seconds: 3), // 3 seconds for sending data
             ));
             final uploader = ChunkedUploader(dio);
             // using data stream
