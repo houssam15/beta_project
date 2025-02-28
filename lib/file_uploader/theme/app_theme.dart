@@ -18,8 +18,7 @@ class AppTheme{
       outline: Colors.blue,
       tertiary:Colors.blue,
       errorContainer: Colors.red.shade200,
-      error: Colors.white,
-
+      error: Colors.red,
   );
 
   CardTheme get cardTheme => CardTheme(
@@ -43,6 +42,11 @@ class AppTheme{
       fontSize: 10,
       fontWeight: FontWeight.w600,
       color: Colors.grey,
+    ),
+    bodySmall: GoogleFonts.aBeeZee(
+      fontSize: 12,
+      fontWeight: FontWeight.w500,
+      color: Colors.white,
     ),
   );
   

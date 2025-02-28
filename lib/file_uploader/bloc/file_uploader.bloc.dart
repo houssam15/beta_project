@@ -11,6 +11,7 @@ part 'file_uploader.state.dart';
 
 class FileUploaderBloc extends Bloc<FileUploaderEvent,FileUploaderState>{
   FileUploaderBloc(this._fileUploaderRepository):super(FileUploaderState()){
+    on<FileUploaderResetRequested>(_onResetRequested);
     on<FileUploaderUploadRequested>(_onFileUploaded);
     on<FileUploaderUploadSourceRequested>(_onUploadSourceRequested);
     on<FileUploaderUploadTypeRequested>(_onUploadTypeRequested);
@@ -20,6 +21,10 @@ class FileUploaderBloc extends Bloc<FileUploaderEvent,FileUploaderState>{
 
   final FileUploaderRepository _fileUploaderRepository;
 
+
+  Future<void> _onResetRequested(FileUploaderResetRequested event, Emitter<FileUploaderState> emit) async{
+    emit(state.reset());
+  }
 
   Future<void> _onFileUploaded(FileUploaderUploadRequested event, Emitter<FileUploaderState> emit) async{
     try{
@@ -87,10 +92,8 @@ class FileUploaderBloc extends Bloc<FileUploaderEvent,FileUploaderState>{
     try {
       await for (int progress in _fileUploaderRepository.uploadFileToServer(state.file)) {
         emit(state.copyWith(status: FileUploaderStatus.progress, progress: progress));
-        if (progress == 100) {
-          emit(state.copyWith(status: FileUploaderStatus.success));
-        }
       }
+      emit(state.copyWith(status: FileUploaderStatus.success));
     } catch (error) {
       // Dispatch an error event or state when an error occurs
       if (kDebugMode) print("Upload failed with error: $error");

@@ -11,20 +11,25 @@ import "package:alpha_flutter_project/social_media_publication_form/social_media
 class HomeLayout extends StatefulWidget {
   final Widget body;
   final String selectedRoute;
-  const HomeLayout({required this.body, required this.selectedRoute,super.key});
+  final String title;
+  const HomeLayout({
+    required this.body,
+    required this.selectedRoute,
+    this.title = " App & Features",
+    super.key
+  });
 
   @override
   State<HomeLayout> createState() => _HomeLayoutState();
 }
 
 class _HomeLayoutState extends State<HomeLayout> {
-  String title = " App & Features";
   @override
   Widget build(BuildContext context) {
     return AdminScaffold(
-      appBar: AppBar(
-        title: Text(title),
-      ),
+      appBar:AppBar(
+            title: Text(widget.title),
+          ),
       sideBar: SideBar(
         items: [
           AdminMenuItem(
@@ -47,7 +52,7 @@ class _HomeLayoutState extends State<HomeLayout> {
         selectedRoute: widget.selectedRoute,
         onSelected: (item) {
           if (item.route != null) {
-            title = item.title;
+            //widget.title = item.title;
             setState(() {});
             Navigator.of(context).pushNamedAndRemoveUntil(
                 item.route!, (route) => false);

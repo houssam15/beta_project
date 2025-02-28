@@ -27,7 +27,7 @@ class _FileUploaderPageState extends State<FileUploaderPage> {
       body: Center(
         child: Container(
           width: 300,
-          height: 300,
+          height: 400,
           child: Card(
               child: Padding(
                   padding:const EdgeInsets.all(20),
@@ -52,7 +52,7 @@ class _FileUploaderPageState extends State<FileUploaderPage> {
                         height: 30
                       ),
                       Expanded(
-                          flex: 5,
+                          flex: 6,
                           child: DottedBorder(
                             borderType: BorderType.RRect,
                             radius: const Radius.circular(10),
@@ -140,9 +140,7 @@ class _FileUploaderPageState extends State<FileUploaderPage> {
                                                 backgroundColor:Theme.of(context).colorScheme.errorContainer,
                                                 content:Text(
                                                   state.errorMessage,
-                                                  style: TextStyle(
-                                                      color: Theme.of(context).colorScheme.error
-                                                  ),
+                                                  style: Theme.of(context).textTheme.bodySmall
                                                 )
                                             )
                                         );
@@ -153,18 +151,16 @@ class _FileUploaderPageState extends State<FileUploaderPage> {
                                                 backgroundColor:Theme.of(context).colorScheme.errorContainer,
                                                 content:Text(
                                                   state.errorMessage,
-                                                  style: TextStyle(
-                                                      color: Theme.of(context).colorScheme.error
-                                                  ),
+                                                  style: Theme.of(context).textTheme.bodySmall
                                                 )
                                             )
                                         );
                                         setState(() {
-                                          _progress = "server error";
+                                          _progressError = "Failed";
                                         });
                                       case FileUploaderStatus.progress:
                                         setState(() {
-                                          _progress = state.progress.toString();
+                                            _progress = "progress : ${state.progress} %";
                                         });
                                       default:
                                     }
@@ -176,7 +172,8 @@ class _FileUploaderPageState extends State<FileUploaderPage> {
                                         FileUploaderStatus.failure,
                                         FileUploaderStatus.permissionsDenied,
                                         FileUploaderStatus.progress,
-                                        FileUploaderStatus.success
+                                        FileUploaderStatus.success,
+                                        FileUploaderStatus.progressFailure
                                       ];
 
                                       return !excludedStatuses.contains(current.status);                                    },
@@ -343,9 +340,9 @@ class _FileUploaderPageState extends State<FileUploaderPage> {
                                                 SizedBox(height: 5),
                                                 _progress != null
                                                 ?Text(
-                                                    _progressError==null? "progress : $_progress%":_progressError!,
+                                                    _progressError==null? _progress!:_progressError!,
                                                     style: TextStyle(
-                                                      color: _progressError==null?null:Theme.of(context).colorScheme.error
+                                                      color: _progressError==null?Theme.of(context).colorScheme.tertiary:Theme.of(context).colorScheme.error
                                                     ),
                                                 )
                                                 :TextButton(
@@ -373,26 +370,36 @@ class _FileUploaderPageState extends State<FileUploaderPage> {
                         Expanded(
                           flex: 1,
                           child: BlocBuilder<FileUploaderBloc,FileUploaderState>(
-                            buildWhen: (previous, current) {
-                              return [FileUploaderStatus.success,FileUploaderStatus.initial].contains(current.status);
-                            },
                             builder: (context, state) => Align(
                               alignment: Alignment.centerRight,
-                              child: ElevatedButton(
-                                child: Text("Next",style: TextStyle(fontSize: 10),),
-                                onPressed: state.status==FileUploaderStatus.initial ? null: () {
-                                  Navigator.of(context).pushNamed(_config.nextPageAppRoute!);
-                                },
-                                style: ButtonStyle(
-                                  backgroundColor: MaterialStateProperty.resolveWith<Color?>(
-                                      (Set<WidgetState> states){
-                                        if (states.contains(WidgetState.disabled)) {
-                                          return Colors.grey; // Disabled state
-                                        }
-                                        return Colors.blue; // Enabled state
-                                      }
-                                  )
-                                ),
+                              child: Row(
+                                mainAxisAlignment: MainAxisAlignment.end,
+                                children: [
+                                  if(state.status != FileUploaderStatus.initial)
+                                  ElevatedButton(
+                                    child: Text("Back",style: TextStyle(fontSize: 10)),
+                                    onPressed: () {
+                                        context.read<FileUploaderBloc>().add(FileUploaderResetRequested());
+                                    },
+                                  ),
+                                  const SizedBox(width: 5),
+                                  ElevatedButton(
+                                    child: Text("Next",style: TextStyle(fontSize: 10),),
+                                    onPressed: state.status!=FileUploaderStatus.success ? null: () {
+                                      Navigator.of(context).pushNamed(_config.nextPageAppRoute!);
+                                    },
+                                    style: ButtonStyle(
+                                      backgroundColor: WidgetStateProperty.resolveWith<Color?>(
+                                          (Set<WidgetState> states){
+                                            if (states.contains(WidgetState.disabled)) {
+                                              return Colors.grey; // Disabled state
+                                            }
+                                            return Colors.blue; // Enabled state
+                                          }
+                                      )
+                                    ),
+                                  ),
+                                ],
                               ),
                             ),
                           ),

@@ -20,7 +20,7 @@ class FileChunkedUploader{
     /// - Send origin file name to server under header property File-Name
     Stream<int> upload(File file) async*{
         final StreamController<int> progressController = StreamController<int>();
-        try{
+
             final dio = Dio(BaseOptions(
                 baseUrl: config.baseUrl,
                 headers: {
@@ -44,18 +44,14 @@ class FileChunkedUploader{
                     progressController.add((progress*100).toInt()); // ✅ Send progress updates
                 },
             ).then((response) {
-                progressController.add(100); // ✅ Complete progress at 100%
-                progressController.close(); // ✅ Close stream when done
+                    //progressController.add(100); // ✅ Send 100% only if no error
+                    progressController.close();
             }).catchError((error) {
                 if (kDebugMode) print(error);
-                progressController.addError(error); // Pass error to stream
-                progressController.close();
+                    progressController.addError(error);
+                    progressController.close();
+
             });
-        }catch(err){
-            if (kDebugMode) print(err);
-            progressController.addError(err);
-            progressController.close();
-        }
 
         yield* progressController.stream;
     }

@@ -6,7 +6,7 @@ import "models/models.dart";
 import "theme/app_theme.dart";
 import "./bloc/bloc.dart";
 import "./view/social_media_publication_form_page.dart";
-
+import "social_media_publication_form_arguments.dart";
 class SocialMediaPublicationForm extends StatefulWidget {
   static final String route = Config.appRoute;
   const SocialMediaPublicationForm({super.key});
@@ -26,8 +26,12 @@ class _SocialMediaPublicationFormState extends State<SocialMediaPublicationForm>
 
   @override
   Widget build(BuildContext context) {
+
+    final args = SocialMediaPublicationFormArguments().fromJson(ModalRoute.of(context)?.settings.arguments);
+
     return HomeLayout(
         selectedRoute: SocialMediaPublicationForm.route,
+        title: args.appBarTitle,
         body: Theme(
             data: AppTheme().themeData,
             child: BlocProvider<SocialMediaPublicationFormRemoteBloc>(

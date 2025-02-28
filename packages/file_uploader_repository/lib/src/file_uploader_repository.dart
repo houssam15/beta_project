@@ -1,5 +1,6 @@
 import "dart:io";
 import "package:file_uploader_permissions_handler/file_uploader_permissions_handler.dart" hide PermissionsState ;
+import "package:flutter/foundation.dart";
 import "package:local_file_picker/local_file_picker.dart" as local_file_picker;
 import "models/models.dart";
 import "package:file_chunked_uploader/file_chunked_uploader.dart";
@@ -64,16 +65,19 @@ class FileUploaderRepository{
             source: file.fileSource.toUploadSourceType(),
             type: file.fileType.toMediaType(),
             file:file.file,
-            message:file.message=="USER_CANCEL_OPERATION"?_messages[4]
+            message:file.message=="USER_CANCEL_OPERATION"?_messages[3]
                 : (file.message=="FILE_PICKED_SUCCESSFULLY"
-                     ? _messages[5]
-                     : _messages[6]
+                     ? _messages[4]
+                     : _messages[5]
                   )
         );
     }
 
     Stream<int> uploadFileToServer(File file) async* {
-        yield* _fileChunkedUploader.upload(file);
+            yield* _fileChunkedUploader.upload(file).handleError((error){
+                if(kDebugMode) print("UploadFileToServer error : $error");
+                throw Exception("Server unavailable");
+            });
     }
 
 }

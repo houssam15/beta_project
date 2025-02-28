@@ -46,6 +46,10 @@ final class FileUploaderState extends Equatable{
     );
   }
 
+  FileUploaderState reset(){
+    return FileUploaderState();
+  }
+
   FileUploaderState set({
     FileUploaderStatus? status,
     PermissionsState? permissionsState,
@@ -64,6 +68,8 @@ final class FileUploaderState extends Equatable{
         this.progress=progress??this.progress;
      return this;
   }
+
+
 
 
   @override
