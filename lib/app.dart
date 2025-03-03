@@ -10,6 +10,7 @@ import "package:alpha_flutter_project/authentication/authentication.dart";
 import "counter/counter_app.dart";
 import "flutter_infinite_list/infinite_list_app.dart";
 import "package:alpha_flutter_project/social_media_publication_form/social_media_publication_form.dart";
+import "package:alpha_flutter_project/social_media_list_form/social_media_list_form.dart";
 
 final navigatorKey = GlobalKey<NavigatorState>();
 
@@ -73,7 +74,7 @@ class _AppViewState extends State<AppView> {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       navigatorKey: navigatorKey,
-      initialRoute: SocialMediaPublicationForm.route,
+      initialRoute: SocialMediaListForm.route,
       routes:{
         HomeApp.route:(context) => const HomeApp(),
         WeatherApp.route:(context)=> WeatherApp(),
@@ -81,7 +82,8 @@ class _AppViewState extends State<AppView> {
         InfiniteListApp.route:(context) => const InfiniteListApp(),
         CounterApp.route:(context) => const CounterApp(),
         SocialMediaFileUploaderForm.route:(context) => const SocialMediaFileUploaderForm(),
-        SocialMediaPublicationForm.route:(context) => const SocialMediaPublicationForm()
+        SocialMediaPublicationForm.route:(context) => const SocialMediaPublicationForm(),
+        SocialMediaListForm.route:(context) => const SocialMediaListForm()
       },
       builder: (context, child) {
         return BlocListener<AuthenticationBloc, AuthenticationState>(
