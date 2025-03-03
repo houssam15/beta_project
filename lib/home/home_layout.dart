@@ -1,4 +1,4 @@
-import "package:alpha_flutter_project/file_uploader/file_uploader.dart";
+import "package:alpha_flutter_project/social_media_file_uploader_form/social_media_file_uploader_form.dart";
 import "package:flutter/material.dart";
 import "package:flutter_bloc/flutter_bloc.dart";
 import "package:alpha_flutter_project/home/home.dart";
@@ -44,7 +44,7 @@ class _HomeLayoutState extends State<HomeLayout> {
               AdminMenuItem(title: 'Weather app', route: WeatherApp.route),
               AdminMenuItem(title: 'Infinite list app', route: InfiniteListApp.route),
               AdminMenuItem(title: 'Counter app', route: CounterApp.route),
-              AdminMenuItem(title: 'File Uploader', route: FileUploaderApp.route),
+              AdminMenuItem(title: 'File Uploader', route: SocialMediaFileUploaderForm.route),
               AdminMenuItem(title: 'Social media publication form', route: SocialMediaPublicationForm.route),
             ],
           ),

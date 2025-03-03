@@ -1,4 +1,4 @@
-import "package:alpha_flutter_project/file_uploader/file_uploader_app.dart";
+import "package:alpha_flutter_project/social_media_file_uploader_form/social_media_file_uploader_form.dart";
 import "package:flutter/material.dart";
 import 'package:flutter_bloc/flutter_bloc.dart';
 import "package:alpha_flutter_project/login/login.dart";
@@ -80,7 +80,7 @@ class _AppViewState extends State<AppView> {
         LoginApp.route:(context) => const LoginApp(),
         InfiniteListApp.route:(context) => const InfiniteListApp(),
         CounterApp.route:(context) => const CounterApp(),
-        FileUploaderApp.route:(context) => const FileUploaderApp(),
+        SocialMediaFileUploaderForm.route:(context) => const SocialMediaFileUploaderForm(),
         SocialMediaPublicationForm.route:(context) => const SocialMediaPublicationForm()
       },
       builder: (context, child) {

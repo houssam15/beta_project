@@ -1,11 +1,9 @@
 import 'dart:io';
 
 import 'package:alpha_flutter_project/authentication/authentication.dart';
-import 'package:alpha_flutter_project/file_uploader/models/models.dart';
+import '../models/models.dart';
 import 'package:flutter/foundation.dart';
 import 'package:file_uploader_repository/file_uploader_repository.dart' show FileUploaderRepository;
-import '../models/models.dart';
-
 part 'file_uploader.event.dart';
 part 'file_uploader.state.dart';
 

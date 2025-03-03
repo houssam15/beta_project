@@ -19,6 +19,7 @@ class AppTheme{
       tertiary:Colors.blue,
       errorContainer: Colors.red.shade200,
       error: Colors.red,
+      onPrimary: Colors.black
   );
 
   CardTheme get cardTheme => CardTheme(
@@ -46,7 +47,7 @@ class AppTheme{
     bodySmall: GoogleFonts.aBeeZee(
       fontSize: 12,
       fontWeight: FontWeight.w500,
-      color: Colors.white,
+      color: Colors.white   ,
     ),
   );
   

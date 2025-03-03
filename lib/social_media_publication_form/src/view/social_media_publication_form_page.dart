@@ -1,8 +1,7 @@
 import "package:flutter/cupertino.dart";
 import "package:flutter/material.dart";
 import "../widgets/widgets.dart";
-import 'package:calendar_date_picker2/calendar_date_picker2.dart';
-
+import "../models/models.dart";
 class SocialMediaPublicationFormPage extends StatefulWidget {
   const SocialMediaPublicationFormPage({super.key});
 
@@ -11,6 +10,8 @@ class SocialMediaPublicationFormPage extends StatefulWidget {
 }
 
 class _SocialMediaPublicationFormPageState extends State<SocialMediaPublicationFormPage> {
+  Config get _config => Config();
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -115,6 +116,51 @@ class _SocialMediaPublicationFormPageState extends State<SocialMediaPublicationF
                           child: Container(
                               color: Theme.of(context).colorScheme.tertiary.withOpacity(0.2),
                               child: CalendarDatePickerWidget()
+                          ),
+                        ),
+                        Padding(
+                          padding: const EdgeInsets.only(bottom: 8),
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.end,
+                              children: [
+                                if(_config.prevPageAppRoute!=null)
+                                ElevatedButton(
+                                  child: Text("Back",style: TextStyle(fontSize: 10),),
+                                  onPressed: (){
+                                    Navigator.of(context).pushNamed(_config.prevPageAppRoute!);
+                                  },
+                                  style: ButtonStyle(
+                                      backgroundColor: WidgetStateProperty.resolveWith<Color?>(
+                                              (Set<WidgetState> states){
+                                            if (states.contains(WidgetState.disabled)) {
+                                              return Colors.grey; // Disabled state
+                                            }
+                                            return Colors.blue; // Enabled state
+                                          }
+                                      )
+                                  ),
+                                ),
+                                if(_config.nextPageAppRoute!=null)
+                                ...[
+                                  const SizedBox(width: 5),
+                                  ElevatedButton(
+                                    child: Text("Next",style: TextStyle(fontSize: 10),),
+                                    onPressed: (){
+                                      Navigator.of(context).pushNamed(_config.nextPageAppRoute!);
+                                    },
+                                    style: ButtonStyle(
+                                        backgroundColor: WidgetStateProperty.resolveWith<Color?>(
+                                                (Set<WidgetState> states){
+                                              if (states.contains(WidgetState.disabled)) {
+                                                return Colors.grey; // Disabled state
+                                              }
+                                              return Colors.blue; // Enabled state
+                                            }
+                                        )
+                                    ),
+                                  ),
+                                ]
+                              ],
                           ),
                         )
                       ]

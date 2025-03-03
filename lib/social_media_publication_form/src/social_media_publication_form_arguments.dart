@@ -3,7 +3,7 @@ class SocialMediaPublicationFormArguments{
     final String appBarTitle;
 
     SocialMediaPublicationFormArguments({
-      this.appBarTitle = "Publication"
+      this.appBarTitle = "Publication details"
     });
 
     SocialMediaPublicationFormArguments fromJson(dynamic args) {

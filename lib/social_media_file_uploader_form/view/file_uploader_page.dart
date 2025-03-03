@@ -1,13 +1,12 @@
 import "dart:io";
 
-import "package:alpha_flutter_project/file_uploader/bloc/file_uploader.bloc.dart";
-import "package:alpha_flutter_project/file_uploader/models/models.dart";
+import "../bloc/file_uploader.bloc.dart";
+import "../models/models.dart";
 import "package:dotted_border/dotted_border.dart";
 import "package:flutter/material.dart";
 import "package:flutter_bloc/flutter_bloc.dart";
 import 'dart:math' as math;
 import 'package:path/path.dart' as path;
-
 
 
 class FileUploaderPage extends StatefulWidget {
@@ -383,18 +382,27 @@ class _FileUploaderPageState extends State<FileUploaderPage> {
                                     },
                                   ),
                                   const SizedBox(width: 5),
+                                  if(_config.nextPageAppRoute!=null)
                                   ElevatedButton(
                                     child: Text("Next",style: TextStyle(fontSize: 10),),
-                                    onPressed: state.status!=FileUploaderStatus.success ? null: () {
+                                    onPressed: /*state.status!=FileUploaderStatus.success ? null: */() {
                                       Navigator.of(context).pushNamed(_config.nextPageAppRoute!);
                                     },
                                     style: ButtonStyle(
+                                      textStyle: WidgetStateTextStyle.resolveWith(
+                                          (Set<WidgetState> states){
+                                              if (states.contains(WidgetState.disabled)) {
+                                                return TextStyle(color:Theme.of(context).colorScheme.primary);
+                                              }
+                                              return TextStyle(color:Theme.of(context).colorScheme.primary); // Enabled state
+                                          }
+                                      ),
                                       backgroundColor: WidgetStateProperty.resolveWith<Color?>(
                                           (Set<WidgetState> states){
                                             if (states.contains(WidgetState.disabled)) {
-                                              return Colors.grey; // Disabled state
+                                              return Theme.of(context).colorScheme.secondary; // Disabled state
                                             }
-                                            return Colors.blue; // Enabled state
+                                            return Theme.of(context).colorScheme.tertiary; // Enabled state
                                           }
                                       )
                                     ),

@@ -1,26 +1,23 @@
 import "package:alpha_flutter_project/authentication/authentication.dart";
-import "package:alpha_flutter_project/file_uploader/bloc/file_uploader.bloc.dart";
-import "package:alpha_flutter_project/file_uploader/theme/app_theme.dart";
-import "package:alpha_flutter_project/file_uploader/view/file_uploader_page.dart";
+import "./bloc/file_uploader.bloc.dart";
+import "./theme/app_theme.dart";
+import "./view/file_uploader_page.dart";
 import "package:alpha_flutter_project/home/home_layout.dart";
 import "package:flutter/material.dart";
-import "package:google_fonts/google_fonts.dart";
 import 'package:file_uploader_repository/file_uploader_repository.dart' show FileUploaderRepository,GlobalParams;
 import "../simple_bloc_observer.dart";
 import "./models/models.dart";
 
 
-
-
-class FileUploaderApp extends StatefulWidget {
-  static final String route = Config.fileUploaderAppRoute;
-  const FileUploaderApp({super.key});
+class SocialMediaFileUploaderForm extends StatefulWidget {
+  static final String route = Config.appRoute;
+  const SocialMediaFileUploaderForm({super.key});
 
   @override
-  State<FileUploaderApp> createState() => _FileUploaderAppState();
+  State<SocialMediaFileUploaderForm> createState() => _SocialMediaFileUploaderFormState();
 }
 
-class _FileUploaderAppState extends State<FileUploaderApp> {
+class _SocialMediaFileUploaderFormState extends State<SocialMediaFileUploaderForm> {
   Config get config => Config();
   @override
   void initState() {
@@ -30,7 +27,8 @@ class _FileUploaderAppState extends State<FileUploaderApp> {
   @override
   Widget build(BuildContext context) {
     return HomeLayout(
-        selectedRoute: FileUploaderApp.route,
+        title: "File uploader" ,
+        selectedRoute: SocialMediaFileUploaderForm.route,
         body: Theme(
             data: AppTheme().themeData,
             child: BlocProvider<FileUploaderBloc>(
