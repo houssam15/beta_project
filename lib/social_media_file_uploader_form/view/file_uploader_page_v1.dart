@@ -1,5 +1,7 @@
 import "dart:io";
 
+import "package:alpha_flutter_project/home/home.dart";
+
 import "../bloc/file_uploader.bloc.dart";
 import "../models/models.dart";
 import "package:dotted_border/dotted_border.dart";
@@ -23,10 +25,24 @@ class _FileUploaderPageState extends State<FileUploaderPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      appBar: AppBar(
+        centerTitle: true,
+        leading: InkWell(
+            onTap: ()=>Navigator.of(context).pushNamed(HomeApp.route),
+            child: Icon(Icons.arrow_back)
+        ),
+        title: Text(
+          "Create publication",
+        style: TextStyle(
+          fontSize: 18,
+          fontWeight: FontWeight.w600
+        ),
+        ),
+      ),
       body: Center(
         child: Container(
-          width: 300,
-          height: 400,
+          width: double.infinity,
+          //height: 400,
           child: Card(
               child: Padding(
                   padding:const EdgeInsets.all(20),
@@ -60,7 +76,7 @@ class _FileUploaderPageState extends State<FileUploaderPage> {
                             color: Theme.of(context).colorScheme.outline.withOpacity(0.5),
                             child: Container(
                               decoration: BoxDecoration(
-                                color: Theme.of(context).scaffoldBackgroundColor
+                                color: Theme.of(context).colorScheme.outline.withOpacity(0.05)
                               ),
                               child: Center(
                                 child: BlocListener<FileUploaderBloc,FileUploaderState>(
@@ -384,7 +400,15 @@ class _FileUploaderPageState extends State<FileUploaderPage> {
                                   const SizedBox(width: 5),
                                   if(_config.nextPageAppRoute!=null)
                                   ElevatedButton(
-                                    child: Text("Next",style: TextStyle(fontSize: 10),),
+                                    child: Text(
+                                      "Next",
+                                      style: TextStyle(
+                                          fontSize: 10,
+                                          color: state.status==FileUploaderStatus.success
+                                              ?Theme.of(context).colorScheme.onPrimary
+                                              :Theme.of(context).colorScheme.onError
+                                      ),
+                                    ),
                                     onPressed: /*state.status!=FileUploaderStatus.success ? null: */() {
                                       Navigator.of(context).pushNamed(_config.nextPageAppRoute!);
                                     },
