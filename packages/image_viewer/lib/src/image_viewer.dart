@@ -28,6 +28,10 @@ class _ImageViewerState extends State<ImageViewer> {
           color: widget.backgroundColor,
           borderRadius: widget.borderRadius
         ),
+      minScale: PhotoViewComputedScale.contained,
+      //maxScale: PhotoViewComputedScale.covered * 2.0,
+      initialScale: PhotoViewComputedScale.contained,
+      enablePanAlways: false,
     )
     :Center(
       child: Text("Can't load image"),

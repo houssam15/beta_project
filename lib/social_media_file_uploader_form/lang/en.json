@@ -1,3 +1,19 @@
 {
-  "publish in": "Publish in"
+  "failure": "Failed",
+  "Upload from ?": "Upload from ?",
+  "Caméra": "Caméra",
+  "Gallery": "Gallery",
+  "or": "or",
+  "Permission denied !": "Permission denied !",
+  "cancel": "cancel",
+  "settings": "settings",
+  "permissions granted successfully": "Permissions granted successfully",
+  "unable to load files from device": "Unable to load files from device",
+  "please give us access to the permissions below :": "Please give us access to the permissions below:",
+  "file type not supported": "File type not supported",
+  "user cancel operation": "User canceled operation",
+  "file picked successfully": "File picked successfully",
+  "Internal error , when upload source requested": "Internal error, when upload source requested",
+  "can't load picture": "Can't load picture",
+  "Server unavailable for the moment,try again later":"Server unavailable for the moment, try again later"
 }

@@ -5,6 +5,8 @@ sealed class FileUploaderEvent extends Equatable{
 List<Object> get props => [];
 }
 
+final class FileUploaderStarted extends FileUploaderEvent{}
+
 final class FileUploaderResetRequested extends FileUploaderEvent{}
 
 final class FileUploaderUploadRequested extends FileUploaderEvent {}

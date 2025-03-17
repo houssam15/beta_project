@@ -83,4 +83,15 @@ class ImageProvider{
     return this;
   }
 
+  Future<ImageProvider> fromFile(File? file) async {
+    try{
+      if(file==null) return this;
+      Uint8List bytes = await file.readAsBytes();
+      _imageProvider = image_provider.MemoryImage(bytes);
+    }catch(err){
+      if(kDebugMode) print(err);
+    }
+    return this;
+  }
+
 }

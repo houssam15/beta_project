@@ -1,22 +1,29 @@
 
 part of 'file_uploader.bloc.dart';
 
-enum FileUploaderStatus{initial,success,permissionsDenied,failure,progress,progressFailure,loading,picking,cameraOrGallery,pictureOrVideo,readyToUpload}
+enum FileUploaderPageStatus{ initial,started,failure }
+enum FileUploaderAction{none, failure, permissionsDenied, progress, success, progressFailure }
+enum FileUploaderStatus{initial,loading,picking,cameraOrGallery,pictureOrVideo,readyToUpload}
 
 final class FileUploaderState extends Equatable{
 
   FileUploaderState({
+    this.pageStatus = FileUploaderPageStatus.initial,
+    this.action = FileUploaderAction.none,
     this.status = FileUploaderStatus.initial,
     PermissionsState? permissionsState,
     this.errorMessage = "unknown error",
     this.mediaType = MediaType.none,
     this.sourceType = UploadSourceType.none,
     this.progress=0,
-    File? file 
+    this.supportedExtensions = const [],
+    this.isUploading = false,
+    File? file ,
   }): permissionsState = permissionsState ??  PermissionsState(),
     file = file??File("no_path");
 
-
+  FileUploaderPageStatus pageStatus;
+  FileUploaderAction action;
   FileUploaderStatus status;
   PermissionsState permissionsState;
   MediaType mediaType;
@@ -24,30 +31,45 @@ final class FileUploaderState extends Equatable{
   String errorMessage;
   File file;
   int progress;
-
-
+  List<String> supportedExtensions;
+  int random = 0;
+  bool isUploading;
+  //Localization service for translation purpose
   FileUploaderState copyWith({
+    FileUploaderPageStatus? pageStatus,
+    FileUploaderAction? action,
     FileUploaderStatus? status,
     PermissionsState? permissionsState,
     String? errorMessage,
     UploadSourceType? sourceType,
     MediaType? mediaType,
     File? file,
-    int? progress
+    int? progress,
+    List<String>? supportedExtensions,
+    bool? isUploading
   }) {
     return FileUploaderState(
-      status: status ?? this.status,
+        pageStatus: pageStatus ?? this.pageStatus,
+        action: action ?? this.action,
+        status: status ?? this.status,
         permissionsState: permissionsState??this.permissionsState,
         errorMessage: errorMessage??this.errorMessage,
         sourceType:sourceType??this.sourceType,
         mediaType: mediaType??this.mediaType,
         file: file??this.file,
-        progress: progress??this.progress
+        progress: progress??this.progress,
+        supportedExtensions:supportedExtensions??this.supportedExtensions,
+        isUploading: isUploading??this.isUploading,
     );
   }
 
   FileUploaderState reset(){
     return FileUploaderState();
+  }
+
+  FileUploaderState randomize(){
+    random = Random().nextInt(100000);
+    return this;
   }
 
   FileUploaderState set({
@@ -72,6 +94,9 @@ final class FileUploaderState extends Equatable{
 
 
 
+
+
+
   @override
-  List<Object> get props => [status,permissionsState,errorMessage,sourceType,mediaType,file,progress];
+  List<Object> get props => [pageStatus,status,permissionsState,errorMessage,sourceType,mediaType,file,progress,random,isUploading];
 }

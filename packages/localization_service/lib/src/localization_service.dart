@@ -13,7 +13,7 @@ class LocalizationService{
 
   LocalizationService(this.locale,{required this.feature});
 
-  late Map<String,String> _localizedString;
+  static Map<String,String> _localizedString = {};
 
 
   static LocalizationService of(BuildContext context){
@@ -43,7 +43,17 @@ class LocalizationService{
   }
 
   String translate(String key){
-      return _localizedString[key]??key;
+    if (_localizedString.isEmpty) {
+      return key;
+    }
+    return _localizedString[key]??key;
+  }
+
+  static String? tr(String? key){
+    if (_localizedString.isEmpty) {
+      return key;
+    }
+    return _localizedString[key]??key;
   }
 
   static const supportedLocales = [

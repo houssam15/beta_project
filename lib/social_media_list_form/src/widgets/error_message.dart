@@ -4,9 +4,10 @@ import "package:flutter/material.dart";
 
 class ErrorMessageWidget extends StatefulWidget {
 
-  ErrorMessageWidget(this.message,{super.key});
+  ErrorMessageWidget(this.message,{super.key,this.refresh=true});
 
   final String message;
+  final bool refresh;
 
   @override
   State<ErrorMessageWidget> createState() => _ErrorMessageWidgetState();
@@ -34,11 +35,13 @@ class _ErrorMessageWidgetState extends State<ErrorMessageWidget> {
               onTap: toggleText,
               child: Text(widget.message,overflow: expandText?null:TextOverflow.ellipsis,textAlign: TextAlign.center,)
             ),
-            SizedBox(height: 5),
-            InkWell(
-              onTap: backToInitialState,
-              child: Icon(Icons.refresh),
-            )
+            if(widget.refresh)...[
+              SizedBox(height: 5),
+              InkWell(
+                onTap: backToInitialState,
+                child: Icon(Icons.refresh),
+              )
+            ]
           ],
     ));
   }

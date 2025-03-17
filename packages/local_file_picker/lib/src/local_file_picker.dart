@@ -2,6 +2,13 @@ import 'dart:io';
 import './models/models.dart';
 import "package:image_picker/image_picker.dart";
 
+/*
+Messages:
+- file type not supported
+- user cancel operation
+- file picked successfully
+*/
+
 class LocalFilePicker{
   final ImagePicker _picker = ImagePicker();
   LocalFile _localFile = LocalFile();
@@ -27,13 +34,13 @@ class LocalFilePicker{
         }else{
           return _localFile.set(
               status: LocalFileStatus.failed,
-              error: LocalFileError(message: "FILE_TYPE_NOT_SUPPORTED")
+              error: LocalFileError(message: "file type not supported")
           );
         }
         _localFile.set(
             file:pic==null ? null: File(pic.path),
             status: pic==null?LocalFileStatus.canceled:LocalFileStatus.picked,
-            message: pic==null?"USER_CANCEL_OPERATION":"FILE_PICKED_SUCCESSFULLY"
+            message: pic==null?"user cancel operation":"file picked successfully"
         );
    }
 

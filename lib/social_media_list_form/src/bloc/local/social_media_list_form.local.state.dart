@@ -1,74 +1,38 @@
-part of "social_media_list_form.remote.bloc.dart";
+part of "social_media_list_form.local.bloc.dart";
 
-enum SocialMediaListFormRemoteStatus {
-  initial,
-  loadingSocialMedia,
-  socialMediaLoaded,
-  socialMediaFailed,
-}
-
-enum SocialMediaListFormRemoteActions{
+enum SocialMediaListFormLocalAction {
   none,
-  itemNeedEdit,
-  updateItemStatus,
-  updateNextAction,
-  switchItemStatus
+  resizeFailed,
+  resizeSuccess
 }
 
-class SocialMediaListFormRemoteState extends Equatable{
+class SocialMediaListFormLocalState extends Equatable{
 
-  SocialMediaListFormRemoteState({
-    this.status = SocialMediaListFormRemoteStatus.initial,
-    this.socialMediaItems = const [],
-    this.message = "",
-    this.enableNextAction = false,
-    this.fileId,
-    this.action = SocialMediaListFormRemoteActions.none,
-    this.itemToEdit
+  SocialMediaListFormLocalState({
+    this.action = SocialMediaListFormLocalAction.none,
+    this.message,
+    this.socialMediaItem,
+    this.random
   });
 
-
-  SocialMediaListFormRemoteStatus status;
-  List<SocialMediaItem> socialMediaItems;
-  String message;
-  bool enableNextAction;
-  String? fileId;
-  SocialMediaListFormRemoteActions action;
-  SocialMediaItem? itemToEdit;
-
-  SocialMediaListFormRemoteState copyWith({
-    SocialMediaListFormRemoteStatus? status,
-    List<SocialMediaItem>? socialMediaItems,
+  SocialMediaListFormLocalAction action;
+  String? message;
+  SocialMediaItem? socialMediaItem;
+  String? random;
+  SocialMediaListFormLocalState copyWith({
+    SocialMediaListFormLocalAction? action,
     String? message,
-    bool? enableNextAction,
-    String? fileId,
-    SocialMediaListFormRemoteActions? action,
-    SocialMediaItem? itemToEdit
+    SocialMediaItem? socialMediaItem,
+    String? random
   }){
-    return SocialMediaListFormRemoteState(
-      status: status??this.status,
-      socialMediaItems: socialMediaItems??this.socialMediaItems,
-      message: message??this.message,
-      enableNextAction: enableNextAction??this.enableNextAction,
-      fileId: fileId??this.fileId,
+    return SocialMediaListFormLocalState(
       action: action??this.action,
-      itemToEdit:itemToEdit??this.itemToEdit
+      message: message ?? this.message,
+      socialMediaItem: socialMediaItem??this.socialMediaItem,
+      random: random ?? this.random
     );
- }
-
- bool isSocialListItemsChecked(){
-    for(SocialMediaItem item in socialMediaItems){
-      if(item.isSelected) return true;
-    }
-    return false;
- }
-
- SocialMediaItem? getSocialMediaItemByIndex(int index){
-   if(socialMediaItems.length-1<index) return null;
-   return socialMediaItems[index];
- }
+  }
 
   @override
-  List<Object?> get props => [status,socialMediaItems,message,enableNextAction,fileId,action,itemToEdit];
-
+  List<Object?> get props => [action,message,socialMediaItem,random];
 }

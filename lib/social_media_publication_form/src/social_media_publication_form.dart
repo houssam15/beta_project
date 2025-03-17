@@ -31,7 +31,7 @@ class _SocialMediaPublicationFormState extends State<SocialMediaPublicationForm>
 
     return HomeLayout(
         selectedRoute: SocialMediaPublicationForm.route,
-        title: args.appBarTitle,
+        hideAppbar: true,
         body: Theme(
             data: AppTheme().themeData,
             child: BlocProvider<SocialMediaPublicationFormRemoteBloc>(

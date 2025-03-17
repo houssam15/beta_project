@@ -5,6 +5,16 @@ import "package:local_file_picker/local_file_picker.dart" as local_file_picker;
 import "models/models.dart";
 import "package:file_chunked_uploader/file_chunked_uploader.dart";
 
+/*
+Messages :
+- permissions granted successfully
+- unable to load files from device
+- please give us access to the permissions below :
+- file type not supported
+- user cancel operation
+- file picked successfully
+*/
+
 class FileUploaderRepository{
     final FileUploaderPermissionsHandler _fileUploaderPermissionsHandler;
     final local_file_picker.LocalFilePicker _localFilePicker;
@@ -29,22 +39,12 @@ class FileUploaderRepository{
         );
      }
 
-
-    List<String> get _messages => [
-        "permissions granted successfully",
-        "unable to load files from device",
-        "please give us access to the permissions below :",
-        "user cancel operation",
-        "file picked successfully",
-        "unknown error"
-    ];
-
     Future<PermissionsState> requestPermissions() async{
         final result = await _fileUploaderPermissionsHandler.requestPermissions();
         return PermissionsState(
             status: result.isAllPermissionsGranted ? PermissionsStatus.granted:PermissionsStatus.denied,
-            message: result.isAllPermissionsGranted?_messages[0]:(
-                !result.isPermissionsNeedOpenSettings?_messages[1]:_messages[2]
+            message: result.isAllPermissionsGranted?"permissions granted successfully":(
+                !result.isPermissionsNeedOpenSettings?"unable to load files from device":"please give us access to the permissions below :"
             ),
             openSettingDialog: result.isPermissionsNeedOpenSettings,
             permissionsNotRequestedYet: result.permissionsNotRequestedYet
@@ -65,11 +65,7 @@ class FileUploaderRepository{
             source: file.fileSource.toUploadSourceType(),
             type: file.fileType.toMediaType(),
             file:file.file,
-            message:file.message=="USER_CANCEL_OPERATION"?_messages[3]
-                : (file.message=="FILE_PICKED_SUCCESSFULLY"
-                     ? _messages[4]
-                     : _messages[5]
-                  )
+            message:file.message
         );
     }
 

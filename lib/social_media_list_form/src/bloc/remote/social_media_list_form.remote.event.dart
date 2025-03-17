@@ -9,7 +9,27 @@ sealed class SocialMediaListFormRemoteEvent extends Equatable{
 final class SocialMediaListFormRemoteStarted extends SocialMediaListFormRemoteEvent {}
 
 //Event when user select a social media item
-final class SocialMediaListFormRemoteSocialMediaItemToggled extends SocialMediaListFormRemoteEvent {}
+final class SocialMediaListFormRemoteSocialMediaItemToggled extends SocialMediaListFormRemoteEvent {
+  final SocialMediaItem socialMediaItem;
+  final bool? value;
+  SocialMediaListFormRemoteSocialMediaItemToggled(this.socialMediaItem,this.value);
+
+  @override
+  List<Object?> get props =>[ ...super.props,socialMediaItem,value];
+}
 
 //Event when user select items
 final class SocialMediaListFormSocialMediaItemsSelected extends SocialMediaListFormRemoteEvent {}
+
+final class SocialMediaListFormSocialMediaItemEdited extends SocialMediaListFormRemoteEvent{
+  final SocialMediaItem socialMediaItem;
+  SocialMediaListFormSocialMediaItemEdited(this.socialMediaItem);
+}
+
+//upload resized file
+final class SocialMediaListFormRemoteResizedFileUpload extends SocialMediaListFormRemoteEvent {
+  final SocialMediaItem socialMediaItem;
+  SocialMediaListFormRemoteResizedFileUpload(this.socialMediaItem);
+}
+
+

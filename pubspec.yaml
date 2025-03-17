@@ -16,7 +16,6 @@ dependencies:
   cupertino_icons: ^1.0.8
   flutter_bloc: ^9.0.0
   equatable: ^2.0.7
-  http: ^1.3.0
   stream_transform: ^2.1.1
   bloc_concurrency: ^0.3.0
   authentication_repository:
@@ -25,6 +24,10 @@ dependencies:
     path: packages/user_repository
   file_uploader_repository:
     path: packages/file_uploader_repository
+  social_media_list_form_repository:
+    path: packages/social_media_list_form_repository
+  image_viewer:
+    path: packages/image_viewer
   formz: ^0.8.0
   hydrated_bloc: ^10.0.0
   json_annotation: ^4.8.1
@@ -37,6 +40,15 @@ dependencies:
   permission_handler: ^11.4.0
   calendar_date_picker2: ^1.1.9
   flutter_localization: ^0.3.1
+  http: ^1.0.0
+  font_awesome_flutter: ^10.8.0
+  event_bus: ^2.0.1
+  localization_service:
+    path: packages/localization_service
+  alert_banner: ^1.0.1
+  percent_indicator: ^4.2.4
+  video_viewer:
+    path: packages/video_viewer
 dev_dependencies:
   bloc_test: ^10.0.0
   build_runner: ^2.0.0
@@ -51,4 +63,7 @@ flutter:
 
   uses-material-design: true
   assets:
-  #  - assets/
+    - assets/
+    - assets/localization/
+    - lib/i18n_testing/src/lang/
+    - lib/social_media_file_uploader_form/lang/

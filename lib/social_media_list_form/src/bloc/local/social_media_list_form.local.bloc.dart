@@ -1,69 +1,55 @@
+
 import "dart:io";
 
 import "package:alpha_flutter_project/authentication/authentication.dart";
+import "package:alpha_flutter_project/login/login.dart";
+import "package:alpha_flutter_project/social_media_list_form/src/models/models.dart";
 import "package:equatable/equatable.dart";
 import "package:flutter/foundation.dart";
-import "../../models/models.dart";
-part 'social_media_list_form.remote.event.dart';
-part 'social_media_list_form.remote.state.dart';
+import "package:social_media_list_form_repository/social_media_list_form_repository.dart" as social_media_list_form_repository;
+import 'dart:math';
+import "../../event_bus/social_media_list_form.event_bus.dart";
+part 'social_media_list_form.local.event.dart';
+part 'social_media_list_form.local.state.dart';
 
-class SocialMediaListFormRemoteBloc  extends Bloc<SocialMediaListFormRemoteEvent,SocialMediaListFormRemoteState>{
+class SocialMediaListFormLocalBloc  extends Bloc<SocialMediaListFormLocalEvent,SocialMediaListFormLocalState>{
 
+
+  SocialMediaListFormLocalBloc(this.fileId,{
+    social_media_list_form_repository.SocialMediaListFormRepository? socialMediaListFormRepository,
+    SocialMediaListFormEventBus? socialMediaListFormEventBus
+  })
+  :socialMediaListFormRepository = socialMediaListFormRepository??social_media_list_form_repository.SocialMediaListFormRepository(),
+   socialMediaListFormEventBus = socialMediaListFormEventBus ?? SocialMediaListFormEventBus(),
+   super(SocialMediaListFormLocalState()){
+    on<SocialMediaListFormLocalResizePictureRequested>(_resizePicture);
+  }
+
+  final social_media_list_form_repository.SocialMediaListFormRepository socialMediaListFormRepository;
   final String fileId;
+  final SocialMediaListFormEventBus socialMediaListFormEventBus;
 
-  SocialMediaListFormRemoteBloc(this.fileId):super(SocialMediaListFormRemoteState(fileId: fileId)){
-    on<SocialMediaListFormRemoteStarted>(_loadSocialMediaItems);
-    on<SocialMediaListFormRemoteSocialMediaItemToggled>(_handleSocialMediaItemChanges);
-    on<SocialMediaListFormSocialMediaItemsSelected>(_verifySelectedSocialMediaItems);
-    on<SocialMediaListFormSocialMediaItemEdited>(_updateEditedElementState);
-  }
-
-  Future<void> _loadSocialMediaItems(SocialMediaListFormRemoteStarted event, Emitter<SocialMediaListFormRemoteState> emit) async {
+  Future<void> _resizePicture(SocialMediaListFormLocalResizePictureRequested event, Emitter<SocialMediaListFormLocalState> emit) async {
     try{
-      ///TODO : get social media items by fileId
-      emit(state.copyWith(status: SocialMediaListFormRemoteStatus.loadingSocialMedia));
-      await Future.delayed(Duration(seconds: 1));
-      emit(state.copyWith(status: SocialMediaListFormRemoteStatus.socialMediaLoaded,socialMediaItems: SocialMediaItem.fromRepository()));
+      social_media_list_form_repository.ResizedFile result = await socialMediaListFormRepository
+          .setValidConstraints(event.socialMediaItem.error?.validConstraints?.toRepository())
+          .setFileParams(social_media_list_form_repository.FileParams(
+            fileRequestOptions: social_media_list_form_repository.RequestOptions(
+                method: "get",
+                baseUrl: "https://plus.unsplash.com/premium_photo-1664474619075-644dd191935f?fm=jpg&q=60&w=3000&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MXx8aW1hZ2V8ZW58MHx8MHx8fDA%3D"
+            )
+          ))
+          .setContext(event.context)
+          .loadFileAndResize();
+      //Set edited file
+      event.socialMediaItem.error?.setEditedFile(result.file);
+      //emit(state.copyWith(action: SocialMediaListFormLocalAction.resizeSuccess,socialMediaItem: event.socialMediaItem,message: "File resized successfully"));
+      this.socialMediaListFormEventBus.getEventBus()?.fire(SocialMediaListFormUploadResizedPictureEvent(event.socialMediaItem));
     }catch(err){
       if(kDebugMode) print(err);
-      emit(state.copyWith(status: SocialMediaListFormRemoteStatus.socialMediaFailed,message: "Can't load data"));
+      emit(state.copyWith(action: SocialMediaListFormLocalAction.resizeFailed,message: "failed to resize picture",random: Random().nextInt(100000).toString()));
     }
   }
 
-  Future<void> _handleSocialMediaItemChanges(SocialMediaListFormRemoteSocialMediaItemToggled event, Emitter<SocialMediaListFormRemoteState> emit) async {
-    try{
-      //Check if elm has error and need edit
-      if(event.value==true && event.socialMediaItem.hasError()==true){
-          emit(state.copyWith(action: SocialMediaListFormRemoteActions.itemNeedEdit,itemToEdit: event.socialMediaItem));
-      }else{
-        event.socialMediaItem.isSelected = event.value??false;
-        emit(state.copyWith(action: SocialMediaListFormRemoteActions.switchItemStatus,itemToEdit: event.socialMediaItem));
-      }
-      emit(state.copyWith(action: SocialMediaListFormRemoteActions.updateNextAction,enableNextAction: state.isSocialListItemsChecked()));
-    }catch(err){
-      if(kDebugMode) print(err);
-      emit(state.copyWith(status: SocialMediaListFormRemoteStatus.socialMediaFailed,message: "Can't selected element"));
-    }
-  }
-
-  Future<void> _verifySelectedSocialMediaItems(SocialMediaListFormSocialMediaItemsSelected event, Emitter<SocialMediaListFormRemoteState> emit) async {
-    try{
-      emit(state.copyWith(action: SocialMediaListFormRemoteActions.updateNextAction,enableNextAction: state.isSocialListItemsChecked()));
-    }catch(err){
-      if(kDebugMode) print(err);
-      emit(state.copyWith(status: SocialMediaListFormRemoteStatus.socialMediaFailed,message: "Can't selected element"));
-    }
-  }
-
-  Future<void> _updateEditedElementState(SocialMediaListFormSocialMediaItemEdited event, Emitter<SocialMediaListFormRemoteState> emit) async {
-    try{
-      //If valid pass set elm as selected and vide itemNeedEdit
-      event.socialMediaItem.changeIsSelected(true);
-      emit(state.copyWith(action: SocialMediaListFormRemoteActions.updateItemStatus));
-    }catch(err){
-      if(kDebugMode) print(err);
-      emit(state.copyWith(status: SocialMediaListFormRemoteStatus.socialMediaFailed,message: "Can't update edited element"));
-    }
-  }
 
 }

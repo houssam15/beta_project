@@ -4,15 +4,29 @@ enum SocialMediaListFormRemoteStatus {
   initial,
   loadingSocialMedia,
   socialMediaLoaded,
-  socialMediaFailed
+  socialMediaFailed,
+
 }
+
+enum SocialMediaListFormRemoteActions{
+  none,
+  updateItemStatus,
+  updateNextAction,
+  switchItemStatus,
+  resizedPictureUploaded,
+  resizedPictureUploadedFailed
+}
+
 class SocialMediaListFormRemoteState extends Equatable{
 
   SocialMediaListFormRemoteState({
     this.status = SocialMediaListFormRemoteStatus.initial,
     this.socialMediaItems = const [],
     this.message = "",
-    this.enableNextAction = false
+    this.enableNextAction = false,
+    this.fileId,
+    this.action = SocialMediaListFormRemoteActions.none,
+    this.itemToEdit
   });
 
 
@@ -20,18 +34,27 @@ class SocialMediaListFormRemoteState extends Equatable{
   List<SocialMediaItem> socialMediaItems;
   String message;
   bool enableNextAction;
+  String? fileId;
+  SocialMediaListFormRemoteActions action;
+  SocialMediaItem? itemToEdit;
 
   SocialMediaListFormRemoteState copyWith({
     SocialMediaListFormRemoteStatus? status,
     List<SocialMediaItem>? socialMediaItems,
     String? message,
-    bool? enableNextAction
+    bool? enableNextAction,
+    String? fileId,
+    SocialMediaListFormRemoteActions? action,
+    SocialMediaItem? itemToEdit
   }){
     return SocialMediaListFormRemoteState(
       status: status??this.status,
       socialMediaItems: socialMediaItems??this.socialMediaItems,
       message: message??this.message,
-      enableNextAction: enableNextAction??this.enableNextAction
+      enableNextAction: enableNextAction??this.enableNextAction,
+      fileId: fileId??this.fileId,
+      action: action??this.action,
+      itemToEdit:itemToEdit??this.itemToEdit
     );
  }
 
@@ -42,7 +65,16 @@ class SocialMediaListFormRemoteState extends Equatable{
     return false;
  }
 
+ SocialMediaItem? getSocialMediaItemByIndex(int index){
+   if(socialMediaItems.length-1<index) return null;
+   return socialMediaItems[index];
+ }
+
+  SocialMediaItem? getItemById(int id){
+    return socialMediaItems.toList().firstWhere((element) => element.id == id);
+ }
+
   @override
-  List<Object?> get props => [status,socialMediaItems,message,enableNextAction];
+  List<Object?> get props => [status,socialMediaItems,message,enableNextAction,fileId,action,itemToEdit];
 
 }

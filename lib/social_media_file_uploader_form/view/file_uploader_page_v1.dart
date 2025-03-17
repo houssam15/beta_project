@@ -81,7 +81,7 @@ class _FileUploaderPageState extends State<FileUploaderPage> {
                               child: Center(
                                 child: BlocListener<FileUploaderBloc,FileUploaderState>(
                                   listener: (context, state) {
-                                    switch(state.status){
+                                    /*switch(state.status){
                                       case FileUploaderStatus.permissionsDenied:
                                         if(state.permissionsState.showMessageOption==ShowMessageOptions.snackBar){
                                           ScaffoldMessenger.of(context).hideCurrentSnackBar();
@@ -178,17 +178,17 @@ class _FileUploaderPageState extends State<FileUploaderPage> {
                                             _progress = "progress : ${state.progress} %";
                                         });
                                       default:
-                                    }
+                                    }*/
 
                                   },
                                   child: BlocBuilder<FileUploaderBloc,FileUploaderState>(
                                     buildWhen: (previous, current) {
                                       final excludedStatuses = [
-                                        FileUploaderStatus.failure,
-                                        FileUploaderStatus.permissionsDenied,
-                                        FileUploaderStatus.progress,
-                                        FileUploaderStatus.success,
-                                        FileUploaderStatus.progressFailure
+                                          /*FileUploaderStatus.failure,
+                                          FileUploaderStatus.permissionsDenied,
+                                          FileUploaderStatus.progress,
+                                          FileUploaderStatus.success,
+                                          FileUploaderStatus.progressFailure*/
                                       ];
 
                                       return !excludedStatuses.contains(current.status);                                    },
@@ -402,12 +402,12 @@ class _FileUploaderPageState extends State<FileUploaderPage> {
                                   ElevatedButton(
                                     child: Text(
                                       "Next",
-                                      style: TextStyle(
+                                      /*style: TextStyle(
                                           fontSize: 10,
                                           color: state.status==FileUploaderStatus.success
                                               ?Theme.of(context).colorScheme.onPrimary
                                               :Theme.of(context).colorScheme.onError
-                                      ),
+                                      ),*/
                                     ),
                                     onPressed: /*state.status!=FileUploaderStatus.success ? null: */() {
                                       Navigator.of(context).pushNamed(_config.nextPageAppRoute!);

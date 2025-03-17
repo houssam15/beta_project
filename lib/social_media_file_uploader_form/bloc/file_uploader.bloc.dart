@@ -1,6 +1,8 @@
 import 'dart:io';
-
+import 'dart:math';
 import 'package:alpha_flutter_project/authentication/authentication.dart';
+import 'package:alpha_flutter_project/login/login.dart';
+import 'package:localization_service/localization_service.dart';
 import '../models/models.dart';
 import 'package:flutter/foundation.dart';
 import 'package:file_uploader_repository/file_uploader_repository.dart' show FileUploaderRepository;
@@ -8,7 +10,9 @@ part 'file_uploader.event.dart';
 part 'file_uploader.state.dart';
 
 class FileUploaderBloc extends Bloc<FileUploaderEvent,FileUploaderState>{
+
   FileUploaderBloc(this._fileUploaderRepository):super(FileUploaderState()){
+    on<FileUploaderStarted>(_onStarted);
     on<FileUploaderResetRequested>(_onResetRequested);
     on<FileUploaderUploadRequested>(_onFileUploaded);
     on<FileUploaderUploadSourceRequested>(_onUploadSourceRequested);
@@ -19,6 +23,13 @@ class FileUploaderBloc extends Bloc<FileUploaderEvent,FileUploaderState>{
 
   final FileUploaderRepository _fileUploaderRepository;
 
+  Future<void> _onStarted(FileUploaderStarted event , Emitter<FileUploaderState> emit) async {
+    try{
+      emit(state.copyWith(pageStatus: FileUploaderPageStatus.started,status: FileUploaderStatus.pictureOrVideo,action: FileUploaderAction.none,supportedExtensions: ["png","jpeg","gif","mp4"]));
+    }catch(err){
+      emit(state.copyWith(pageStatus: FileUploaderPageStatus.failure));
+    }
+  }
 
   Future<void> _onResetRequested(FileUploaderResetRequested event, Emitter<FileUploaderState> emit) async{
     emit(state.reset());
@@ -27,30 +38,35 @@ class FileUploaderBloc extends Bloc<FileUploaderEvent,FileUploaderState>{
   Future<void> _onFileUploaded(FileUploaderUploadRequested event, Emitter<FileUploaderState> emit) async{
     try{
         emit(state.copyWith(status: FileUploaderStatus.loading));
-        await Future.delayed(Duration(milliseconds: 500));
-        emit(state.copyWith(status: FileUploaderStatus.cameraOrGallery));
+        final result = await PermissionsState().fromRepository(
+            await this._fileUploaderRepository.requestPermissions()
+        );
+        if(result.status==PermissionsStatus.failure){
+          emit(state.copyWith(action: FileUploaderAction.permissionsDenied,pageStatus: FileUploaderPageStatus.failure,permissionsState: result));
+        }else{
+          emit(state.copyWith(status: FileUploaderStatus.pictureOrVideo));
+        }
     }catch(err){
-      emit(state.copyWith(status: FileUploaderStatus.failure));
+      emit(state.copyWith(action: FileUploaderAction.failure,pageStatus: FileUploaderPageStatus.failure));
     }
   }
 
   Future<void> _onUploadSourceRequested(FileUploaderUploadSourceRequested event, Emitter<FileUploaderState> emit)async{
     try{
-      final result = await PermissionsState().fromRepository(
-          await this._fileUploaderRepository.requestPermissions()
-      );
-      if(result.status==PermissionsStatus.failure){
-          emit(state.copyWith(status: FileUploaderStatus.permissionsDenied,permissionsState: result));
-      }else if(event.uploadSource==UploadSourceType.none){
-        emit(state.copyWith(status: FileUploaderStatus.failure,errorMessage: "Upload source is empty, please choose one ..."));
+      if(event.uploadSource==UploadSourceType.none){
+        emit(state.copyWith(action: FileUploaderAction.failure,errorMessage: "Upload source is empty, please choose one ..."));
       }else{
-        state.set(sourceType: event.uploadSource);
-        emit(state.copyWith(status: FileUploaderStatus.loading));
-        await Future.delayed(Duration(milliseconds: 500));
-        emit(state.copyWith(status: FileUploaderStatus.pictureOrVideo));
+        emit(state.copyWith(status: FileUploaderStatus.loading,sourceType: event.uploadSource));
+        final result = await this._fileUploaderRepository.getFileFromSource(event.uploadSource.toRepositoryUploadFileSource(),state.mediaType.toRepositoryMediaType());
+        if(result.isError || result.isCanceled)  emit(state.copyWith(pageStatus: FileUploaderPageStatus.initial,action: FileUploaderAction.failure,errorMessage: LocalizationService.tr(result.message)));
+        else if(result.isSuccess) {
+          emit(state.copyWith(status: FileUploaderStatus.readyToUpload,file:result.file));
+        }else{
+          throw new Exception("Unknown state");
+        }
       }
     }catch(err){
-      emit(state.copyWith(status: FileUploaderStatus.failure,errorMessage: "Internal error , when upload source requested"));
+      emit(state.copyWith(pageStatus: FileUploaderPageStatus.failure,action: FileUploaderAction.failure,errorMessage: LocalizationService.tr("Internal error , when upload source requested")));
     }
   }
 
@@ -58,23 +74,14 @@ class FileUploaderBloc extends Bloc<FileUploaderEvent,FileUploaderState>{
   Future<void> _onUploadTypeRequested(FileUploaderUploadTypeRequested event, Emitter<FileUploaderState> emit)async{
     try{
       if(event.mediaType==MediaType.none) {
-        emit(state.copyWith(status: FileUploaderStatus.failure,errorMessage: "Choose file type please"));
-      }else if(state.sourceType==UploadSourceType.none){
-        emit(state.copyWith(status: FileUploaderStatus.failure,errorMessage: "Upload source is empty, please choose one ..."));
-        await Future.delayed(Duration(seconds: 2));
-        emit(state.copyWith(status: FileUploaderStatus.cameraOrGallery));
+        emit(state.copyWith(action: FileUploaderAction.failure,errorMessage: LocalizationService.tr("Choose file type please"))..randomize());
       }else{
-        state.set(mediaType: event.mediaType);
-        final result = await this._fileUploaderRepository.getFileFromSource(state.sourceType.toRepositoryUploadFileSource(),state.mediaType.toRepositoryMediaType());
-        if(result.isError || result.isCanceled)  emit(state.copyWith(status: FileUploaderStatus.failure,errorMessage: result.message));
-        else if(result.isSuccess) {
-            emit(state.copyWith(status: FileUploaderStatus.readyToUpload,file:result.file));
-        }else{
-          throw new Exception("Unknown state");
-        }
+        emit(state.copyWith(status: FileUploaderStatus.loading));
+        await Future.delayed(Duration(milliseconds: 500));
+        emit(state.copyWith(status: FileUploaderStatus.cameraOrGallery,mediaType: event.mediaType));
       }
     }catch(err){
-      emit(state.copyWith(status: FileUploaderStatus.failure,errorMessage: "Internal error , when upload type requested"));
+      emit(state.copyWith(action: FileUploaderAction.failure,errorMessage: LocalizationService.tr("Internal error , when upload type requested"))..randomize());
     }
   }
 
@@ -82,20 +89,18 @@ class FileUploaderBloc extends Bloc<FileUploaderEvent,FileUploaderState>{
     try{
       await this._fileUploaderRepository.openSettingsToGrantPermissions();
     }catch(err){
-      emit(state.copyWith(status: FileUploaderStatus.failure,errorMessage: "Internal error , when try to open settings"));
+      emit(state.copyWith(action: FileUploaderAction.failure,errorMessage: "Internal error , when try to open settings"));
     }
   }
 
   Future<void> _uploadToServer(FileUploaderUploadToServer event, Emitter<FileUploaderState> emit) async{
     try {
       await for (int progress in _fileUploaderRepository.uploadFileToServer(state.file)) {
-        emit(state.copyWith(status: FileUploaderStatus.progress, progress: progress));
+        emit(state.copyWith(action: FileUploaderAction.progress,isUploading: true, progress: progress));
       }
-      emit(state.copyWith(status: FileUploaderStatus.success));
+      emit(state.copyWith(action: FileUploaderAction.success,isUploading: false));
     } catch (error) {
-      // Dispatch an error event or state when an error occurs
-      if (kDebugMode) print("Upload failed with error: $error");
-      emit(state.copyWith(status: FileUploaderStatus.progressFailure, errorMessage: error.toString()));
+      emit(state.copyWith(action: FileUploaderAction.progressFailure,isUploading: false, errorMessage: LocalizationService.tr("Server unavailable for the moment,try again later")));
     }
   }
 

@@ -1,3 +1,4 @@
+import "package:alpha_flutter_project/i18n_testing/src/i18n_testing.dart";
 import "package:alpha_flutter_project/social_media_file_uploader_form/social_media_file_uploader_form.dart";
 import "package:flutter/material.dart";
 import "package:alpha_flutter_project/home/home.dart";
@@ -12,10 +13,12 @@ class HomeLayout extends StatefulWidget {
   final Widget body;
   final String selectedRoute;
   final String title;
+  final bool hideAppbar;
   const HomeLayout({
     required this.body,
     required this.selectedRoute,
     this.title = " App & Features",
+    this.hideAppbar = false,
     super.key
   });
 
@@ -27,7 +30,7 @@ class _HomeLayoutState extends State<HomeLayout> {
   @override
   Widget build(BuildContext context) {
     return AdminScaffold(
-      appBar:AppBar(
+      appBar:widget.hideAppbar?null:AppBar(
             title: Text(widget.title),
           ),
       sideBar: SideBar(
@@ -39,6 +42,7 @@ class _HomeLayoutState extends State<HomeLayout> {
           AdminMenuItem(title: 'Social media File Uploader', route: SocialMediaFileUploaderForm.route),
           AdminMenuItem(title: 'Social media publication form', route: SocialMediaPublicationForm.route),
           AdminMenuItem(title: 'Social media list form', route: SocialMediaListForm.route),
+          AdminMenuItem(title: 'I18n testing', route: I18nTesting.route),
         ],
         selectedRoute: widget.selectedRoute,
         onSelected: (item) {

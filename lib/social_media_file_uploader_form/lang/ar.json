@@ -1,3 +1,19 @@
 {
-  "publish in": "نشر في"
+  "failure": "فشل",
+  "Upload from ?": "تحميل من ؟",
+  "Caméra": "آلة تصوير",
+  "Gallery": "معرض الصور",
+  "or": "أو",
+  "Permission denied !": "تم رفض الإذن !",
+  "cancel": "إلغاء",
+  "settings": "الإعدادات",
+  "permissions granted successfully": "تم منح الأذونات بنجاح",
+  "unable to load files from device": "غير قادر على تحميل الملفات من الجهاز",
+  "please give us access to the permissions below :": "يرجى منحنا الوصول إلى الأذونات أدناه:",
+  "file type not supported": "نوع الملف غير مدعوم",
+  "user cancel operation": "قام المستخدم بإلغاء العملية",
+  "file picked successfully": "تم اختيار الملف بنجاح",
+  "Internal error , when upload source requested": "خطأ داخلي عند طلب مصدر الرفع",
+  "can't load picture": "لا يمكن تحميل الصورة",
+  "Server unavailable for the moment,try again later": "الخادم غير متاح في الوقت الحالي، حاول مرة أخرى لاحقاً"
 }

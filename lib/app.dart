@@ -1,3 +1,4 @@
+import "package:alpha_flutter_project/i18n_testing/src/i18n_testing.dart";
 import "package:alpha_flutter_project/social_media_file_uploader_form/social_media_file_uploader_form.dart";
 import "package:flutter/material.dart";
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -74,7 +75,7 @@ class _AppViewState extends State<AppView> {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       navigatorKey: navigatorKey,
-      initialRoute: SocialMediaListForm.route,
+      initialRoute: SocialMediaFileUploaderForm.route,
       routes:{
         HomeApp.route:(context) => const HomeApp(),
         WeatherApp.route:(context)=> WeatherApp(),
@@ -83,7 +84,8 @@ class _AppViewState extends State<AppView> {
         CounterApp.route:(context) => const CounterApp(),
         SocialMediaFileUploaderForm.route:(context) => const SocialMediaFileUploaderForm(),
         SocialMediaPublicationForm.route:(context) => const SocialMediaPublicationForm(),
-        SocialMediaListForm.route:(context) => const SocialMediaListForm()
+        SocialMediaListForm.route:(context) => const SocialMediaListForm(),
+        I18nTesting.route:(context) => const I18nTesting()
       },
       builder: (context, child) {
         return BlocListener<AuthenticationBloc, AuthenticationState>(

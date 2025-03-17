@@ -1,3 +1,19 @@
 {
-  "publish in": "publier dans"
+  "failure": "échec",
+  "Upload from ?": "Télécharger depuis ?",
+  "Caméra": "Caméra",
+  "Gallery": "Galerie",
+  "or": "ou",
+  "Permission denied !": "Permission refusée !",
+  "cancel": "annuler",
+  "settings": "paramètres",
+  "permissions granted successfully": "Autorisations accordées avec succès",
+  "unable to load files from device": "Impossible de charger les fichiers depuis l'appareil",
+  "please give us access to the permissions below :": "Veuillez nous donner accès aux autorisations ci-dessous :",
+  "file type not supported": "Type de fichier non pris en charge",
+  "user cancel operation": "L'utilisateur a annulé l'opération",
+  "file picked successfully": "Fichier sélectionné avec succès",
+  "Internal error , when upload source requested": "Erreur interne, lors de la demande de la source de téléchargement",
+  "can't load picture": "Impossible de charger l'image",
+  "Server unavailable for the moment,try again later":"Serveur indisponible pour le moment, réessayez plus tard"
 }

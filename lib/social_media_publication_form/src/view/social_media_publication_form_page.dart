@@ -1,5 +1,6 @@
 import "package:flutter/cupertino.dart";
 import "package:flutter/material.dart";
+import "../../../home/home_app.dart";
 import "../widgets/widgets.dart";
 import "../models/models.dart";
 class SocialMediaPublicationFormPage extends StatefulWidget {
@@ -15,10 +16,23 @@ class _SocialMediaPublicationFormPageState extends State<SocialMediaPublicationF
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      appBar: AppBar(
+        centerTitle: true,
+        leading: InkWell(
+            onTap: ()=>Navigator.of(context).pushNamed(HomeApp.route),
+            child: Icon(Icons.arrow_back)
+        ),
+        title: Text(
+          "Create publication",
+          style: TextStyle(
+              fontSize: 18,
+              fontWeight: FontWeight.w600
+          ),
+        ),
+      ),
       body: Center(
         child: Container(
-            width: 300,
-            height: 500,
+            width: double.infinity,
             child: Card(
               child: Padding(
                   padding: const EdgeInsets.all(20),
@@ -48,8 +62,15 @@ class _SocialMediaPublicationFormPageState extends State<SocialMediaPublicationF
                                 labelText: "title",
                                 labelStyle: TextStyle(
                                   fontSize: 12
-                                )
+                                ),
+                              enabledBorder: OutlineInputBorder(
+                                  borderSide: BorderSide(color: Theme.of(context).colorScheme.tertiary.withOpacity(0.1),width: 2)
+                              ),
+                              focusedBorder: OutlineInputBorder(
+                                  borderSide: BorderSide(color: Theme.of(context).colorScheme.tertiary.withOpacity(0.5),width: 2)
+                              ),
                             ),
+
                           ),
                         ),
                         Padding(
@@ -70,6 +91,12 @@ class _SocialMediaPublicationFormPageState extends State<SocialMediaPublicationF
                                 labelText: "description",
                                 labelStyle: TextStyle(
                                     fontSize: 12
+                                ),
+                                enabledBorder: OutlineInputBorder(
+                                    borderSide: BorderSide(color: Theme.of(context).colorScheme.tertiary.withOpacity(0.1),width: 2)
+                                ),
+                                focusedBorder: OutlineInputBorder(
+                                    borderSide: BorderSide(color: Theme.of(context).colorScheme.tertiary.withOpacity(0.5),width: 2)
                                 ),
                               ),
                             ),
@@ -125,7 +152,13 @@ class _SocialMediaPublicationFormPageState extends State<SocialMediaPublicationF
                               children: [
                                 if(_config.prevPageAppRoute!=null)
                                 ElevatedButton(
-                                  child: Text("Back",style: TextStyle(fontSize: 10),),
+                                  child: Text(
+                                      "Back",
+                                      style: TextStyle(
+                                          fontSize: 10,
+                                          color:Theme.of(context).colorScheme.onError
+                                      )
+                                  ),
                                   onPressed: (){
                                     Navigator.of(context).pushNamed(_config.prevPageAppRoute!);
                                   },
@@ -135,8 +168,7 @@ class _SocialMediaPublicationFormPageState extends State<SocialMediaPublicationF
                                             if (states.contains(WidgetState.disabled)) {
                                               return Colors.grey; // Disabled state
                                             }
-                                            return Colors.blue; // Enabled state
-                                          }
+                                            return Theme.of(context).colorScheme.tertiary;                                          }
                                       )
                                   ),
                                 ),
@@ -144,7 +176,13 @@ class _SocialMediaPublicationFormPageState extends State<SocialMediaPublicationF
                                 ...[
                                   const SizedBox(width: 5),
                                   ElevatedButton(
-                                    child: Text("Next",style: TextStyle(fontSize: 10),),
+                                    child: Text(
+                                        "Next",
+                                        style: TextStyle(
+                                          fontSize: 10,
+                                          color:Theme.of(context).colorScheme.onError
+                                        )
+                                    ),
                                     onPressed: (){
                                       Navigator.of(context).pushNamed(_config.nextPageAppRoute!);
                                     },
@@ -154,7 +192,7 @@ class _SocialMediaPublicationFormPageState extends State<SocialMediaPublicationF
                                               if (states.contains(WidgetState.disabled)) {
                                                 return Colors.grey; // Disabled state
                                               }
-                                              return Colors.blue; // Enabled state
+                                              return Theme.of(context).colorScheme.tertiary; // Enabled state
                                             }
                                         )
                                     ),

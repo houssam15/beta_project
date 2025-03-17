@@ -1,16 +1,26 @@
-import 'package:alpha_flutter_project/authentication/authentication.dart';
-import 'package:alpha_flutter_project/login/login.dart';
+part of 'models.dart';
 
 class SocialMediaItem extends Equatable{
+  int id;
   IconData icon;
   String title;
+  SocialMediaErrorItem? error;
+  String? uploadUrl;
   bool showText = false;
   bool isSelected = false;
+  bool isLoading = false;
 
   SocialMediaItem({
+     required this.id,
      required this.icon,
-     required this.title
+     required this.title,
+     this.error,
+     this.uploadUrl
   });
+
+  static IconData toFaIcon(String iconKey){
+    return faIconNameMapping[iconKey.toLowerCase()] ?? FontAwesomeIcons.circle;
+  }
 
   SocialMediaItem toggleShowText(){
     showText = !showText;
@@ -22,22 +32,51 @@ class SocialMediaItem extends Equatable{
     return this;
   }
 
-  static List<SocialMediaItem> fromRepository(){
-    return [
-      SocialMediaItem(icon: Icons.ice_skating_outlined, title: "Facebook account for somethings"),
-      SocialMediaItem(icon: Icons.abc_outlined, title: "Facebook "),
-      SocialMediaItem(icon: Icons.g_mobiledata_rounded, title: "Facebook  somethings"),
-      SocialMediaItem(icon: Icons.baby_changing_station_outlined, title: "Facebook account for somethings,somethingssomet hingssomethings"),
-      SocialMediaItem(icon: Icons.dangerous, title: "Facebook account for somethings"),
-      SocialMediaItem(icon: Icons.baby_changing_station, title: "Facebook account for somethings"),
-      SocialMediaItem(icon: Icons.face, title: "Facebook account for somethings"),
-      SocialMediaItem(icon: Icons.abc_outlined, title: "Facebook account for somethings"),
-      SocialMediaItem(icon: Icons.offline_bolt, title: "Facebook account for somethings"),
-      SocialMediaItem(icon: Icons.padding, title: "Facebook account for somethings")
-    ];
+
+  static List<SocialMediaItem> fromRepository(dynamic data){
+    List<SocialMediaItem> items = [];
+    for(dynamic elm in data as List){
+        items.add(
+            SocialMediaItem(
+                id: elm.id,
+                icon: toFaIcon(elm.icon),
+                title: elm.title,
+                uploadUrl: elm.uploadUrl,
+                error: SocialMediaErrorItem.fromRepository(elm.error)
+            )
+        );
+    }
+    return items;
   }
 
+  bool hasError(){
+    return error!=null && error?.isEditUploaded==false;
+  }
+
+  bool hasUrl(){
+    return error==null && uploadUrl!=null;
+  }
+
+  SocialMediaItem setUploadUrl(String? url){
+    if(error == null) return this;
+    uploadUrl = url;
+    error = null;
+    return this;
+  }
+
+  SocialMediaItem setLoading(bool loading){
+    isLoading = loading;
+    return this;
+  }
+
+  static Map<String,IconData> get faIconNameMapping => {
+    "facebook":FontAwesomeIcons.facebook,
+    "instagram":FontAwesomeIcons.instagram,
+    "linkedin":FontAwesomeIcons.linkedin,
+    "google":FontAwesomeIcons.google
+  };
+
   @override
-  List<Object?> get props => [icon,title];
+  List<Object?> get props => [id,icon,title,error,showText,isLoading,isSelected,uploadUrl];
 
 }
