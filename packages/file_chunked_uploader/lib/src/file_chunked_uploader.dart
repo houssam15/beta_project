@@ -3,6 +3,7 @@ import 'dart:io';
 
 import 'package:chunked_uploader/chunked_uploader.dart';
 import 'package:dio/dio.dart';
+import 'package:file_chunked_uploader/src/mock_data/upload_document.dart';
 import 'package:file_chunked_uploader/src/models/models.dart';
 import 'package:flutter/foundation.dart';
 import 'package:uuid/uuid.dart';
@@ -10,7 +11,7 @@ import 'package:uuid/uuid.dart';
 ///This class handle large file upload
 class FileChunkedUploader{
     final Config config;
-
+    UploadDocumentResponse? uploadResult;
     FileChunkedUploader(this.config);
 
     ///This function upload large images or videos to server , by split it to equal chunks
@@ -26,7 +27,8 @@ class FileChunkedUploader{
                 headers: {
                 'Content-Type': config.contentType,
                 'File-Name':file.uri.pathSegments.last,
-                'File-uuid': _getUuid()
+                'File-uuid': _getUuid(),
+                'Authorization':"Bearer ${config.authorizationToken}"
                 },
                 connectTimeout: Duration(seconds: 3), // 3 seconds for connection
                 receiveTimeout: Duration(seconds: 3), // 3 seconds for receiving data
@@ -41,16 +43,21 @@ class FileChunkedUploader{
                 maxChunkSize: config.chunkMaxSize,
                 path: config.path,
                 onUploadProgress: (progress) {
-                    progressController.add((progress*100).toInt()); // ✅ Send progress updates
+                    // ✅ Send progress updates
+                    if(progress>1) {
+                        progressController.add((100).toInt());
+                    } else {
+                        progressController.add((progress * 100).toInt());
+                    }
                 },
             ).then((response) {
-                    //progressController.add(100); // ✅ Send 100% only if no error
-                    progressController.close();
+                uploadResult = UploadDocumentResponse().fromJson(response?.data);
+                //uploadResult = UploadDocumentResponse().fromJson(UploadDocumentMockData.uploadDocumentForPublication[0]);
+                progressController.close();
             }).catchError((error) {
                 if (kDebugMode) print(error);
                     progressController.addError(error);
                     progressController.close();
-
             });
 
         yield* progressController.stream;

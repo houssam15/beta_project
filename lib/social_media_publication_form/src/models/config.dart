@@ -6,6 +6,7 @@ class Config{
   static String _appRoute = "/social_media_publication_upload";
   final String? _nextPageAppRoute = SocialMediaListForm.route;
   final String? _prevPageAppRoute = SocialMediaFileUploaderForm.route;
+  static final String? _featureName = "social_media_publication_form";
 
   ///Social media publication form app route (app routing)
   static String get appRoute => _appRoute;
@@ -13,4 +14,6 @@ class Config{
   String? get nextPageAppRoute => _nextPageAppRoute;
   ///Prev page app route
   String? get prevPageAppRoute => _prevPageAppRoute;
+
+  static String? get featureName => _featureName;
 }

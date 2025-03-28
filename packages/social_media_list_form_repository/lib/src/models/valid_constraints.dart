@@ -5,12 +5,14 @@ class ValidConstraints{
   final double maxWidth;
   final double minHeight;
   final double maxHeight;
+  final String ratio;
 
   ValidConstraints({
     required this.minHeight,
     required this.maxHeight,
     required this.minWidth,
-    required this.maxWidth
+    required this.maxWidth,
+    required this.ratio
   });
 
   toPictureResizerModel(){
@@ -18,7 +20,8 @@ class ValidConstraints{
       minWidth: minWidth,
       minHeight: minHeight,
       maxWidth: maxWidth,
-      maxHeight: maxHeight
+      maxHeight: maxHeight,
+      ratio:ratio
     );
   }
 
@@ -28,7 +31,8 @@ class ValidConstraints{
           minHeight: data.minHeight,
           maxHeight: data.maxHeight,
           minWidth: data.minWidth,
-          maxWidth: data.maxWidth
+          maxWidth: data.maxWidth,
+          ratio: data.ratio
       );
     }catch(err){
       return null;

@@ -17,10 +17,10 @@ class TitleAndExtensions extends StatelessWidget {
         SizedBox(
             height: 5
         ),
-        Text(
+        /*Text(
             "File should be ${state.supportedExtensions.toString()}",
             style: Theme.of(context).textTheme.titleSmall
-        )
+        )*/
       ],
     );
   }

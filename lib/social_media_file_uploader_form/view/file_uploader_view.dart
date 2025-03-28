@@ -1,4 +1,4 @@
-import "package:alert_banner/exports.dart";
+  import "package:alert_banner/exports.dart";
 import "package:alpha_flutter_project/authentication/authentication.dart";
 import "package:alpha_flutter_project/social_media_file_uploader_form/bloc/file_uploader.bloc.dart";
 import "package:alpha_flutter_project/social_media_file_uploader_form/widgets/title_and_extensions.dart";
@@ -101,64 +101,35 @@ class _FileUploaderViewState extends State<FileUploaderView> {
                                     return DualOption(
                                       state,
                                       title: context.tr("Upload from ?"),
-                                      option1Action: (){
-                                        context.read<FileUploaderBloc>().add(FileUploaderUploadSourceRequested(UploadSourceType.camera));
-                                      },
+                                      option1Action: () => context.read<FileUploaderBloc>().add(FileUploaderUploadSourceRequested(UploadSourceType.camera)),
                                       option1Icon: Icons.camera,
                                       option1Title: context.tr("Caméra"),
-                                      option2Action: (){
-                                        context.read<FileUploaderBloc>().add(FileUploaderUploadSourceRequested(UploadSourceType.gallery));
-                                      },
+                                      option2Action: () => context.read<FileUploaderBloc>().add(FileUploaderUploadSourceRequested(UploadSourceType.gallery)),
                                       option2Icon: Icons.library_add_sharp,
-                                      option2Title: context.tr("Gallery")
+                                      option2Title: context.tr("Gallery"),
+                                      actions: Row(
+                                        mainAxisAlignment: MainAxisAlignment.end,
+                                        children: [
+                                          MyButton(
+                                            state,
+                                            title:Text(context.tr("back"),style: TextStyle(color: Theme.of(context).colorScheme.onError)),
+                                            onPressed: () => context.read<FileUploaderBloc>().add(FileUploaderResetRequested()),
+                                          )
+                                        ],
+                                      ),
                                     );
                                   case FileUploaderStatus.pictureOrVideo:
                                     return DualOption(
                                       state,
                                       title: context.tr("Picture or video ?"),
-                                      option1Action: (){
-                                        context.read<FileUploaderBloc>().add(FileUploaderUploadTypeRequested(MediaType.picture));
-                                      },
+                                      option1Action: () => context.read<FileUploaderBloc>().add(FileUploaderUploadTypeRequested(MediaType.picture)),
                                       option1Icon: Icons.image,
                                       option1Title: context.tr("Image"),
-                                      option2Action: (){
-                                        context.read<FileUploaderBloc>().add(FileUploaderUploadTypeRequested(MediaType.video));
-                                      },
+                                      option2Action: () => context.read<FileUploaderBloc>().add(FileUploaderUploadTypeRequested(MediaType.video)),
                                       option2Icon: Icons.video_camera_back,
                                       option2Title: context.tr("Video")
                                     );
-
-                                  case FileUploaderStatus.readyToUpload:
-                                    return UploadFile(state)/*Padding(
-                                      padding: const EdgeInsets.symmetric(horizontal: 8),
-                                      child: Column(
-                                          mainAxisAlignment: MainAxisAlignment.center,
-                                          children: [
-                                            _progress != null
-                                                ?Center(child: Text("file name : ${state.file.getFilename()}",textAlign: TextAlign.center,))
-                                                :SizedBox(),
-                                            SizedBox(height: 10),
-                                            FutureBuilder(
-                                              future: state.file.getFormattedSize(),
-                                              builder: (context, snapshot) => Text("file size : ${snapshot.data}"),
-                                            ),
-                                            SizedBox(height: 5),
-                                            _progress != null
-                                                ?Text(
-                                              _progressError==null? _progress!:_progressError!,
-                                              style: TextStyle(
-                                                  color: _progressError==null?Theme.of(context).colorScheme.tertiary:Theme.of(context).colorScheme.error
-                                              ),
-                                            )
-                                                :TextButton(
-                                                onPressed: (){
-                                                  context.read<FileUploaderBloc>().add(FileUploaderUploadToServer());
-                                                },
-                                                child: Text("Start upload")
-                                            )
-                                          ]
-                                      ),
-                                    )*/;
+                                  case FileUploaderStatus.readyToUpload: return UploadFile(state);
                                   default : return Text("Unknown status");
 
                                 }

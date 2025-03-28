@@ -19,7 +19,7 @@ class SocialMediaErrorItem extends Equatable{
   final SocialMediaErrorType errorType;
   bool isEdited;
   bool isEditUploaded;
-  ValidConstraints? validConstraints;
+  List<ValidConstraintsByRatio> validConstraints;
   File? editedFile;
 
   SocialMediaErrorItem({
@@ -27,17 +27,24 @@ class SocialMediaErrorItem extends Equatable{
     this.messages = const [],
     this.isEdited = false,
     this.isEditUploaded = false,
-    this.validConstraints,
+    this.validConstraints = const [],
     this.editedFile
   });
 
 
-  static SocialMediaErrorItem? fromRepository(dynamic data){
+  static SocialMediaErrorItem? fromRepository(fur.UploadDocumentResponseWarning data,SocialMediaListFormRemoteState state){
     try{
+      if(data.messages.isEmpty) return null;
+      List<ValidConstraintsByRatio> validCons = [];
+      for(dynamic elm in state.constrains?.getConstraintByMediaTypeAndEngine(data.getSocialMediaItem().first.engine,state.mediaType) ?? []){
+        dynamic con = ValidConstraintsByRatio.fromRepository(elm);
+        if(con == null) continue;
+        validCons.add(con);
+      }
       return SocialMediaErrorItem(
-          errorType: (data.errorType as String).toSocialMediaErrorType(),
+          errorType: data.isFileRequireResize ? SocialMediaErrorType.invalidDimensions : SocialMediaErrorType.invalidFile,
           messages: data.messages,
-          validConstraints: ValidConstraints.fromRepository(data.validConstraints)
+          validConstraints: validCons
       );
     }catch(err){
       return null;

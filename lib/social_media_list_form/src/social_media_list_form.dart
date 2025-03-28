@@ -1,6 +1,7 @@
 import "package:alpha_flutter_project/social_media_list_form/src/widgets/error_message.dart";
 import "package:flutter/material.dart";
 import "package:flutter_bloc/flutter_bloc.dart";
+import "package:localization_service/localization_service.dart";
 import "../../common/common.dart";
 import "../../home/home_layout.dart";
 import "bloc/remote/social_media_list_form.remote.bloc.dart";
@@ -29,45 +30,49 @@ class _SocialMediaListFormState extends State<SocialMediaListForm> {
   }
   @override
   Widget build(BuildContext context) {
-
-    final args = SocialMediaListFormArguments().fromJson(ModalRoute.of(context)?.settings.arguments);
-
-    return HomeLayout(
-        selectedRoute: SocialMediaListForm.route,
-        hideAppbar: true,
-        body: Theme(
-            data: AppTheme().themeData,
-            child: args.fileId==null
-                ? ErrorMessageWidget("No file selected",refresh: false)
-                : RepositoryProvider(
-              create: (context) => SocialMediaListFormEventBus(),
-              child: Builder(
-                  builder: (context) {
-                    final eventBus = context.read<SocialMediaListFormEventBus>();
-                    return MultiBlocProvider(
-                        providers: [
-                          BlocProvider<SocialMediaListFormRemoteBloc>(
-                              create: (_) => SocialMediaListFormRemoteBloc(args.fileId!,socialMediaListFormEventBus: eventBus)
-                          ),
-                          BlocProvider<SocialMediaListFormLocalBloc>(
-                              create: (_) => SocialMediaListFormLocalBloc(args.fileId!,socialMediaListFormEventBus: eventBus)
-                          ),
-                        ],
-                        child: Builder(
-                            builder: (context) {
-                              eventBus.setBlocs(
-                                  socialMediaListFormLocalBloc: context.read<SocialMediaListFormLocalBloc>(),
-                                  socialMediaListFormRemoteBloc: context.read<SocialMediaListFormRemoteBloc>()
-                              );
-                              eventBus.listen();
-                              return SocialMediaListFormPage();
-                            }
-                        )
-                    );
-                  }
-              ),
-            )
-        )
+    SocialMediaListFormArguments args = ModalRoute.of(context)?.settings.arguments as SocialMediaListFormArguments;
+    final localizationService = LocalizationService(Localizations.localeOf(context),feature: "${Config.featureName}/src/lang");
+    return MaterialApp(
+      localeResolutionCallback: LocalizationService.localeResolutionCallback,
+      supportedLocales: LocalizationService.supportedLocales,
+      localizationsDelegates: localizationService.localizationsDelegate,
+      home: HomeLayout(
+          selectedRoute: SocialMediaListForm.route,
+          hideAppbar: true,
+          body: Theme(
+              data: AppTheme().themeData,
+              child: args.uploadDocumentResponse==null
+                  ? ErrorMessageWidget(context.tr("No file selected"),refresh: false)
+                  : RepositoryProvider(
+                create: (context) => SocialMediaListFormEventBus(),
+                child: Builder(
+                    builder: (context) {
+                      final eventBus = context.read<SocialMediaListFormEventBus>();
+                      return MultiBlocProvider(
+                          providers: [
+                            BlocProvider<SocialMediaListFormRemoteBloc>(
+                                create: (_) => SocialMediaListFormRemoteBloc(args.uploadDocumentResponse!,socialMediaListFormEventBus: eventBus,mediaType: args.mediaType,constrains:args.constrains)
+                            ),
+                            BlocProvider<SocialMediaListFormLocalBloc>(
+                                create: (_) => SocialMediaListFormLocalBloc(args.uploadDocumentResponse!,socialMediaListFormEventBus: eventBus,mediaType: args.mediaType,constrains:args.constrains)
+                            ),
+                          ],
+                          child: Builder(
+                              builder: (context) {
+                                eventBus.setBlocs(
+                                    socialMediaListFormLocalBloc: context.read<SocialMediaListFormLocalBloc>(),
+                                    socialMediaListFormRemoteBloc: context.read<SocialMediaListFormRemoteBloc>()
+                                );
+                                eventBus.listen();
+                                return SocialMediaListFormPage();
+                              }
+                          )
+                      );
+                    }
+                ),
+              )
+          )
+      ),
     );;
   }
 }

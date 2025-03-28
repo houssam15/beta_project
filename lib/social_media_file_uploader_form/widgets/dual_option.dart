@@ -15,7 +15,7 @@ class DualOption extends StatelessWidget {
   final String option2Title;
   final IconData option2Icon;
   final String title;
-
+  final Widget? actions;
   DualOption(
      this.state,
      {
@@ -25,38 +25,56 @@ class DualOption extends StatelessWidget {
        required this.option1Title,
        required this.option2Action,
        required this.option2Icon,
-       required this.option2Title
+       required this.option2Title,
+       this.actions
      }
   );
 
   @override
   Widget build(BuildContext context) {
     return Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Flexible(child: Text(title,style: Theme.of(context).textTheme.titleSmall)),
-            SizedBox(height: 5),
-            Row(
-              mainAxisAlignment:MainAxisAlignment.center,
-              crossAxisAlignment: CrossAxisAlignment.center,
-              children: [
-                IconWithTitle(
-                    onTap: option1Action,
-                    icon: option1Icon,
-                    title: option1Title
-                ),
-                SizedBox(width: 10),
-                Text(context.tr("or"),style: Theme.of(context).textTheme.titleSmall),
-                SizedBox(width: 10),
-                IconWithTitle(
-                    onTap:option2Action,
-                    icon: option2Icon,
-                    title: option2Title
-                )
-              ],
-            ),
-          ],
+        child: Container(
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Expanded(
+                  child: Center(
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Flexible(child: Text(title,style: Theme.of(context).textTheme.titleSmall)),
+                        SizedBox(height: 5),
+                        Row(
+                          mainAxisAlignment:MainAxisAlignment.center,
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          children: [
+                            IconWithTitle(
+                                onTap: option1Action,
+                                icon: option1Icon,
+                                title: option1Title
+                            ),
+                            SizedBox(width: 10),
+                            Text(context.tr("or"),style: Theme.of(context).textTheme.titleSmall),
+                            SizedBox(width: 10),
+                            IconWithTitle(
+                                onTap:option2Action,
+                                icon: option2Icon,
+                                title: option2Title
+                            )
+                          ],
+                        ),
+                      ],
+                    ),
+                  )
+              ),
+              if(actions != null)
+              Container(
+                padding: EdgeInsets.all(8),
+                child: actions,
+              )
+
+            ],
+          ),
         )
     );
   }

@@ -17,6 +17,10 @@ dependencies:
     path: ../local_file_picker
   file_chunked_uploader:
     path: ../file_chunked_uploader
+  social_media_api:
+    path: ../social_media_api
+  font_awesome_flutter: ^10.8.0
+
 dev_dependencies:
   flutter_test:
     sdk: flutter

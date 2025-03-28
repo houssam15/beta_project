@@ -11,12 +11,12 @@ import "view/view.dart";
 import 'dart:ui' as ui;
 
 class PictureResizer {
-  ValidConstraints? _validConstraints;
+  List<ValidConstraints>? _validConstraints;
   File? _file;
   BuildContext? _context;
   String? _extension;
 
-  PictureResizer setValidConstraints(ValidConstraints? validConstraints) {
+  PictureResizer setValidConstraints(List<ValidConstraints>? validConstraints) {
     _validConstraints = validConstraints;
     return this;
   }
@@ -39,7 +39,7 @@ class PictureResizer {
   Future<File?> resizePicture() async {
     try{
       if(_context==null || _file==null || _validConstraints==null || _extension==null) throw Exception("Invalid params !");
-      if(_validConstraints?.isValid()==false) throw Exception("Valid constrains are not valid !");
+      //if(_validConstraints?.isValid()==false) throw Exception("Valid constrains are not valid !");
       ui.Image? crop = await Navigator.push(
         _context!,
         MaterialPageRoute(

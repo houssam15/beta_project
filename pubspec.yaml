@@ -49,6 +49,9 @@ dependencies:
   percent_indicator: ^4.2.4
   video_viewer:
     path: packages/video_viewer
+  rive_animated_icon: ^2.0.3
+  #video_player_with_awesome_package:
+  #  path: packages/video_player_with_awesome_package
 dev_dependencies:
   bloc_test: ^10.0.0
   build_runner: ^2.0.0

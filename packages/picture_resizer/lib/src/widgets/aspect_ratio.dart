@@ -5,8 +5,8 @@ import "../models/models.dart";
 class AspectRatioWidget extends StatefulWidget {
   final CropController controller;
   final List<AspectRatioOption> aspectRatioOptions;
-
-  const AspectRatioWidget({super.key,required this.controller,this.aspectRatioOptions = const []});
+  final void Function(double x) onSelected;
+  const AspectRatioWidget({super.key,required this.controller,this.aspectRatioOptions = const [],required this.onSelected});
 
   @override
   State<AspectRatioWidget> createState() => _AspectRatioWidgetState();
@@ -15,7 +15,7 @@ class AspectRatioWidget extends StatefulWidget {
 class _AspectRatioWidgetState extends State<AspectRatioWidget> {
   List<PopupMenuEntry<double>> getPopupMenuItems() {
     return [
-      ...widget.aspectRatioOptions.map((option) => PopupMenuItem(
+      ...widget.aspectRatioOptions.where((elm)=>elm.isValid()).map((option) => PopupMenuItem(
         value: option.value,
         child: Text(option.title),
       )),
@@ -29,10 +29,7 @@ class _AspectRatioWidgetState extends State<AspectRatioWidget> {
       icon: const Icon(Icons.aspect_ratio),
       itemBuilder: (context) => getPopupMenuItems(),
       tooltip: 'Aspect Ratio',
-      onSelected: (x) {
-        widget.controller.aspectRatio = x;
-        setState(() {});
-      },
+      onSelected: widget.onSelected,
     );
   }
 }

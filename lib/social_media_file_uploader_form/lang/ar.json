@@ -15,5 +15,13 @@
   "file picked successfully": "تم اختيار الملف بنجاح",
   "Internal error , when upload source requested": "خطأ داخلي عند طلب مصدر الرفع",
   "can't load picture": "لا يمكن تحميل الصورة",
-  "Server unavailable for the moment,try again later": "الخادم غير متاح في الوقت الحالي، حاول مرة أخرى لاحقاً"
+  "Server unavailable for the moment,try again later": "الخادم غير متاح في الوقت الحالي، حاول مرة أخرى لاحقاً",
+  "upload": "رفع",
+  "Confirmation": "تأكيد",
+  "Are you sure? If you go back, you will lose the picked file.": "هل أنت متأكد؟ إذا عدت للخلف، ستفقد الملف الذي اخترته.",
+  "No": "لا",
+  "Yes": "نعم",
+  "unsupported file format": "تنسيق الملف غير مدعوم",
+  "file too small": "الملف صغير جدًا",
+  "file too large": "الملف كبير جدًا"
 }

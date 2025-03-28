@@ -12,7 +12,7 @@ class CropImage extends StatefulWidget {
 
   File file;
   BuildContext context;
-  ValidConstraints validConstraints;
+  List<ValidConstraints> validConstraints;
   String? extension;
   CropImage({
     super.key,
@@ -33,13 +33,22 @@ class _CropImageState extends State<CropImage> {
   late double height;
   double _rotation = 0;
   BoxShape shape = BoxShape.rectangle;
-
+  late List<AspectRatioOption> aspectRatioOptions;
+  String? _selectedAspectRatio;
 
   @override
   void initState() {
-    width = widget.validConstraints.minWidth;
-    height = widget.validConstraints.minHeight;
-    controller = CropController(aspectRatio: width / height);
+    if(widget.validConstraints.isNotEmpty){
+      width = widget.validConstraints.first.minWidth;
+      height = widget.validConstraints.first.minHeight;
+      _selectedAspectRatio = widget.validConstraints.first.ratio;
+      controller = CropController(aspectRatio: widget.validConstraints.first.toValue()!);
+    }else{
+      controller = CropController();
+    }
+
+    aspectRatioOptions = widget.validConstraints.map((elm)=>AspectRatioOption(elm.toValue(),elm.ratio)).toList();
+
     super.initState();
   }
 
@@ -61,24 +70,35 @@ class _CropImageState extends State<CropImage> {
     }
   }
 
+  ValidConstraints? _getSelectedConstraint() {
+    var filteredList = widget.validConstraints
+        .where((elm) => elm.ratio == _selectedAspectRatio);
+
+    return filteredList.isNotEmpty ? filteredList.first : null;
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBarWidget(cropImage: _cropImage),
       body:Column(
         children: [
+          if(_selectedAspectRatio != null)
           Column(
             children: [
               Text("Width: ${width.toInt()} px"),
               Slider(
                 value: width,
-                min: widget.validConstraints.minWidth,
-                max: widget.validConstraints.maxWidth,
-                divisions: (widget.validConstraints.maxWidth - widget.validConstraints.minWidth).toInt(),
+                min: _getSelectedConstraint()!.minWidth,
+                max: _getSelectedConstraint()!.maxWidth,
+                divisions: (_getSelectedConstraint()!.maxWidth - _getSelectedConstraint()!.minWidth).toInt(),
                 label: "${width.toInt()}",
                 onChanged: (value) {
                   setState(() {
                     width = value;
+                    if(_selectedAspectRatio=="1:1"){
+                      height = value;
+                    }
                     controller.aspectRatio =  width / height;
                   });
                 },
@@ -86,16 +106,18 @@ class _CropImageState extends State<CropImage> {
               Text("Height: ${height.toInt()} px"),
               Slider(
                 value: height,
-                min: widget.validConstraints.minHeight,
-                max: widget.validConstraints.maxHeight,
-                divisions: (widget.validConstraints.maxHeight - widget.validConstraints.minHeight).toInt(),
+                min: _getSelectedConstraint()!.minHeight,
+                max: _getSelectedConstraint()!.maxHeight,
+                divisions: (_getSelectedConstraint()!.maxHeight - _getSelectedConstraint()!.minHeight).toInt(),
                 label: "${height.toInt()}",
                 onChanged: (value) {
                   setState(() {
                     height = value;
+                    if(_selectedAspectRatio=="1:1"){
+                      width = value;
+                    }
                     controller.aspectRatio =  width / height;
                   });
-                  print(height);
                 },
               ),
 
@@ -131,11 +153,21 @@ class _CropImageState extends State<CropImage> {
                   popMenuTooltip:'Crop Shape',
                   shape: shape,
                   cropShapesOptions: CropShapeOption.getTestingData()
-              ),
+              ),*/
               AspectRatioWidget(
                   controller:controller,
-                  aspectRatioOptions:AspectRatioOption.getTestingData()
-              )*/
+                  aspectRatioOptions:aspectRatioOptions,
+                  onSelected: (x) {
+                    controller.aspectRatio = x;
+                    _selectedAspectRatio = aspectRatioOptions.firstWhere((elm)=>elm.value == x,orElse: () => aspectRatioOptions.first).title;
+                    final cons = _getSelectedConstraint();
+                    if(cons != null){
+                      width = cons.minWidth;
+                      height = cons.minHeight;
+                    }
+                    setState(() {});
+                  },
+              )
             ],
           )
         ],

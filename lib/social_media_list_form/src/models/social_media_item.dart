@@ -1,7 +1,7 @@
 part of 'models.dart';
 
 class SocialMediaItem extends Equatable{
-  int id;
+  String id;
   IconData icon;
   String title;
   SocialMediaErrorItem? error;
@@ -32,19 +32,24 @@ class SocialMediaItem extends Equatable{
     return this;
   }
 
-
-  static List<SocialMediaItem> fromRepository(dynamic data){
+  static List<SocialMediaItem> fromState(SocialMediaListFormRemoteState state){
     List<SocialMediaItem> items = [];
-    for(dynamic elm in data as List){
+
+    for(fur.UploadDocumentResponseWarning elm in state.uploadDocumentResponse?.getNetworks() ?? [] ){
+      try{
         items.add(
             SocialMediaItem(
-                id: elm.id,
-                icon: toFaIcon(elm.icon),
-                title: elm.title,
-                uploadUrl: elm.uploadUrl,
-                error: SocialMediaErrorItem.fromRepository(elm.error)
+                id: elm.id.toString(),
+                icon: elm.socialMediaItems.first.icon,
+                title: elm.socialMediaItems.first.name.toString(),
+                uploadUrl: state.uploadDocumentResponse?.getUploadUrl(state.mediaType),
+                error: SocialMediaErrorItem.fromRepository(elm,state)
             )
         );
+      }catch(err){
+        print(err);
+      }
+
     }
     return items;
   }
@@ -75,6 +80,10 @@ class SocialMediaItem extends Equatable{
     "linkedin":FontAwesomeIcons.linkedin,
     "google":FontAwesomeIcons.google
   };
+
+  String getUploadUrl(){
+      return uploadUrl ?? "https://plus.unsplash.com/premium_photo-1664474619075-644dd191935f?fm=jpg&q=60&w=3000&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MXx8aW1hZ2V8ZW58MHx8MHx8fDA%3D";
+  }
 
   @override
   List<Object?> get props => [id,icon,title,error,showText,isLoading,isSelected,uploadUrl];

@@ -16,20 +16,7 @@ class _SocialMediaPublicationFormPageState extends State<SocialMediaPublicationF
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        centerTitle: true,
-        leading: InkWell(
-            onTap: ()=>Navigator.of(context).pushNamed(HomeApp.route),
-            child: Icon(Icons.arrow_back)
-        ),
-        title: Text(
-          "Create publication",
-          style: TextStyle(
-              fontSize: 18,
-              fontWeight: FontWeight.w600
-          ),
-        ),
-      ),
+      appBar: MyAppBar(),
       body: Center(
         child: Container(
             width: double.infinity,
@@ -39,12 +26,7 @@ class _SocialMediaPublicationFormPageState extends State<SocialMediaPublicationF
                   child: SingleChildScrollView(
                     child: Column(
                       children: [
-                        Padding(
-                            padding: const EdgeInsets.symmetric(horizontal: 8,vertical: 16),
-                            child: Center(
-                              child: Text("Publication details"),
-                            ),
-                        ),
+                        MyTitle(),
                         Padding(
                           padding: const EdgeInsets.only(bottom: 8),
                           child: TextField(

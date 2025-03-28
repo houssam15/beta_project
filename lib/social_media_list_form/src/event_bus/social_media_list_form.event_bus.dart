@@ -33,7 +33,6 @@ class SocialMediaListFormEventBus{
   void listen(){
     //This event is for upload resized picture to server
     _eventBus?.on<SocialMediaListFormUploadResizedPictureEvent>().listen((event){
-      if(kDebugMode) print("SocialMediaListFormUploadResizedPictureEvent");
       _socialMediaListFormRemoteBloc?.add(SocialMediaListFormRemoteResizedFileUpload(event.socialMediaItem));
     });
   }

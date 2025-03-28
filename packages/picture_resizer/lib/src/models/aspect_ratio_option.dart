@@ -1,8 +1,12 @@
 class AspectRatioOption {
-  final double value;
+  final double? value;
   final String title;
 
   AspectRatioOption(this.value, this.title);
+
+  bool isValid(){
+    return value != null;
+  }
 
   static List<AspectRatioOption> getTestingData() {
     return [

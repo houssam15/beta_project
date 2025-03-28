@@ -1,25 +1,28 @@
 part of 'models.dart';
 
-class ValidConstraints extends Equatable{
+class ValidConstraintsByRatio extends Equatable{
   final double minWidth;
   final double maxWidth;
   final double minHeight;
   final double maxHeight;
+  final String ratio;
 
-  ValidConstraints({
+  ValidConstraintsByRatio({
     required this.minHeight,
     required this.maxHeight,
     required this.minWidth,
-    required this.maxWidth
+    required this.maxWidth,
+    required this.ratio
   });
 
-  static ValidConstraints? fromRepository(dynamic data){
+  static ValidConstraintsByRatio? fromRepository(dynamic data){
     try{
-      return ValidConstraints(
+      return ValidConstraintsByRatio(
           minHeight: data.minHeight,
           maxHeight: data.maxHeight,
           minWidth: data.minWidth,
-          maxWidth: data.maxWidth
+          maxWidth: data.maxWidth,
+          ratio:data.ratio
       );
     }catch(err){
       return null;
@@ -31,13 +34,14 @@ class ValidConstraints extends Equatable{
         maxHeight: maxHeight,
         maxWidth: maxWidth,
         minHeight: minHeight,
-        minWidth: minWidth
+        minWidth: minWidth,
+        ratio: ratio
     );
   }
 
 
 
   @override
-  List<Object?> get props => [minWidth,minHeight,maxWidth,maxHeight];
+  List<Object?> get props => [minWidth,minHeight,maxWidth,maxHeight,ratio];
 
 }

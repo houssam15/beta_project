@@ -10,18 +10,20 @@ class Config extends Equatable{
   String path;
   ///Content type header , passed to upload function , by default is 'multipart/form-data'
   String contentType;
+  ///Bearer token
+  String? authorizationToken;
 
   Config({
     required this.baseUrl,
     int? chunkMaxSize = 500000,
     String? path = "",
-    String? contentType = 'multipart/form-data'
+    String? contentType = 'multipart/form-data',
+    this.authorizationToken
   }):
   chunkMaxSize = chunkMaxSize??500000,
   path = path??"",
   contentType=contentType??'multipart/form-data';
 
-
   @override
-  List<Object?> get props => [baseUrl,chunkMaxSize,path];
+  List<Object?> get props => [baseUrl,chunkMaxSize,path,authorizationToken];
 }

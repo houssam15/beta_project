@@ -18,8 +18,12 @@ final class FileUploaderState extends Equatable{
     this.progress=0,
     this.supportedExtensions = const [],
     this.isUploading = false,
+    Constrains? constrains,
     File? file ,
+    UploadDocumentResponse? uploadDocumentResponse
   }): permissionsState = permissionsState ??  PermissionsState(),
+      constrains = constrains ?? Constrains(),
+      uploadDocumentResponse = uploadDocumentResponse ?? UploadDocumentResponse.create(null),
     file = file??File("no_path");
 
   FileUploaderPageStatus pageStatus;
@@ -32,8 +36,10 @@ final class FileUploaderState extends Equatable{
   File file;
   int progress;
   List<String> supportedExtensions;
+  Constrains constrains;
   int random = 0;
   bool isUploading;
+  UploadDocumentResponse uploadDocumentResponse;
   //Localization service for translation purpose
   FileUploaderState copyWith({
     FileUploaderPageStatus? pageStatus,
@@ -46,7 +52,9 @@ final class FileUploaderState extends Equatable{
     File? file,
     int? progress,
     List<String>? supportedExtensions,
-    bool? isUploading
+    bool? isUploading,
+    Constrains? constrains,
+    UploadDocumentResponse? uploadDocumentResponse
   }) {
     return FileUploaderState(
         pageStatus: pageStatus ?? this.pageStatus,
@@ -60,6 +68,8 @@ final class FileUploaderState extends Equatable{
         progress: progress??this.progress,
         supportedExtensions:supportedExtensions??this.supportedExtensions,
         isUploading: isUploading??this.isUploading,
+        constrains: constrains ?? this.constrains,
+        uploadDocumentResponse: uploadDocumentResponse ?? this.uploadDocumentResponse
     );
   }
 
@@ -72,31 +82,6 @@ final class FileUploaderState extends Equatable{
     return this;
   }
 
-  FileUploaderState set({
-    FileUploaderStatus? status,
-    PermissionsState? permissionsState,
-    String? errorMessage,
-    UploadSourceType? sourceType,
-    MediaType? mediaType,
-    File? file,
-    int? progress
-  }) {
-        this.status= status ?? this.status;
-        this.permissionsState= permissionsState??this.permissionsState;
-        this.errorMessage= errorMessage??this.errorMessage;
-        this.sourceType=sourceType??this.sourceType;
-        this.mediaType= mediaType??this.mediaType;
-        this.file = file?? this.file;
-        this.progress=progress??this.progress;
-     return this;
-  }
-
-
-
-
-
-
-
   @override
-  List<Object> get props => [pageStatus,status,permissionsState,errorMessage,sourceType,mediaType,file,progress,random,isUploading];
+  List<Object> get props => [pageStatus,status,permissionsState,errorMessage,sourceType,mediaType,file,progress,random,isUploading,constrains,uploadDocumentResponse];
 }

@@ -17,6 +17,10 @@ enum SocialMediaListFormRemoteActions{
   resizedPictureUploadedFailed
 }
 
+enum MediaType{
+  picture,video,none
+}
+
 class SocialMediaListFormRemoteState extends Equatable{
 
   SocialMediaListFormRemoteState({
@@ -24,37 +28,44 @@ class SocialMediaListFormRemoteState extends Equatable{
     this.socialMediaItems = const [],
     this.message = "",
     this.enableNextAction = false,
-    this.fileId,
+    this.uploadDocumentResponse,
     this.action = SocialMediaListFormRemoteActions.none,
-    this.itemToEdit
+    this.itemToEdit,
+    this.mediaType = MediaType.none,
+    this.constrains
   });
-
 
   SocialMediaListFormRemoteStatus status;
   List<SocialMediaItem> socialMediaItems;
   String message;
   bool enableNextAction;
-  String? fileId;
+  UploadDocumentResponse? uploadDocumentResponse;
   SocialMediaListFormRemoteActions action;
   SocialMediaItem? itemToEdit;
+  MediaType mediaType;
+  Constrains? constrains;
 
   SocialMediaListFormRemoteState copyWith({
     SocialMediaListFormRemoteStatus? status,
     List<SocialMediaItem>? socialMediaItems,
     String? message,
     bool? enableNextAction,
-    String? fileId,
+    UploadDocumentResponse? uploadDocumentResponse,
     SocialMediaListFormRemoteActions? action,
-    SocialMediaItem? itemToEdit
+    SocialMediaItem? itemToEdit,
+    MediaType? mediaType,
+    Constrains? constrains
   }){
     return SocialMediaListFormRemoteState(
       status: status??this.status,
       socialMediaItems: socialMediaItems??this.socialMediaItems,
       message: message??this.message,
       enableNextAction: enableNextAction??this.enableNextAction,
-      fileId: fileId??this.fileId,
+      uploadDocumentResponse: uploadDocumentResponse??this.uploadDocumentResponse,
       action: action??this.action,
-      itemToEdit:itemToEdit??this.itemToEdit
+      itemToEdit:itemToEdit??this.itemToEdit,
+      mediaType:  mediaType ?? this.mediaType,
+      constrains: constrains ?? this.constrains
     );
  }
 
@@ -75,6 +86,6 @@ class SocialMediaListFormRemoteState extends Equatable{
  }
 
   @override
-  List<Object?> get props => [status,socialMediaItems,message,enableNextAction,fileId,action,itemToEdit];
+  List<Object?> get props => [status,socialMediaItems,message,enableNextAction,uploadDocumentResponse,action,itemToEdit,mediaType];
 
 }

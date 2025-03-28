@@ -42,7 +42,8 @@ class _SocialMediaFileUploaderFormState extends State<SocialMediaFileUploaderFor
                     FileUploaderRepository(
                       globalParams: GlobalParams(
                         fileChunkedUploadBaseUrl: config.mediaUploadBaseUrl,
-                        fileChunkedUploadPath: config.mediaLargeFileUploadEndpoint
+                        fileChunkedUploadPath: config.mediaLargeFileUploadEndpoint,
+                        fileChunkedUploadAuthorizationToken: config.authorizationToken
                       )
                     )
                 ),

@@ -49,11 +49,11 @@ class LocalizationService{
     return _localizedString[key]??key;
   }
 
-  static String? tr(String? key){
+  static String tr(String? key){
     if (_localizedString.isEmpty) {
-      return key;
+      return key.toString();
     }
-    return _localizedString[key]??key;
+    return _localizedString[key]??key.toString();
   }
 
   static const supportedLocales = [

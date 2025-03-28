@@ -25,7 +25,13 @@ class FileUploaderBloc extends Bloc<FileUploaderEvent,FileUploaderState>{
 
   Future<void> _onStarted(FileUploaderStarted event , Emitter<FileUploaderState> emit) async {
     try{
-      emit(state.copyWith(pageStatus: FileUploaderPageStatus.started,status: FileUploaderStatus.pictureOrVideo,action: FileUploaderAction.none,supportedExtensions: ["png","jpeg","gif","mp4"]));
+      emit(state.copyWith(pageStatus: FileUploaderPageStatus.started,status: FileUploaderStatus.loading));
+      final constrains = await this._fileUploaderRepository.getConstrains();
+      if(!constrains.isValid()){
+        emit(state.copyWith(pageStatus: FileUploaderPageStatus.failure,action: FileUploaderAction.failure,errorMessage:LocalizationService.tr(constrains.getErrorMessage())));
+      }else{
+        emit(state.copyWith(pageStatus: FileUploaderPageStatus.started,status: FileUploaderStatus.pictureOrVideo,action: FileUploaderAction.none,constrains: Constrains().setConstrains(constrains)));
+      }
     }catch(err){
       emit(state.copyWith(pageStatus: FileUploaderPageStatus.failure));
     }
@@ -57,7 +63,18 @@ class FileUploaderBloc extends Bloc<FileUploaderEvent,FileUploaderState>{
         emit(state.copyWith(action: FileUploaderAction.failure,errorMessage: "Upload source is empty, please choose one ..."));
       }else{
         emit(state.copyWith(status: FileUploaderStatus.loading,sourceType: event.uploadSource));
-        final result = await this._fileUploaderRepository.getFileFromSource(event.uploadSource.toRepositoryUploadFileSource(),state.mediaType.toRepositoryMediaType());
+        final result = await this._fileUploaderRepository.getFileFromSource(event.uploadSource.toRepositoryUploadFileSource(),state.mediaType.toRepositoryMediaType(),
+            supportedExtensions: state.mediaType == MediaType.picture
+            ? state.constrains.getGlobalPictureFormats()
+            : state.constrains.getGlobalVideoFormats(),
+            minSize:state.mediaType == MediaType.picture
+                ? state.constrains.getGlobalPictureMinSize()
+                : state.constrains.getGlobalVideoMinSize(),
+            maxSize:state.mediaType == MediaType.picture
+                ? state.constrains.getGlobalPictureMaxSize()
+                : state.constrains.getGlobalVideoMaxSize()
+
+        );
         if(result.isError || result.isCanceled)  emit(state.copyWith(pageStatus: FileUploaderPageStatus.initial,action: FileUploaderAction.failure,errorMessage: LocalizationService.tr(result.message)));
         else if(result.isSuccess) {
           emit(state.copyWith(status: FileUploaderStatus.readyToUpload,file:result.file));
@@ -71,7 +88,7 @@ class FileUploaderBloc extends Bloc<FileUploaderEvent,FileUploaderState>{
   }
 
 
-  Future<void> _onUploadTypeRequested(FileUploaderUploadTypeRequested event, Emitter<FileUploaderState> emit)async{
+  Future<void> _onUploadTypeRequested(FileUploaderUploadTypeRequested event, Emitter<FileUploaderState> emit) async{
     try{
       if(event.mediaType==MediaType.none) {
         emit(state.copyWith(action: FileUploaderAction.failure,errorMessage: LocalizationService.tr("Choose file type please"))..randomize());
@@ -98,9 +115,19 @@ class FileUploaderBloc extends Bloc<FileUploaderEvent,FileUploaderState>{
       await for (int progress in _fileUploaderRepository.uploadFileToServer(state.file)) {
         emit(state.copyWith(action: FileUploaderAction.progress,isUploading: true, progress: progress));
       }
-      emit(state.copyWith(action: FileUploaderAction.success,isUploading: false));
+      if(_fileUploaderRepository.getUploadDocumentResponse()==null){
+        throw new Exception("Invalid response");
+      }else if(!_fileUploaderRepository.getUploadDocumentResponse()!.isValid()){
+        emit(state.copyWith(
+            action: FileUploaderAction.progressFailure,
+            isUploading: false,
+            errorMessage: _fileUploaderRepository.getUploadDocumentResponse()!.getErrors()!.first
+        ));
+      }else{
+        emit(state.copyWith(action: FileUploaderAction.success,isUploading: false,uploadDocumentResponse: UploadDocumentResponse.create(_fileUploaderRepository.getUploadDocumentResponse())));
+      }
     } catch (error) {
-      emit(state.copyWith(action: FileUploaderAction.progressFailure,isUploading: false, errorMessage: LocalizationService.tr("Server unavailable for the moment,try again later")));
+      emit(state.copyWith(action: FileUploaderAction.progressFailure,isUploading: false, errorMessage: LocalizationService.tr("Server unavailable for the moment,try again later")).randomize());
     }
   }
 

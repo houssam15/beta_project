@@ -15,5 +15,13 @@
   "file picked successfully": "File picked successfully",
   "Internal error , when upload source requested": "Internal error, when upload source requested",
   "can't load picture": "Can't load picture",
-  "Server unavailable for the moment,try again later":"Server unavailable for the moment, try again later"
+  "Server unavailable for the moment,try again later":"Server unavailable for the moment, try again later",
+  "upload": "Upload",
+  "Confirmation": "Confirmation",
+  "Are you sure? If you go back, you will lose the picked file.": "Are you sure? If you go back, you will lose the picked file.",
+  "No": "No",
+  "Yes": "Yes",
+  "unsupported file format": "Unsupported file format",
+  "file too small": "File too small",
+  "file too large": "File too large"
 }

@@ -4,6 +4,7 @@ import "package:flutter/foundation.dart";
 import "package:picture_resizer/picture_resizer.dart" hide ValidConstraints;
 import "models/models.dart";
 import "package:social_media_api/social_media_api.dart" as social_media_api;
+import "package:picture_resizer/picture_resizer.dart" as picture_resizer;
 
 class SocialMediaListFormRepository{
   final PictureResizer pictureResizer;
@@ -14,13 +15,13 @@ class SocialMediaListFormRepository{
   socialMediaApi = socialMediaApi ?? social_media_api.SocialMediaApi();
 
 
-  ValidConstraints? _validConstraints;
+  List<ValidConstraints>? _validConstraints;
   FileParams? _fileParams;
   BuildContext? _context;
 
 
-  ValidConstraints? get validConstraints => _validConstraints;
-  SocialMediaListFormRepository setValidConstraints(ValidConstraints? p){
+  List<ValidConstraints>? get validConstraints => _validConstraints;
+  SocialMediaListFormRepository setValidConstraints(List<ValidConstraints>? p){
     _validConstraints = p;
     return this;
   }
@@ -43,11 +44,12 @@ class SocialMediaListFormRepository{
 
       social_media_api.DataState<social_media_api.UploadedPicture> ds = await socialMediaApi.getUploadedPicture(
         baseUrl: fileParams!.fileRequestOptions.baseUrl,
-        method: fileParams!.fileRequestOptions.method
+        method: fileParams!.fileRequestOptions.method,
+        bearerToken: fileParams!.fileRequestOptions.token
       );
       if(ds is social_media_api.DataFailed) throw Exception("Can't load file");
       final resizedPicture = await pictureResizer
-          .setValidConstraints(validConstraints?.toPictureResizerModel())
+          .setValidConstraints(validConstraints?.map<picture_resizer.ValidConstraints>(((elm) => elm.toPictureResizerModel())).toList())
           .setContext(context)
           .setFile(ds.data!.file)
           .setExtension(ds.data!.extension.toExtensionString())
@@ -81,10 +83,10 @@ class SocialMediaListFormRepository{
     return uploadedFile;
   }
 
-  Future<List<SocialMediaItem>> getSocialMediaList() async {
-    social_media_api.DataState<dynamic> ds = await socialMediaApi.getSocialMediaList();
-    if(ds is social_media_api.DataFailed) throw Exception("Can't get data");
-    return SocialMediaItem.fromList(ds.data);
+  Future<List<SocialMediaItem>> getSocialMediaList(dynamic data) async {
+    //social_media_api.DataState<dynamic> ds = await socialMediaApi.getSocialMediaList();
+    //if(ds is social_media_api.DataFailed) throw Exception("Can't get data");
+    return SocialMediaItem.fromList(data);
   }
 
 }

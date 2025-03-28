@@ -15,5 +15,13 @@
   "file picked successfully": "Fichier sélectionné avec succès",
   "Internal error , when upload source requested": "Erreur interne, lors de la demande de la source de téléchargement",
   "can't load picture": "Impossible de charger l'image",
-  "Server unavailable for the moment,try again later":"Serveur indisponible pour le moment, réessayez plus tard"
+  "Server unavailable for the moment,try again later":"Serveur indisponible pour le moment, réessayez plus tard",
+  "upload": "Envoyer",
+  "Confirmation": "Confirmation",
+  "Are you sure? If you go back, you will lose the picked file.": "Êtes-vous sûr ? Si vous retournez en arrière, vous perdrez le fichier sélectionné.",
+  "No": "Non",
+  "Yes": "Oui",
+  "unsupported file format": "Format de fichier non pris en charge",
+  "file too small": "Fichier trop petit",
+  "file too large": "Fichier trop grand"
 }

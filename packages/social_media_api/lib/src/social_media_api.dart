@@ -15,10 +15,11 @@ class SocialMediaApi {
   Future<DataState<UploadedPicture>> getUploadedPicture({
     required String baseUrl,
     String method = "get",
+    String? bearerToken,
     Object? data,
   }) async {
     try {
-      Response response = await _dio.request(baseUrl,options: Options(method: method,responseType: ResponseType.bytes),data: data);
+      Response response = await _dio.request(baseUrl,options: Options(method: method,responseType: ResponseType.bytes,headers: {"Authorization":"Bearer $bearerToken"}),data: data);
       // Check if the response status is 200 OK
       if (response.statusCode == 200) {
         Directory dir = await _getTemporaryDirectory();
@@ -71,5 +72,23 @@ class SocialMediaApi {
 
   String _generateFileName(){
     return Uuid().v4();
+  }
+
+  Future<DataState<Constrains>> getConstraints() async {
+    try{
+      Response response = await _dio.get("${Config.baseUrl}/${Config.getConstraintsEndpoint}",options: Options(
+        headers: {
+          "Authorization":"Bearer ${Config.token}"
+        }
+      ));
+      if (response.statusCode != 200) {
+        return DataFailed('Failed to fetch file. Status code: ${response.statusCode}');
+      } else {
+        return DataSuccess(Constrains.fromJson(response.data));
+        //return DataSuccess(Constrains.fromJson(MockData.getConstraintsMockData[0]));
+      }
+    }catch(err){
+      return DataFailed(err.toString());
+    }
   }
 }

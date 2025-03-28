@@ -3,6 +3,7 @@ import "dart:io";
 import "package:alpha_flutter_project/authentication/authentication.dart";
 import "package:equatable/equatable.dart";
 import "package:flutter/foundation.dart";
+import "package:localization_service/localization_service.dart";
 import "../../event_bus/social_media_list_form.event_bus.dart";
 import "../../models/models.dart";
 import "package:social_media_list_form_repository/social_media_list_form_repository.dart" as social_media_list_form_repository;
@@ -10,16 +11,20 @@ import "package:social_media_list_form_repository/social_media_list_form_reposit
 part 'social_media_list_form.remote.event.dart';
 part 'social_media_list_form.remote.state.dart';
 
+
+
+
 class SocialMediaListFormRemoteBloc  extends Bloc<SocialMediaListFormRemoteEvent,SocialMediaListFormRemoteState>{
 
-
-  SocialMediaListFormRemoteBloc(this.fileId,{
+  SocialMediaListFormRemoteBloc(this.uploadDocumentResponse,{
     social_media_list_form_repository.SocialMediaListFormRepository? socialMediaListFormRepository,
-    SocialMediaListFormEventBus? socialMediaListFormEventBus
+    SocialMediaListFormEventBus? socialMediaListFormEventBus,
+    required this.mediaType,
+    required this.constrains
   })
   :socialMediaListFormRepository = socialMediaListFormRepository??social_media_list_form_repository.SocialMediaListFormRepository(),
    socialMediaListFormEventBus = socialMediaListFormEventBus ?? SocialMediaListFormEventBus(),
-  super(SocialMediaListFormRemoteState(fileId: fileId)){
+  super(SocialMediaListFormRemoteState(uploadDocumentResponse: uploadDocumentResponse,mediaType: mediaType,constrains:constrains)){
     on<SocialMediaListFormRemoteStarted>(_loadSocialMediaItems);
     on<SocialMediaListFormRemoteSocialMediaItemToggled>(_handleSocialMediaItemChanges);
     on<SocialMediaListFormSocialMediaItemsSelected>(_verifySelectedSocialMediaItems);
@@ -27,20 +32,26 @@ class SocialMediaListFormRemoteBloc  extends Bloc<SocialMediaListFormRemoteEvent
     on<SocialMediaListFormRemoteResizedFileUpload>(_uploadResizedPicture);
   }
 
-  final String fileId;
+  final UploadDocumentResponse uploadDocumentResponse;
   final social_media_list_form_repository.SocialMediaListFormRepository socialMediaListFormRepository;
   final SocialMediaListFormEventBus socialMediaListFormEventBus;
+  final MediaType mediaType;
+  final Constrains? constrains;
+
 
   Future<void> _loadSocialMediaItems(SocialMediaListFormRemoteStarted event, Emitter<SocialMediaListFormRemoteState> emit) async {
     try{
-      ///TODO : get social media items by fileId
-      emit(state.copyWith(status: SocialMediaListFormRemoteStatus.loadingSocialMedia));
-      await Future.delayed(Duration(seconds: 1));
-      final socialMediaList = await socialMediaListFormRepository.getSocialMediaList();
-      emit(state.copyWith(status: SocialMediaListFormRemoteStatus.socialMediaLoaded,socialMediaItems: SocialMediaItem.fromRepository(socialMediaList)));
+      ///TODO : get social media items by uploadDocumentResponse
+      emit(state.copyWith(status: SocialMediaListFormRemoteStatus.loadingSocialMedia,constrains: constrains));
+      //final socialMediaList = await socialMediaListFormRepository.getSocialMediaList();
+      emit(state.copyWith(
+        status: SocialMediaListFormRemoteStatus.socialMediaLoaded,
+        //uploadDocumentResponse: uploadDocumentResponse
+        socialMediaItems: SocialMediaItem.fromState(state)
+      ));
     }catch(err){
       if(kDebugMode) print(err);
-      emit(state.copyWith(status: SocialMediaListFormRemoteStatus.socialMediaFailed,message: "Can't load data"));
+      emit(state.copyWith(status: SocialMediaListFormRemoteStatus.socialMediaFailed,message: LocalizationService.tr("Can't load data")));
     }
   }
 
@@ -51,7 +62,7 @@ class SocialMediaListFormRemoteBloc  extends Bloc<SocialMediaListFormRemoteEvent
       emit(state.copyWith(action: SocialMediaListFormRemoteActions.updateNextAction,enableNextAction: state.isSocialListItemsChecked()));
     }catch(err){
       if(kDebugMode) print(err);
-      emit(state.copyWith(status: SocialMediaListFormRemoteStatus.socialMediaFailed,message: "Can't selected element"));
+      emit(state.copyWith(status: SocialMediaListFormRemoteStatus.socialMediaFailed,message: LocalizationService.tr("Can't selected element")));
     }
   }
 
@@ -60,7 +71,7 @@ class SocialMediaListFormRemoteBloc  extends Bloc<SocialMediaListFormRemoteEvent
       emit(state.copyWith(action: SocialMediaListFormRemoteActions.updateNextAction,enableNextAction: state.isSocialListItemsChecked()));
     }catch(err){
       if(kDebugMode) print(err);
-      emit(state.copyWith(status: SocialMediaListFormRemoteStatus.socialMediaFailed,message: "Can't selected element"));
+      emit(state.copyWith(status: SocialMediaListFormRemoteStatus.socialMediaFailed,message: LocalizationService.tr("Can't selected element")));
     }
   }
 
@@ -71,12 +82,12 @@ class SocialMediaListFormRemoteBloc  extends Bloc<SocialMediaListFormRemoteEvent
       emit(state.copyWith(action: SocialMediaListFormRemoteActions.updateItemStatus));
     }catch(err){
       if(kDebugMode) print(err);
-      emit(state.copyWith(status: SocialMediaListFormRemoteStatus.socialMediaFailed,message: "Can't update edited element"));
+      emit(state.copyWith(status: SocialMediaListFormRemoteStatus.socialMediaFailed,message: LocalizationService.tr("Can't update edited element")));
     }
   }
+
   Future<void> _uploadResizedPicture(SocialMediaListFormRemoteResizedFileUpload event,Emitter<SocialMediaListFormRemoteState> emit) async {
     try{
-
       emit(state.copyWith(itemToEdit:event.socialMediaItem.setLoading(true)));
       if(event.socialMediaItem.error?.editedFile is! File) return;
       social_media_list_form_repository.UploadedFile uploadedFile = await socialMediaListFormRepository.uploadPictureForPublication(
@@ -91,7 +102,7 @@ class SocialMediaListFormRemoteBloc  extends Bloc<SocialMediaListFormRemoteEvent
       }
     }catch(err){
       if(kDebugMode) print(err);
-      emit(state.copyWith(status: SocialMediaListFormRemoteStatus.socialMediaFailed,message: "Can't upload resized picture"));
+      emit(state.copyWith(status: SocialMediaListFormRemoteStatus.socialMediaFailed,message: LocalizationService.tr("Can't upload resized picture")));
     }
   }
 

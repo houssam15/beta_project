@@ -1,25 +1,43 @@
 import "package:alpha_flutter_project/authentication/authentication.dart";
 import "package:alpha_flutter_project/social_media_list_form/src/bloc/local/social_media_list_form.local.bloc.dart";
+import "package:alpha_flutter_project/social_media_list_form/src/widgets/error_list_tile.dart";
+import "package:alpha_flutter_project/social_media_list_form/src/widgets/flex_text.dart";
+import "package:alpha_flutter_project/social_media_list_form/src/widgets/my_icon.dart";
 import "package:flutter/foundation.dart";
 import "package:flutter/material.dart";
 import "package:flutter/rendering.dart";
 import "package:font_awesome_flutter/font_awesome_flutter.dart";
 import "package:image_viewer/image_viewer.dart";
+import "package:localization_service/localization_service.dart";
 import "../bloc/remote/social_media_list_form.remote.bloc.dart";
 import "../models/models.dart";
 import "package:image_viewer/image_viewer.dart" as image_viewer;
+
 class SocialMediaCheckboxWidget extends StatefulWidget {
   SocialMediaCheckboxWidget({super.key,required this.socialMediaItem});
-
-  SocialMediaItem socialMediaItem;
-
+  final SocialMediaItem socialMediaItem;
   @override
   State<SocialMediaCheckboxWidget> createState() => _SocialMediaCheckboxWidgetState();
 }
-
 class _SocialMediaCheckboxWidgetState extends State<SocialMediaCheckboxWidget> {
-  //bool _showLoadingForCrop = false;
-
+  ScrollController _scrollController = ScrollController();
+  _onViewPicture(){
+    showDialog(context: context, builder: (context) => AlertDialog(content: Container(
+      width: MediaQuery.of(context).size.width*0.5,
+      height: MediaQuery.of(context).size.height*0.5,
+      child:  FutureBuilder(
+        future: image_viewer.ImageProvider().fromUrl(widget.socialMediaItem.uploadUrl),
+        builder: (context, snapshot) {
+          if(snapshot.connectionState == ConnectionState.waiting) return CircularProgressIndicator();
+          if(snapshot.data!.validateResult()==false) return Center(child: Text(context.tr("can't load picture")));
+          return ImageViewer(imageProvider: snapshot.data!);
+        },
+      ),
+    ),));
+  }
+  _onCrop(){
+    context.read<SocialMediaListFormLocalBloc>().add(SocialMediaListFormLocalResizePictureRequested(widget.socialMediaItem,context));
+  }
   @override
   Widget build(BuildContext context) {
     return Padding(
@@ -46,69 +64,11 @@ class _SocialMediaCheckboxWidgetState extends State<SocialMediaCheckboxWidget> {
                         }),
                         child: Row(
                           children: [
-                            Expanded(
-                              child: Text(
-                                widget.socialMediaItem.title,
-                                overflow: widget.socialMediaItem.showText?null:TextOverflow.ellipsis,// Optional: Use this to add '...' if it overflows
-                                style: TextStyle(
-                                  color:widget.socialMediaItem.hasError()?Theme.of(context).colorScheme.secondary:null,
-                                  decoration: widget.socialMediaItem.hasError()?TextDecoration.lineThrough:null,
-                                  decorationColor: widget.socialMediaItem.hasError()?Theme.of(context).colorScheme.error:null,
-                                  decorationThickness: widget.socialMediaItem.hasError()?2.5:null
-                                ),
-                              ),
-                            ),
-                              if(widget.socialMediaItem.hasUrl())
-                              ...[
-                                InkWell(
-                                  onTap: (){
-                                    showDialog(context: context, builder: (context) => AlertDialog(content: Container(
-                                      width: MediaQuery.of(context).size.width*0.5,
-                                      height: MediaQuery.of(context).size.height*0.5,
-                                      child:  FutureBuilder(
-                                          future: image_viewer.ImageProvider().fromUrl(widget.socialMediaItem.uploadUrl),
-                                          builder: (context, snapshot) {
-                                            if(snapshot.connectionState == ConnectionState.waiting) return CircularProgressIndicator();
-                                            if(snapshot.data!.validateResult()==false) return Center(child: Text("can't load picture"));
-                                            return ImageViewer(imageProvider: snapshot.data!);
-                                          },
-                                      ),
-                                    ),));
-                                  },
-                                  child: Container(
-                                      padding:EdgeInsets.all(2),
-                                      decoration: BoxDecoration(
-                                          color: Theme.of(context).colorScheme.tertiary.withOpacity(0.8),
-                                          borderRadius: BorderRadius.all(Radius.circular(20))
-                                      ),
-                                      child: Icon(Icons.remove_red_eye,color: Theme.of(context).colorScheme.onError)
-                                  ),
-                                )
-                              ],
-                              if(widget.socialMediaItem.hasError()&&widget.socialMediaItem.error?.errorType==SocialMediaErrorType.invalidDimensions)
-                              ...[
-                                const SizedBox(width: 5),
-                                InkWell(
-                                  onTap: (){
-                                    context.read<SocialMediaListFormLocalBloc>().add(SocialMediaListFormLocalResizePictureRequested(widget.socialMediaItem,context));
-                                  },
-                                  child: widget.socialMediaItem.isLoading
-                                      ?CircularProgressIndicator()
-                                      :Container(
-                                        padding:EdgeInsets.all(2),
-                                        decoration: BoxDecoration(
-                                            color: Theme.of(context).colorScheme.tertiary.withOpacity(0.8),
-                                            borderRadius: BorderRadius.all(Radius.circular(20))
-                                        ),
-                                        child: Icon(Icons.crop,color: Theme.of(context).colorScheme.onError)
-                                      ),
-                                )
-                              ]
-
-
-
-
-
+                            FlexText(widget.socialMediaItem),
+                            if(widget.socialMediaItem.hasUrl())
+                              MyIcon(icon: Icons.remove_red_eye,onTap: _onViewPicture),
+                            if(widget.socialMediaItem.hasError()&&widget.socialMediaItem.error?.errorType==SocialMediaErrorType.invalidDimensions)
+                              MyIcon(icon: Icons.crop,onTap: _onCrop)
                           ],
                         ),
                       )
@@ -123,36 +83,17 @@ class _SocialMediaCheckboxWidgetState extends State<SocialMediaCheckboxWidget> {
               margin: EdgeInsets.only(left: 40),
               constraints: BoxConstraints(maxHeight: 200), // Prevent excessive height
               child: Scrollbar(
+                controller: _scrollController,
                 thumbVisibility: true, // Ensures the scrollbar is visible when scrolling
                 child: ListView.builder(
+                  controller: _scrollController,
                   itemCount: widget.socialMediaItem.error?.messages.length,
-                  itemBuilder: (context, index) => Row(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        "-",
-                        style: TextStyle(
-                            color: Theme.of(context).colorScheme.secondary
-                        ),
-                      ),
-                      SizedBox(width: 5),
-                      Expanded(
-                        child: Text(
-                          "${widget.socialMediaItem.error?.messages[index]}",
-                          style: TextStyle(
-                              color: Theme.of(context).colorScheme.secondary
-                          ),
-                        ),
-                      ),
-                    ],
-                  ),
+                  itemBuilder: (context, index) => ErrorListTile(widget.socialMediaItem.error?.messages[index]),
                 ),
               ),
             ),
-
         ],
       ),
     );
   }
-
 }

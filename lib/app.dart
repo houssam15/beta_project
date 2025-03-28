@@ -75,7 +75,7 @@ class _AppViewState extends State<AppView> {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       navigatorKey: navigatorKey,
-      initialRoute: SocialMediaFileUploaderForm.route,
+      //initialRoute: SocialMediaPublicationForm.route,
       routes:{
         HomeApp.route:(context) => const HomeApp(),
         WeatherApp.route:(context)=> WeatherApp(),
