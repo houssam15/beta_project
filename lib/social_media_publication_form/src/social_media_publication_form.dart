@@ -1,4 +1,5 @@
-import "package:alpha_flutter_project/home/home_layout.dart";
+import "package:alpha_flutter_project/common/common.dart";
+import "package:alpha_flutter_project/common/src/layouts/home_layout.dart";
 import "package:flutter/material.dart";
 import "package:localization_service/localization_service.dart";
 import "../../simple_bloc_observer.dart";
@@ -6,8 +7,11 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import "models/models.dart";
 import "theme/app_theme.dart";
 import "./bloc/bloc.dart";
-import "./view/social_media_publication_form_page.dart";
+import "./view/social_media_publication_form_view.dart";
 import "social_media_publication_form_arguments.dart";
+import "package:file_uploader_repository/file_uploader_repository.dart" as fur;
+import "package:file_chunked_uploader/file_chunked_uploader.dart" as fcu;
+
 class SocialMediaPublicationForm extends StatefulWidget {
   static final String route = Config.appRoute;
   const SocialMediaPublicationForm({super.key});
@@ -17,7 +21,6 @@ class SocialMediaPublicationForm extends StatefulWidget {
 }
 
 class _SocialMediaPublicationFormState extends State<SocialMediaPublicationForm> {
-  Config get config => Config();
 
   @override
   void initState() {
@@ -28,9 +31,38 @@ class _SocialMediaPublicationFormState extends State<SocialMediaPublicationForm>
   @override
   Widget build(BuildContext context) {
 
-    final args = SocialMediaPublicationFormArguments().fromJson(ModalRoute.of(context)?.settings.arguments);
-    final localizationService = LocalizationService(Localizations.localeOf(context),feature: "${Config.featureName}/src/lang");
-    return MaterialApp(
+    SocialMediaPublicationFormArguments? args = ModalRoute.of(context)?.settings.arguments as SocialMediaPublicationFormArguments?;
+
+    return FeatureLayout<SocialMediaPublicationFormArguments>(
+        params: args ?? SocialMediaPublicationFormArguments().create(),
+        selectedRoute: Config.appRoute,
+        hideAppbar: true,
+        lang: LangParams("${Config.featureName}/src/lang"),
+        theme: ThemeParams(AppTheme().themeData),
+        providers: [
+          BlocProvider<SocialMediaPublicationFormRemoteBloc>(
+            create: (_) => SocialMediaPublicationFormRemoteBloc(
+                uploadDocumentResponse: args!.uploadDocumentResponse!,
+                fileUploaderRepository:fur.FileUploaderRepository.create<fcu.UploadDocumentResponse>(
+                  globalParams: fur.GlobalParams(
+                      baseUrl: Config.baseUrl,
+                      fileChunkedUploadPath: Config.updateDocumentEndpoint,
+                      authorizationToken: Config.token
+                  ),
+                  fromJson: (json, {token}) => fcu.UploadDocumentResponse().fromJson(json,token: token),
+                ),
+                mediaType: args.mediaType,
+                constrains: args.constrains,
+                currentState: args.currentState
+            ),
+            child: SocialMediaPublicationFormView(),
+          )
+        ],
+        child: SocialMediaPublicationFormView()
+    );
+
+    /*return MaterialApp(
+      debugShowCheckedModeBanner: false,
       localeResolutionCallback: LocalizationService.localeResolutionCallback,
       supportedLocales: LocalizationService.supportedLocales,
       localizationsDelegates: localizationService.localizationsDelegate,
@@ -39,13 +71,28 @@ class _SocialMediaPublicationFormState extends State<SocialMediaPublicationForm>
           hideAppbar: true,
           body: Theme(
               data: AppTheme().themeData,
-              child: BlocProvider<SocialMediaPublicationFormRemoteBloc>(
-                create: (_) => SocialMediaPublicationFormRemoteBloc(),
-                child: SocialMediaPublicationFormPage(),
+              child: args?.uploadDocumentResponse==null
+                  ?ErrorMessageWidget(context.tr("No file selected"),refresh: false)
+                  :BlocProvider<SocialMediaPublicationFormRemoteBloc>(
+                create: (_) => SocialMediaPublicationFormRemoteBloc(
+                    uploadDocumentResponse: args!.uploadDocumentResponse!,
+                    fileUploaderRepository:fur.FileUploaderRepository.create<fcu.UploadDocumentResponse>(
+                        globalParams: fur.GlobalParams(
+                            baseUrl: Config.baseUrl,
+                            fileChunkedUploadPath: Config.updateDocumentEndpoint,
+                            authorizationToken: Config.token
+                        ),
+                        fromJson: (json, {token}) => fcu.UploadDocumentResponse().fromJson(json,token: token),
+                    ),
+                    mediaType: args.mediaType,
+                    constrains: args.constrains,
+                    currentState: args.currentState
+                ),
+                child: SocialMediaPublicationFormView(),
               )
           )
       ),
-    );
+    );*/
   }
 
 }

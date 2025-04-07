@@ -2,9 +2,9 @@ import "dart:io";
 import "package:file_uploader_permissions_handler/file_uploader_permissions_handler.dart" hide PermissionsState ;
 import "package:flutter/foundation.dart";
 import "package:local_file_picker/local_file_picker.dart" as local_file_picker;
-import "package:social_media_api/social_media_api.dart" as social_media_api;
+import "package:social_media_api/social_media_api.dart" as sma;
 import "models/models.dart";
-import "package:file_chunked_uploader/file_chunked_uploader.dart" hide UploadDocumentResponse;
+import "package:file_chunked_uploader/file_chunked_uploader.dart" as fcu;
 
 /*
 Messages :
@@ -16,44 +16,65 @@ Messages :
 - file picked successfully
 */
 
-class FileUploaderRepository{
+class FileUploaderRepository<Response extends fcu.UploadResponse>{
     final FileUploaderPermissionsHandler _fileUploaderPermissionsHandler;
     final local_file_picker.LocalFilePicker _localFilePicker;
-    late FileChunkedUploader _fileChunkedUploader;
+    late fcu.FileChunkedUploader _fileChunkedUploader;
     final GlobalParams globalParams;
-    final social_media_api.SocialMediaApi _socialMediaApi;
+    final sma.SocialMediaApi _socialMediaApi;
 
-    FileUploaderRepository({
+    static FileUploaderRepository<Response> create<Response extends fcu.UploadResponse>(
+        {required GlobalParams globalParams,
+            required Response Function(Map<String, dynamic> json, {String? token}) fromJson}) {
+        return FileUploaderRepository<Response>._(
+            globalParams: globalParams,
+            fromJson: fromJson,
+        );
+    }
+
+    FileUploaderRepository._({
         FileUploaderPermissionsHandler? fileUploaderPermissionsHandler,
         local_file_picker.LocalFilePicker? localFilePicker,
-        FileChunkedUploader? fileChunkedUploader,
-        required this.globalParams
+        fcu.FileChunkedUploader? fileChunkedUploader,
+        required this.globalParams,
+        required Response Function(Map<String, dynamic> json, {String? token}) fromJson,
     })
     :_fileUploaderPermissionsHandler = fileUploaderPermissionsHandler ?? FileUploaderPermissionsHandler(),
-     _socialMediaApi = social_media_api.SocialMediaApi(),
+     _socialMediaApi = sma.SocialMediaApi(),
      _localFilePicker = localFilePicker ?? local_file_picker.LocalFilePicker(){
-        _fileChunkedUploader = fileChunkedUploader??FileChunkedUploader(
-            Config(
-                baseUrl: globalParams.fileChunkedUploadBaseUrl,
+        _fileChunkedUploader = fileChunkedUploader??fcu.FileChunkedUploader<Response>(
+            fcu.Config(
+                baseUrl: globalParams.baseUrl,
                 path: globalParams.fileChunkedUploadPath,
                 chunkMaxSize: globalParams.fileChunkedUploadMaxChunkSize,
                 contentType: globalParams.fileChunkedUploadContentType,
-                authorizationToken:globalParams.fileChunkedUploadAuthorizationToken
-            )
+                authorizationToken:globalParams.authorizationToken
+            ),
+            fromJson
         );
      }
 
      UploadDocumentResponse? _uploadDocumentResponse;
+     UploadDocumentResponseForNetwork? _uploadDocumentResponseForNetwork;
 
     UploadDocumentResponse? getUploadDocumentResponse(){
         return _uploadDocumentResponse;
     }
+
+    UploadDocumentResponseForNetwork? getUploadDocumentResponseForNetwork(){
+        return _uploadDocumentResponseForNetwork;
+    }
+
 
     setUploadDocumentResponse(UploadDocumentResponse response){
         _uploadDocumentResponse = response;
         return this;
     }
 
+    setUploadDocumentResponseForNetwork(UploadDocumentResponseForNetwork response){
+        _uploadDocumentResponseForNetwork = response;
+        return this;
+    }
 
     Future<PermissionsState> requestPermissions() async{
         final result = await _fileUploaderPermissionsHandler.requestPermissions();
@@ -93,16 +114,34 @@ class FileUploaderRepository{
 
     Stream<int> uploadFileToServer(File file) async* {
         yield* _fileChunkedUploader.upload(file).handleError((error){
-            if(kDebugMode) print("UploadFileToServer error : $error");
             throw Exception("Server unavailable");
         });
-        setUploadDocumentResponse(UploadDocumentResponse.create(_fileChunkedUploader.uploadResult));
+        setUploadDocumentResponse(UploadDocumentResponse.create(_fileChunkedUploader.uploadResult as fcu.UploadDocumentResponse?));
+    }
+
+    Stream<int> uploadFileToServerForNetwork(File file,{String? publicationId,String? accountId}) async* {
+        yield* _fileChunkedUploader.upload(file,data:{"publication":publicationId,"account_id":accountId}).handleError((error){
+            throw Exception("Server unavailable");
+        });
+        setUploadDocumentResponseForNetwork(UploadDocumentResponseForNetwork.create(_fileChunkedUploader.uploadResult as fcu.UploadDocumentResponseForNetwork?));
     }
 
     Future<Constrains> getConstrains() async {
         final ds = await _socialMediaApi.getConstraints();
-        if(ds is social_media_api.DataFailed || ds.data?.isValid()==false) return Constrains().setErrorMessage("Can't get configuration from server ,please try again later !");
+        if(ds is sma.DataFailed || ds.data?.isValid()==false) return Constrains().setErrorMessage("Can't get configuration from server ,please try again later !");
         return Constrains().setConstrainsFromApi(ds.data!);
     }
+
+    Future<UpdatePublicationResponse> updateDocument(UpdatePublicationRequest request) async {
+        sma.DataState<sma.UpdatePublicationResponse> ds = await _socialMediaApi.updateDocument(publicationId: request.publicationId,title: request.title,description: request.description,datedAt: request.datedAt);
+        if(ds is sma.DataFailed) {
+            return UpdatePublicationResponse.failed(errors: [ds.error!]);
+        } else if(ds.data!.hasErrors()) {
+            return UpdatePublicationResponse.failed(errors: ds.data!.getErrors());
+        }else{
+            return UpdatePublicationResponse.success(data: ds.data);
+        }
+    }
+
 
 }

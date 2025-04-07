@@ -14,7 +14,10 @@ enum SocialMediaListFormRemoteActions{
   updateNextAction,
   switchItemStatus,
   resizedPictureUploaded,
-  resizedPictureUploadedFailed
+  resizedPictureUploadedFailed,
+  progressForPublication,
+  progressForPublicationFailed,
+  progressForPublicationSuccess
 }
 
 enum MediaType{
@@ -32,18 +35,21 @@ class SocialMediaListFormRemoteState extends Equatable{
     this.action = SocialMediaListFormRemoteActions.none,
     this.itemToEdit,
     this.mediaType = MediaType.none,
-    this.constrains
-  });
+    this.constrains,
+    bool isPublishing = false
+  }):
+  _isPublishing = isPublishing;
 
   SocialMediaListFormRemoteStatus status;
   List<SocialMediaItem> socialMediaItems;
   String message;
   bool enableNextAction;
-  UploadDocumentResponse? uploadDocumentResponse;
   SocialMediaListFormRemoteActions action;
   SocialMediaItem? itemToEdit;
+  UploadDocumentResponse? uploadDocumentResponse;
   MediaType mediaType;
   Constrains? constrains;
+  bool _isPublishing;
 
   SocialMediaListFormRemoteState copyWith({
     SocialMediaListFormRemoteStatus? status,
@@ -54,7 +60,8 @@ class SocialMediaListFormRemoteState extends Equatable{
     SocialMediaListFormRemoteActions? action,
     SocialMediaItem? itemToEdit,
     MediaType? mediaType,
-    Constrains? constrains
+    Constrains? constrains,
+    bool? isPublishing
   }){
     return SocialMediaListFormRemoteState(
       status: status??this.status,
@@ -65,7 +72,8 @@ class SocialMediaListFormRemoteState extends Equatable{
       action: action??this.action,
       itemToEdit:itemToEdit??this.itemToEdit,
       mediaType:  mediaType ?? this.mediaType,
-      constrains: constrains ?? this.constrains
+      constrains: constrains ?? this.constrains,
+      isPublishing: isPublishing??this._isPublishing
     );
  }
 
@@ -85,7 +93,12 @@ class SocialMediaListFormRemoteState extends Equatable{
     return socialMediaItems.toList().firstWhere((element) => element.id == id);
  }
 
+ bool isPublishing() {
+    return _isPublishing;
+ }
+
+
   @override
-  List<Object?> get props => [status,socialMediaItems,message,enableNextAction,uploadDocumentResponse,action,itemToEdit,mediaType];
+  List<Object?> get props => [status,socialMediaItems,message,enableNextAction,uploadDocumentResponse,action,itemToEdit,mediaType,isPublishing];
 
 }

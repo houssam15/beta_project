@@ -10,10 +10,10 @@ class MyAppBar extends StatelessWidget implements PreferredSizeWidget {
   Widget build(BuildContext context) {
     return AppBar(
       centerTitle: true,
-      leading: InkWell(
+      /*leading: InkWell(
           onTap: ()=>Navigator.of(context).pushNamed(HomeApp.route),
           child: Icon(Icons.arrow_back)
-      ),
+      ),*/
       title: Text(
         context.tr("Create publication"),
         style: TextStyle(

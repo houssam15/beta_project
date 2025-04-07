@@ -5,3 +5,6 @@ export "constraints.dart";
 export "upload_document_response.dart";
 export 'upload_document_response_warning.dart';
 export 'social_media.dart';
+export "update_publication_request.dart";
+export "update_publication_response.dart";
+export "upload_document_response_for_network.dart";

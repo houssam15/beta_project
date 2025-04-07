@@ -1,9 +1,14 @@
+import "package:alpha_flutter_project/login/login.dart";
 import "package:calendar_date_picker2/calendar_date_picker2.dart";
+import "package:flutter/foundation.dart";
 import "package:flutter/material.dart";
 import 'package:intl/date_symbol_data_local.dart';
 
+import "../bloc/remote/social_media_publication_form.remote.bloc.dart";
+
 class CalendarDatePickerWidget extends StatefulWidget {
-  const CalendarDatePickerWidget({super.key});
+  CalendarDatePickerWidget(this.remoteState,{super.key});
+  final SocialMediaPublicationFormRemoteState remoteState;
 
   @override
   State<CalendarDatePickerWidget> createState() => _CalendarDatePickerWidgetState();
@@ -29,7 +34,7 @@ class _CalendarDatePickerWidgetState extends State<CalendarDatePickerWidget> {
   Widget build(BuildContext context) {
 
     List<DateTime?> _singleDatePickerValueWithDefaultValue = [
-      DateTime.now().add(const Duration(days: 1)),
+      //DateTime.now().add(const Duration(days: 1)),
     ];
 
     final config = CalendarDatePicker2Config(
@@ -38,7 +43,7 @@ class _CalendarDatePickerWidgetState extends State<CalendarDatePickerWidget> {
       weekdayLabelTextStyle: const TextStyle(
         fontSize: 10
       ),
-      firstDayOfWeek: 1,
+      //firstDayOfWeek: 1,
       controlsHeight: 30,
       dayMaxWidth: 25,
       animateToDisplayedMonthDate: true,
@@ -82,46 +87,54 @@ class _CalendarDatePickerWidgetState extends State<CalendarDatePickerWidget> {
     if (!_isInitialized) {
       return const Center(child: CircularProgressIndicator()); // Affiche un loader en attendant l'initialisation
     }
-
-    return Localizations.override(
-      context: context,
-      locale: const Locale("en"),
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          CalendarDatePicker2(
-            displayedMonthDate: _singleDatePickerValueWithDefaultValue.first,
-            config: config,
-            value: _singleDatePickerValueWithDefaultValue,
-            onValueChanged: (dates) => setState(
-                    () => _singleDatePickerValueWithDefaultValue = dates),
-          ),
-         /* SizedBox(
-            width: 270,
-            child: CalendarDatePicker2(
-              displayedMonthDate: _singleDatePickerValueWithDefaultValue.first,
-              config: config,
-              value: _singleDatePickerValueWithDefaultValue,
-              onValueChanged: (dates) => setState(
-                      () => _singleDatePickerValueWithDefaultValue = dates),
-            ),
-          ),
-          const SizedBox(height: 10),
-          Row(
+    print("date : ${widget.remoteState.publishDate}");
+    return Padding(
+      padding: const EdgeInsets.only(bottom: 8),
+      child: Container(
+        color: Theme.of(context).colorScheme.tertiary.withOpacity(0.2),
+        child: Localizations.override(
+          context: context,
+          locale: const Locale("en"),
+          child: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
-              const Text('Selection(s):  '),
-              const SizedBox(width: 10),
-              Text(
-                _getValueText(
-                  config.calendarType,
-                  _singleDatePickerValueWithDefaultValue,
+              CalendarDatePicker2(
+                //displayedMonthDate: _singleDatePickerValueWithDefaultValue.first,
+                config: config,
+                value: [widget.remoteState.publishDate],
+                //onValueChanged: (dates) => setState(() => _singleDatePickerValueWithDefaultValue = dates),
+                onValueChanged: (dates) {
+                  context.read<SocialMediaPublicationFormRemoteBloc>().add(SocialMediaPublicationFormRemotePublishDateChanged(dates.first));
+                },
+              ),
+             /* SizedBox(
+                width: 270,
+                child: CalendarDatePicker2(
+                  displayedMonthDate: _singleDatePickerValueWithDefaultValue.first,
+                  config: config,
+                  value: _singleDatePickerValueWithDefaultValue,
+                  onValueChanged: (dates) => setState(
+                          () => _singleDatePickerValueWithDefaultValue = dates),
                 ),
               ),
+              const SizedBox(height: 10),
+              Row(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  const Text('Selection(s):  '),
+                  const SizedBox(width: 10),
+                  Text(
+                    _getValueText(
+                      config.calendarType,
+                      _singleDatePickerValueWithDefaultValue,
+                    ),
+                  ),
+                ],
+              ),
+              const SizedBox(height: 25),*/
             ],
           ),
-          const SizedBox(height: 25),*/
-        ],
+        ),
       ),
     );
   }

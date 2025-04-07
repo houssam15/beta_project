@@ -23,6 +23,9 @@ class UploadDocumentResponse{
     return _response.isWarningExist();
   }
 
+  bool isNetworksValid(){
+    return _response.isNetworksValid();
+  }
 
 
   bool isFileUploadedSuccessfully(){
@@ -30,11 +33,11 @@ class UploadDocumentResponse{
   }
 
   List<UploadDocumentResponseWarning> getWarnings(){
-    return isWarningsExist() ? UploadDocumentResponseWarning.fromApi(_response.getWarning()):[];
+    return isWarningsExist() ? UploadDocumentResponseWarning.fromApiForFileUploader(_response.getWarning()):[];
   }
 
   List<UploadDocumentResponseWarning> getNetworksForListForm(){
-    return isWarningsExist() ? UploadDocumentResponseWarning.fromApi(_response.getWarning(),needGlobal: false):[];
+    return isNetworksValid() ? UploadDocumentResponseWarning.fromApiForSocialMediaList(_response.getWarning()):[];
   }
 
   String getPictureUrl(){
@@ -43,6 +46,10 @@ class UploadDocumentResponse{
 
   String getVideoUrl(){
     return _response.videoFormats.first.url;
+  }
+
+  int? getPublicationId(){
+    return _response.publicationId;
   }
 
 }

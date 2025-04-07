@@ -1,19 +1,7 @@
-import "package:alpha_flutter_project/social_media_file_uploader_form/social_media_file_uploader_form.dart";
-import "package:alpha_flutter_project/social_media_list_form/social_media_list_form.dart";
-import "package:alpha_flutter_project/social_media_list_form/src/social_media_list_form.dart";
-
 class Config{
-  static String _appRoute = "/social_media_publication_upload";
-  final String? _nextPageAppRoute = SocialMediaListForm.route;
-  final String? _prevPageAppRoute = SocialMediaFileUploaderForm.route;
-  static final String? _featureName = "social_media_publication_form";
-
-  ///Social media publication form app route (app routing)
-  static String get appRoute => _appRoute;
-  ///Next page app route
-  String? get nextPageAppRoute => _nextPageAppRoute;
-  ///Prev page app route
-  String? get prevPageAppRoute => _prevPageAppRoute;
-
-  static String? get featureName => _featureName;
+  static String appRoute = "/social_media_publication_upload";
+  static final String? featureName = "social_media_publication_form";
+  static final String baseUrl = "https://bridge.ewebsolutionskech-dev.com";
+  static final String updateDocumentEndpoint = "/api/mob/customers/socialnetwork/manager/admin/UpdatePublication";
+  static final String token = "oula1nk8s3uos2t52oeh5uquc5";
 }

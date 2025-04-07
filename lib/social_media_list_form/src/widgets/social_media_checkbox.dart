@@ -1,3 +1,6 @@
+import "package:alert_banner/types/enums.dart";
+import "package:alert_banner/widgets/alert.dart";
+import "package:alpha_flutter_project/app.dart";
 import "package:alpha_flutter_project/authentication/authentication.dart";
 import "package:alpha_flutter_project/social_media_list_form/src/bloc/local/social_media_list_form.local.bloc.dart";
 import "package:alpha_flutter_project/social_media_list_form/src/widgets/error_list_tile.dart";
@@ -12,7 +15,7 @@ import "package:localization_service/localization_service.dart";
 import "../bloc/remote/social_media_list_form.remote.bloc.dart";
 import "../models/models.dart";
 import "package:image_viewer/image_viewer.dart" as image_viewer;
-
+import "alert_banner_child.dart";
 class SocialMediaCheckboxWidget extends StatefulWidget {
   SocialMediaCheckboxWidget({super.key,required this.socialMediaItem});
   final SocialMediaItem socialMediaItem;
@@ -22,9 +25,18 @@ class SocialMediaCheckboxWidget extends StatefulWidget {
 class _SocialMediaCheckboxWidgetState extends State<SocialMediaCheckboxWidget> {
   ScrollController _scrollController = ScrollController();
   _onViewPicture(){
-    showDialog(context: context, builder: (context) => AlertDialog(content: Container(
+    showDialog(context: context, builder: (context) => AlertDialog(
+      contentPadding: EdgeInsets.all(5),
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(10), // Change this value
+      ),
+      content: Container(
       width: MediaQuery.of(context).size.width*0.5,
       height: MediaQuery.of(context).size.height*0.5,
+      padding: EdgeInsets.zero,
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(10),
+      ),
       child:  FutureBuilder(
         future: image_viewer.ImageProvider().fromUrl(widget.socialMediaItem.uploadUrl),
         builder: (context, snapshot) {
@@ -35,9 +47,15 @@ class _SocialMediaCheckboxWidgetState extends State<SocialMediaCheckboxWidget> {
       ),
     ),));
   }
+
   _onCrop(){
     context.read<SocialMediaListFormLocalBloc>().add(SocialMediaListFormLocalResizePictureRequested(widget.socialMediaItem,context));
   }
+
+  _onChange(){
+    context.read<SocialMediaListFormLocalBloc>().add(SocialMediaListFormLocalUploadPictureRequested(widget.socialMediaItem,navigatorKey.currentContext));
+  }
+
   @override
   Widget build(BuildContext context) {
     return Padding(
@@ -49,8 +67,22 @@ class _SocialMediaCheckboxWidgetState extends State<SocialMediaCheckboxWidget> {
             children: [
               Checkbox(
                   value: widget.socialMediaItem.isSelected,
-                  onChanged: widget.socialMediaItem.hasError()?null:(value) => setState(() {
-                        context.read<SocialMediaListFormRemoteBloc>().add(SocialMediaListFormRemoteSocialMediaItemToggled(widget.socialMediaItem,value));
+                  onChanged: widget.socialMediaItem.hasError()
+                      ?(value){
+                          showAlertBanner(context,()=>print("TAPPED"),AlertBannerChild(text: context.tr("Please fix the errors before selecting this option."),color: Colors.grey,),alertBannerLocation: AlertBannerLocation.top);
+                      }
+                      :(value){
+                          if(context.read<SocialMediaListFormRemoteBloc>().state.isPublishing()){
+                            showAlertBanner(context,()=>print("TAPPED"),AlertBannerChild(text: context.tr("Wait please !"),color: Colors.grey,),alertBannerLocation: AlertBannerLocation.top);
+                          }else{
+                            context.read<SocialMediaListFormRemoteBloc>().add(SocialMediaListFormRemoteSocialMediaItemToggled(widget.socialMediaItem,value));
+                          }
+                  },
+                  fillColor: WidgetStateProperty.resolveWith((states) {
+                    if (widget.socialMediaItem.hasError()) {
+                      return Colors.grey; // Grey when disabled
+                    }
+                    return Theme.of(context).colorScheme.tertiary; // Default color
                   })
               ),
               FaIcon( widget.socialMediaItem.icon),
@@ -68,7 +100,9 @@ class _SocialMediaCheckboxWidgetState extends State<SocialMediaCheckboxWidget> {
                             if(widget.socialMediaItem.hasUrl())
                               MyIcon(icon: Icons.remove_red_eye,onTap: _onViewPicture),
                             if(widget.socialMediaItem.hasError()&&widget.socialMediaItem.error?.errorType==SocialMediaErrorType.invalidDimensions)
-                              MyIcon(icon: Icons.crop,onTap: _onCrop)
+                              MyIcon(icon: Icons.crop,onTap: _onCrop),
+                            if(widget.socialMediaItem.hasError()&&widget.socialMediaItem.error?.errorType==SocialMediaErrorType.invalidFile)
+                              MyIcon(icon: FontAwesomeIcons.arrowUpFromBracket,onTap: _onChange)
                           ],
                         ),
                       )

@@ -1,14 +1,14 @@
 import 'upload_document_warning.dart';
 import 'package:json_schema/json_schema.dart';
 import "document_format.dart";
-class UploadDocumentResponse {
+import "upload_response.dart";
+class UploadDocumentResponse implements UploadResponse{
   int? publicationId;
   int? documentId;
   List<DocumentFormat> pictureFormats;
   List<DocumentFormat> videoFormats;
   UploadDocumentWarning? warning;
   List<String> errors;
-
 
   UploadDocumentResponse({
     this.documentId,
@@ -168,8 +168,8 @@ class UploadDocumentResponse {
       ],
   };
 
-
-  UploadDocumentResponse fromJson(dynamic data){
+  @override
+  UploadDocumentResponse fromJson(dynamic data,{String? token}){
     try{
       final results = Validator(JsonSchema.create(schemaData)).validate(data, reportMultipleErrors: true);
       if(results.isValid == false) {
@@ -178,8 +178,8 @@ class UploadDocumentResponse {
         return UploadDocumentResponse(
           documentId: data["id"],
           publicationId: data["publication_id"],
-          pictureFormats: data["data"]?["picture"]?.map<DocumentFormat>((elm)=>DocumentFormat.fromJson(elm)).toList() ?? [],
-          videoFormats: data["data"]?["video"]?.map<DocumentFormat>((elm)=>DocumentFormat.fromJson(elm)).toList() ?? [],
+          pictureFormats: data["data"]?["picture"]?.map<DocumentFormat>((elm)=>DocumentFormat.fromJson(elm,token)).toList() ?? [],
+          videoFormats: data["data"]?["video"]?.map<DocumentFormat>((elm)=>DocumentFormat.fromJson(elm,token)).toList() ?? [],
           errors: data["errors"]!= null || data["error"]!= null ? data["errors"].map<String>((elm)=>elm.toString()).toList() ?? [data["error"]] :[],
           warning: UploadDocumentWarning.fromJson(data["warnings"])
         );
@@ -192,6 +192,10 @@ class UploadDocumentResponse {
 
   bool isWarningExist(){
     return warning?.isExist() ?? false;
+  }
+
+  bool isNetworksValid(){
+    return warning?.isNetworksValid() ?? false;
   }
 
   bool isFileUploadedSuccessfully(){

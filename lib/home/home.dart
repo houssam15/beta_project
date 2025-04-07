@@ -1,4 +1,4 @@
-export "home_layout.dart";
+export "../common/src/layouts/home_layout.dart";
 export "home_app.dart";
 export "bloc/bloc.dart";
 export "widget/widget.dart";

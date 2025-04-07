@@ -32,6 +32,13 @@ class UploadDocumentResponse {
     return true;
   }
 
+  bool hasPicture(){
+    return _repository?.getPictureUrl()!=null;
+  }
+
+  String? getPictureUrl(){
+    return _repository?.getPictureUrl();
+  }
 
 
 

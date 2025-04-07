@@ -20,7 +20,7 @@ class FileUploaderView extends StatefulWidget {
 class _FileUploaderViewState extends State<FileUploaderView> {
 
   _onPermissionDenied(FileUploaderState state){
-    if(kDebugMode) print(context.tr("Upload from ?"));
+    //if(kDebugMode) print(context.tr("Upload from ?"));
     if(state.permissionsState.showMessageOption==ShowMessageOptions.snackBar){
       showAlertBanner(context,
               ()=>print("TAPPED"),
@@ -131,7 +131,6 @@ class _FileUploaderViewState extends State<FileUploaderView> {
                                     );
                                   case FileUploaderStatus.readyToUpload: return UploadFile(state);
                                   default : return Text("Unknown status");
-
                                 }
                               },
                           ),

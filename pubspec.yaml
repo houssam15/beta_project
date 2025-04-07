@@ -50,6 +50,7 @@ dependencies:
   video_viewer:
     path: packages/video_viewer
   rive_animated_icon: ^2.0.3
+  blinking_text: ^1.0.4
   #video_player_with_awesome_package:
   #  path: packages/video_player_with_awesome_package
 dev_dependencies:
@@ -70,3 +71,5 @@ flutter:
     - assets/localization/
     - lib/i18n_testing/src/lang/
     - lib/social_media_file_uploader_form/lang/
+    - lib/social_media_publications_list/src/lang/
+    - lib/social_media_list_form/src/lang/

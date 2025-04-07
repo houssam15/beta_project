@@ -1,7 +1,8 @@
+import 'package:alpha_flutter_project/common/src/layouts/feature_layout.dart';
 import 'package:alpha_flutter_project/counter/view/counter_page.dart';
 import 'package:flutter/material.dart';
-import "package:alpha_flutter_project/home/home.dart";
-
+import "../common/common.dart";
+import 'counter_app_params.dart';
 class CounterApp extends StatelessWidget {
   static final String route = "/counter-app";
 
@@ -9,9 +10,11 @@ class CounterApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return HomeLayout(
-      selectedRoute: CounterApp.route,
-      body:CounterPage()
+    return FeatureLayout<CounterAppParams>(
+        child: CounterPage(),
+        params: CounterAppParams().create(),
+        selectedRoute: "/counter-app"
     );
   }
+
 }

@@ -27,4 +27,8 @@ class UploadDocumentResponse {
     }
   }
 
+  String? getPublicationId(){
+    return this.getRepository()?.getPublicationId().toString();
+  }
+
 }

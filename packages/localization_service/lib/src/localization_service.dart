@@ -15,16 +15,17 @@ class LocalizationService{
 
   static Map<String,String> _localizedString = {};
 
-
-  static LocalizationService of(BuildContext context){
+  static LocalizationService? of(BuildContext context){
+    //print(Localizations.of(context, LocalizationService));
     return Localizations.of(context, LocalizationService);
   }
 
   Future<void> loadV1() async {
     try{
-      final jsonString = await rootBundle.loadString('lib/${feature}/${locale.languageCode}.json');
+      final jsonString = await rootBundle.loadString('lib/$feature/${locale.languageCode}.json');
       Map<String,dynamic> jsonMap = jsonDecode(jsonString);
       _localizedString = jsonMap.map((key, value) => MapEntry(key, value.toString()));
+      //print(_localizedString);
     }catch(err){
       if(kDebugMode) print(err);
     }
@@ -81,7 +82,15 @@ class LocalizationService{
     GlobalWidgetsLocalizations.delegate,
     _delegate
   ];
+
+   static getFallbackDelegates(){
+    return [
+      GlobalMaterialLocalizations.delegate,
+      GlobalWidgetsLocalizations.delegate
+    ];
+  }
 }
+
 
 class _LocalizationServiceDelegate extends LocalizationsDelegate<LocalizationService>{
   final String featureName;
@@ -109,6 +118,7 @@ class _LocalizationServiceDelegate extends LocalizationsDelegate<LocalizationSer
 
 extension Translation on BuildContext{
   String tr(String key){
-    return LocalizationService.of(this).translate(key);
+    print(LocalizationService.of(this));
+    return LocalizationService.of(this)?.translate(key) ?? key;
   }
 }

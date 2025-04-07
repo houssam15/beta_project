@@ -25,3 +25,5 @@ final class FileUploaderUploadSourceRequested extends FileUploaderEvent {
 }
 
 final class FileUploaderUploadToServer extends FileUploaderEvent {}
+
+final class FileUploaderUploadToServerForNetwork extends FileUploaderEvent {}

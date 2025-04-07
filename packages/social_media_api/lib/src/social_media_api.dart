@@ -39,14 +39,24 @@ class SocialMediaApi {
     }
   }
 
-  Future<DataState<String>> uploadPictureForPublication(File file,{dynamic params}) async {
+  /*Future<DataState<String>> uploadPictureForPublication(File file,{dynamic params}) async {
     try{
+      Response response = await _dio.post(
+          "${Config.baseUrl}${Config.uploadDocumentForPublicationEndpoint}",
+          options: Options(
+              headers: {
+                "Authorization":"Bearer ${Config.token}"
+              }
+          ),
+          data: data
+      );
       await Future.delayed(Duration(seconds: 3));
+
       return DataSuccess("https://plus.unsplash.com/premium_photo-1664474619075-644dd191935f?fm=jpg&q=60&w=3000&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MXx8aW1hZ2V8ZW58MHx8MHx8fDA%3D");
     }catch(err){
       return DataFailed('Error: ${err.toString()}');
     }
-  }
+  }*/
 
   Future<DataState<List<SocialMediaItem>>> getSocialMediaList() async {
     try{
@@ -89,6 +99,30 @@ class SocialMediaApi {
       }
     }catch(err){
       return DataFailed(err.toString());
+    }
+  }
+
+  Future<DataState<UpdatePublicationResponse>> updateDocument({String? publicationId,String? title,String? description,String? datedAt}) async {
+    try{
+      Response response = await _dio.post(
+        "${Config.baseUrl}${Config.updateDocumentEndpoint}",
+        options: Options(
+          headers: {
+            "Authorization": "Bearer ${Config.token}",
+            "Content-Type": "multipart/form-data"
+          },
+        ),
+        data: FormData.fromMap({
+          "publication": publicationId,
+          "title": title,
+          "description": description,
+          "dated_at": datedAt,
+        }),
+      );
+      return DataSuccess(UpdatePublicationResponse.fromJson(response.data));
+      //return DataSuccess(UpdatePublicationResponse.fromJson(MockData.updateDocument[0]));
+    }on DioException catch(err){
+      return DataFailed("Server error !",details: err.toString());
     }
   }
 }

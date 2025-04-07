@@ -3,7 +3,7 @@ import 'package:equatable/equatable.dart';
 ///Config file passed to stream function for file chunked upload
 class Config extends Equatable{
   ///Server base url
-  final String baseUrl;
+  final String? baseUrl;
   ///Chunk max size to upload to Server , by default is 500000
   int chunkMaxSize;
   ///Path is added to baseUrl in request time
@@ -14,7 +14,7 @@ class Config extends Equatable{
   String? authorizationToken;
 
   Config({
-    required this.baseUrl,
+    this.baseUrl,
     int? chunkMaxSize = 500000,
     String? path = "",
     String? contentType = 'multipart/form-data',

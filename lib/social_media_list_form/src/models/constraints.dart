@@ -11,6 +11,10 @@ class Constrains extends fur.Constrains{
     return Constrains._(constrains);
   }
 
+  fur.Constrains? getRepository(){
+    return _constrains;
+  }
+
 
   getConstraintByMediaTypeAndEngine(String? engine,MediaType mediaType){
     print(_constrains?.getPictureConstraintByEngine(engine));

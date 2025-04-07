@@ -11,4 +11,9 @@ class SocialMediaListFormLocalResizePictureRequested extends SocialMediaListForm
   SocialMediaListFormLocalResizePictureRequested(this.socialMediaItem,this.context);
 }
 
+class SocialMediaListFormLocalUploadPictureRequested extends SocialMediaListFormLocalEvent{
+  final SocialMediaItem socialMediaItem;
+  final BuildContext? context;
+  SocialMediaListFormLocalUploadPictureRequested(this.socialMediaItem,this.context);
+}
 

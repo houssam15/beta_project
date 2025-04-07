@@ -3,7 +3,9 @@ part of "social_media_list_form.local.bloc.dart";
 enum SocialMediaListFormLocalAction {
   none,
   resizeFailed,
-  resizeSuccess
+  resizeSuccess,
+  changeFailed,
+  changeSuccess
 }
 
 class SocialMediaListFormLocalState extends Equatable{

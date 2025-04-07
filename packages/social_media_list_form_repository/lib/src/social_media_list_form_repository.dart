@@ -5,20 +5,37 @@ import "package:picture_resizer/picture_resizer.dart" hide ValidConstraints;
 import "models/models.dart";
 import "package:social_media_api/social_media_api.dart" as social_media_api;
 import "package:picture_resizer/picture_resizer.dart" as picture_resizer;
-
+import "package:file_chunked_uploader/file_chunked_uploader.dart" as fcu;
 class SocialMediaListFormRepository{
   final PictureResizer pictureResizer;
   final social_media_api.SocialMediaApi socialMediaApi;
+  late fcu.FileChunkedUploader _fileChunkedUploader;
+  final GlobalParams globalParams;
 
-  SocialMediaListFormRepository({PictureResizer? pictureResizer,social_media_api.SocialMediaApi? socialMediaApi}):
+  SocialMediaListFormRepository({
+    PictureResizer? pictureResizer,
+    social_media_api.SocialMediaApi? socialMediaApi,
+    fcu.FileChunkedUploader? fileChunkedUploader,
+    required this.globalParams
+  }):
   pictureResizer = pictureResizer??PictureResizer(),
-  socialMediaApi = socialMediaApi ?? social_media_api.SocialMediaApi();
-
+  socialMediaApi = socialMediaApi ?? social_media_api.SocialMediaApi(),
+  _fileChunkedUploader = fileChunkedUploader??fcu.FileChunkedUploader<fcu.UploadDocumentResponse>(
+      fcu.Config(
+      baseUrl: globalParams.baseUrl,
+      path: globalParams.fileChunkedUploadPath,
+      chunkMaxSize: globalParams.fileChunkedUploadMaxChunkSize,
+      contentType: globalParams.fileChunkedUploadContentType,
+      authorizationToken:globalParams.authorizationToken
+      ),
+      (json,{token}) => fcu.UploadDocumentResponse().fromJson(json,token: token)
+  );
 
   List<ValidConstraints>? _validConstraints;
   FileParams? _fileParams;
   BuildContext? _context;
 
+  UploadDocumentForPublicationResponse? _uploadDocumentForPublicationResponse;
 
   List<ValidConstraints>? get validConstraints => _validConstraints;
   SocialMediaListFormRepository setValidConstraints(List<ValidConstraints>? p){
@@ -37,6 +54,15 @@ class SocialMediaListFormRepository{
     _context = context;
     return this;
   }
+
+  setUploadDocumentForPublicationResponse(UploadDocumentForPublicationResponse? result){
+    _uploadDocumentForPublicationResponse = result;
+  }
+
+  UploadDocumentForPublicationResponse? getUploadDocumentForPublicationResponse(){
+    return _uploadDocumentForPublicationResponse;
+  }
+
 
   Future<ResizedFile> loadFileAndResize() async{
     try{
@@ -71,22 +97,41 @@ class SocialMediaListFormRepository{
     }
   }
 
-  Future<UploadedFile> uploadPictureForPublication(File file,{dynamic params}) async {
+  /*Future<UploadedFile> uploadPictureForPublication(File file,{dynamic params}) async {
     UploadedFile uploadedFile = UploadedFile();
     try{
-      social_media_api.DataState<String> ds = await socialMediaApi.uploadPictureForPublication(file,params:params);
+      /*social_media_api.DataState<String> ds = await socialMediaApi.uploadPictureForPublication(file,params:params);
       if(ds is social_media_api.DataFailed) uploadedFile.setError(ds.error!);
-      uploadedFile.setPictureUrl(ds.data!);
+      uploadedFile.setPictureUrl(ds.data!);*/
+      fcu.
     }catch(err){
       uploadedFile.setError(err.toString());
     }
     return uploadedFile;
+  }*/
+
+  Stream<int> uploadFileToServerForPublication(File file,{dynamic params}) async* {
+    yield* _fileChunkedUploader.upload(file,data: params).handleError((error){
+      if(kDebugMode) print("UploadFileToServer error : $error");
+      throw Exception("Server unavailable");
+    });
+    setUploadDocumentForPublicationResponse(UploadDocumentForPublicationResponse.create(_fileChunkedUploader.uploadResult as fcu.UploadDocumentForPublicationResponse?));
   }
 
   Future<List<SocialMediaItem>> getSocialMediaList(dynamic data) async {
     //social_media_api.DataState<dynamic> ds = await socialMediaApi.getSocialMediaList();
     //if(ds is social_media_api.DataFailed) throw Exception("Can't get data");
     return SocialMediaItem.fromList(data);
+  }
+
+  Future<PublishPublicationResponse> publishPublication(PublishPublicationRequest request) async {
+    PublishPublicationResponse response = PublishPublicationResponse();
+    try{
+
+    }catch(err){
+
+    }
+    return response;
   }
 
 }

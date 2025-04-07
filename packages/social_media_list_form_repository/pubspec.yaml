@@ -14,6 +14,8 @@ dependencies:
     path: ../picture_resizer
   social_media_api:
     path: ../social_media_api
+  file_chunked_uploader:
+    path: ../file_chunked_uploader
 dev_dependencies:
   flutter_test:
     sdk: flutter

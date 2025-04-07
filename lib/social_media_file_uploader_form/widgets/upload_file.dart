@@ -12,6 +12,8 @@ import "package:localization_service/localization_service.dart";
 import "package:percent_indicator/linear_percent_indicator.dart";
 import "package:video_viewer/video_viewer.dart";
 import "../../app.dart";
+import "../../social_media_publication_form/src/social_media_publication_form.dart";
+import "../../social_media_publication_form/src/social_media_publication_form_arguments.dart";
 import "linear_progress.dart";
 import "../models/local_file.dart";
 import "loading.dart";
@@ -32,7 +34,11 @@ class _UploadFileState extends State<UploadFile> {
   void initState() {
     super.initState();
     if (widget.state.mediaType == MediaType.picture) {
-      _imageFuture = image_viewer.ImageProvider().fromFile(widget.state.file);
+      if(widget.state.uploadDocumentResponse.hasPicture()){
+        _imageFuture = image_viewer.ImageProvider().fromUrl(widget.state.uploadDocumentResponse.getPictureUrl());
+      }else{
+        _imageFuture = image_viewer.ImageProvider().fromFile(widget.state.file);
+      }
     }
   }
 
@@ -116,9 +122,13 @@ class _UploadFileState extends State<UploadFile> {
                 widget.state,
                 title:Text(context.tr("back"),style: TextStyle(color: Theme.of(context).colorScheme.onError)),
                 onPressed: () async{
-                  final isBack = await showDialog<bool>(useRootNavigator: false,context: context,builder: (context) => BackConfirmationDialog(widget.state));
-                  if (isBack == true) {
-                    context.read<FileUploaderBloc>().add(FileUploaderResetRequested());
+                  if(context.read<FileUploaderBloc>().modifySingleDocumentForPublication){
+                    Navigator.of(context).pop();
+                  }else{
+                    final isBack = await showDialog<bool>(useRootNavigator: false,context: context,builder: (context) => BackConfirmationDialog(widget.state));
+                    if (isBack == true) {
+                      context.read<FileUploaderBloc>().add(FileUploaderResetRequested());
+                    }
                   }
                 },
               ),
@@ -129,24 +139,36 @@ class _UploadFileState extends State<UploadFile> {
                   title: widget.state.isUploading?Loading(widget.state):Text(context.tr("upload"),style: TextStyle(
                           color: widget.state.isUploading?Theme.of(context).colorScheme.onPrimary:Theme.of(context).colorScheme.onError
                   )),
-                  onPressed: widget.state.isUploading ? null : () => context.read<FileUploaderBloc>().add(FileUploaderUploadToServer()),
+                  onPressed: widget.state.isUploading ? null : (){
+                    if(context.read<FileUploaderBloc>().modifySingleDocumentForPublication){
+                      context.read<FileUploaderBloc>().add(FileUploaderUploadToServerForNetwork());
+                    }else{
+                      context.read<FileUploaderBloc>().add(FileUploaderUploadToServer());
+                    }
+                  },
               ),
               if(widget.state.uploadDocumentResponse.isFileUploadedSuccessfully())
                 MyButton(
                   widget.state,
                   onPressed: (){
-                    if(navigatorKey.currentContext!=null){
-                      Navigator.of(navigatorKey.currentContext!).pushReplacementNamed(
-                          SocialMediaListForm.route,
-                          arguments: SocialMediaListFormArguments(
-                              mediaType:widget.state.mediaType.toString() ,
-                              uploadDocumentResponse:widget.state.uploadDocumentResponse.getRepository(),
-                              constrains: widget.state.constrains.getRepository()
-                          )
-                      );
+                    if(context.read<FileUploaderBloc>().modifySingleDocumentForPublication){
+                      Navigator.of(context).pop(true);
+                    }else{
+                      if(navigatorKey.currentContext!=null){
+                        Navigator.of(navigatorKey.currentContext!).pushReplacementNamed(
+                            SocialMediaPublicationForm.route,
+                            arguments: SocialMediaPublicationFormArguments(
+                                uploadDocumentResponse:widget.state.uploadDocumentResponse.getRepository(),
+                                mediaType:widget.state.mediaType.toString(),
+                                constrains: widget.state.constrains.getRepository(),
+                                currentState: context.read<FileUploaderBloc>().currentState
+                            )
+                        );
+                      }
                     }
+
                   },
-                  title: Text(context.tr("Next"),style: TextStyle(color: Theme.of(context).colorScheme.onError)),
+                  title: Text(context.tr(context.read<FileUploaderBloc>().modifySingleDocumentForPublication?"Ok":"Next"),style: TextStyle(color: Theme.of(context).colorScheme.onError)),
                 ),
             ],
           ),

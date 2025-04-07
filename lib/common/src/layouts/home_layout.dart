@@ -8,17 +8,23 @@ import "package:alpha_flutter_project/flutter_infinite_list/infinite_list_app.da
 import "package:alpha_flutter_project/counter/counter.dart";
 import "package:alpha_flutter_project/social_media_publication_form/social_media_publication_form.dart";
 import "package:alpha_flutter_project/social_media_list_form/social_media_list_form.dart";
+import "package:alpha_flutter_project/social_media_publications_list/social_media_publications_list.dart";
+
+import "../../../qrcode_list/src/qrcode_list.dart";
 
 class HomeLayout extends StatefulWidget {
   final Widget body;
   final String selectedRoute;
   final String title;
   final bool hideAppbar;
+  final bool hideSidebar;
+
   const HomeLayout({
     required this.body,
     required this.selectedRoute,
     this.title = " App & Features",
     this.hideAppbar = false,
+    this.hideSidebar = false,
     super.key
   });
 
@@ -33,7 +39,7 @@ class _HomeLayoutState extends State<HomeLayout> {
       appBar:widget.hideAppbar?null:AppBar(
             title: Text(widget.title),
           ),
-      sideBar: SideBar(
+      sideBar: widget.hideSidebar ? null: SideBar(
         items: [
           AdminMenuItem(title: 'Dashboard',route: HomeApp.route),
           AdminMenuItem(title: 'Weather app', route: WeatherApp.route),
@@ -43,6 +49,8 @@ class _HomeLayoutState extends State<HomeLayout> {
           AdminMenuItem(title: 'Social media publication form', route: SocialMediaPublicationForm.route),
           AdminMenuItem(title: 'Social media list form', route: SocialMediaListForm.route),
           AdminMenuItem(title: 'I18n testing', route: I18nTesting.route),
+          AdminMenuItem(title: "Social media publications list",route:SocialMediaPublicationsList.route),
+          AdminMenuItem(title: "Qrcode list",route: QrcodeList.route)
         ],
         selectedRoute: widget.selectedRoute,
         onSelected: (item) {

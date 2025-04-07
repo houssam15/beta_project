@@ -9,7 +9,8 @@ class SocialMediaItem extends Equatable{
   bool showText = false;
   bool isSelected = false;
   bool isLoading = false;
-
+  bool isUploading = false;
+  int? progress;
   SocialMediaItem({
      required this.id,
      required this.icon,
@@ -34,7 +35,6 @@ class SocialMediaItem extends Equatable{
 
   static List<SocialMediaItem> fromState(SocialMediaListFormRemoteState state){
     List<SocialMediaItem> items = [];
-
     for(fur.UploadDocumentResponseWarning elm in state.uploadDocumentResponse?.getNetworks() ?? [] ){
       try{
         items.add(
@@ -71,6 +71,16 @@ class SocialMediaItem extends Equatable{
 
   SocialMediaItem setLoading(bool loading){
     isLoading = loading;
+    return this;
+  }
+
+  SocialMediaItem setUploading(bool uploading){
+    isUploading = uploading;
+    return this;
+  }
+
+  SocialMediaItem setProgress(int? progress){
+    this.progress = progress;
     return this;
   }
 

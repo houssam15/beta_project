@@ -4,3 +4,7 @@ export 'resized_file.dart';
 export "uploaded_file.dart";
 export "social_media_item.dart";
 export "social_media_item_error.dart";
+export 'global_params.dart';
+export "upload_document_for_publication_response.dart";
+export "publish_publication_response.dart";
+export "publish_publication_request.dart";

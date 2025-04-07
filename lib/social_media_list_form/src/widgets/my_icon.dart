@@ -10,7 +10,7 @@ class MyIcon extends StatelessWidget {
     return InkWell(
       onTap: onTap,
       child: Container(
-          padding:EdgeInsets.all(2),
+          padding:EdgeInsets.all(4),
           decoration: BoxDecoration(
               color: Theme.of(context).colorScheme.tertiary.withOpacity(0.8),
               borderRadius: BorderRadius.all(Radius.circular(20))

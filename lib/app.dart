@@ -1,18 +1,19 @@
-import "package:alpha_flutter_project/i18n_testing/src/i18n_testing.dart";
-import "package:alpha_flutter_project/social_media_file_uploader_form/social_media_file_uploader_form.dart";
+import "i18n_testing/src/i18n_testing.dart";
+import "social_media_file_uploader_form/social_media_file_uploader_form.dart";
 import "package:flutter/material.dart";
 import 'package:flutter_bloc/flutter_bloc.dart';
-import "package:alpha_flutter_project/login/login.dart";
-import "package:alpha_flutter_project/splash/splash.dart";
-import "package:alpha_flutter_project/home/home.dart";
-import "package:alpha_flutter_project/weather/weather.dart";
+import "login/login.dart";
+import "splash/splash.dart";
+import "home/home.dart";
+import "weather/weather.dart";
 import "package:user_repository/user_repository.dart";
-import "package:alpha_flutter_project/authentication/authentication.dart";
+import "authentication/authentication.dart";
 import "counter/counter_app.dart";
 import "flutter_infinite_list/infinite_list_app.dart";
-import "package:alpha_flutter_project/social_media_publication_form/social_media_publication_form.dart";
-import "package:alpha_flutter_project/social_media_list_form/social_media_list_form.dart";
-
+import "social_media_publication_form/social_media_publication_form.dart";
+import "social_media_list_form/social_media_list_form.dart";
+import "social_media_publications_list/social_media_publications_list.dart";
+import "qrcode_list/qrcode_list.dart";
 final navigatorKey = GlobalKey<NavigatorState>();
 
 class App extends StatefulWidget {
@@ -82,10 +83,12 @@ class _AppViewState extends State<AppView> {
         LoginApp.route:(context) => const LoginApp(),
         InfiniteListApp.route:(context) => const InfiniteListApp(),
         CounterApp.route:(context) => const CounterApp(),
-        SocialMediaFileUploaderForm.route:(context) => const SocialMediaFileUploaderForm(),
+        SocialMediaFileUploaderForm.route:(context) => SocialMediaFileUploaderForm(),
         SocialMediaPublicationForm.route:(context) => const SocialMediaPublicationForm(),
         SocialMediaListForm.route:(context) => const SocialMediaListForm(),
-        I18nTesting.route:(context) => const I18nTesting()
+        I18nTesting.route:(context) => const I18nTesting(),
+        SocialMediaPublicationsList.route:(context)=> SocialMediaPublicationsList(),
+        QrcodeList.route:(context) => QrcodeList()
       },
       builder: (context, child) {
         return BlocListener<AuthenticationBloc, AuthenticationState>(

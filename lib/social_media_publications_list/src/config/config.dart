@@ -1,0 +1,1 @@
+export "social_media_publications_config.dart";

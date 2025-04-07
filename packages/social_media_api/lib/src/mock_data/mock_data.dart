@@ -317,4 +317,18 @@ class MockData{
       },
     }
   ];
+
+
+  static dynamic updateDocument = [
+    {
+      "status":"OK",
+      "errors":{
+        "xx":"xx is wrong"
+      }
+    },
+    {
+      "status":"OK",
+      "error":"xxdsdgrgf"
+    }
+  ];
 }

@@ -1,4 +1,5 @@
 import 'package:file_uploader_repository/src/models/social_media.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import "package:file_chunked_uploader/file_chunked_uploader.dart" as fcu;
 
@@ -30,10 +31,10 @@ class UploadDocumentResponseWarning{
   }
 
 
-  static List<UploadDocumentResponseWarning> fromApi(fcu.UploadDocumentWarning? data,  {bool needGlobal = true}){
+  static List<UploadDocumentResponseWarning> fromApiForFileUploader(fcu.UploadDocumentWarning? data){
     List<UploadDocumentResponseWarning> items = [];
     try{
-        if(needGlobal && data != null && data.messages.isNotEmpty && data.messages.isNotEmpty){
+        if( data != null && data.messages.isNotEmpty && data.messages.isNotEmpty){
           final apps = [];
           for(fcu.UploadDocumentNetwork network in data.networks){
             final elm = apps.firstWhere((elm)=>elm == network.engine,orElse: () => null);
@@ -62,7 +63,29 @@ class UploadDocumentResponseWarning{
           )
         );
       }
-    }catch(err){}
+    }catch(err){
+      if(kDebugMode) print(err);
+    }
+    return items;
+  }
+
+  static List<UploadDocumentResponseWarning> fromApiForSocialMediaList(fcu.UploadDocumentWarning? data){
+    List<UploadDocumentResponseWarning> items = [];
+    try{
+      for(fcu.UploadDocumentNetwork item in data?.networks ?? []){
+        items.add(
+            UploadDocumentResponseWarning(
+                id:item.id,
+                messages: item.messages,
+                socialMediaItems: [SocialMedia.getItem(item.engine.toLowerCase()).setName(item.name)],
+                isFileInvalid: item.isUndersized || item.isRatioUndersized,
+                isFileRequireResize: item.isResizeRequired
+            )
+        );
+      }
+    }catch(err){
+      if(kDebugMode) print(err);
+    }
     return items;
   }
 

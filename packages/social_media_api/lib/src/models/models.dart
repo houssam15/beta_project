@@ -10,3 +10,4 @@ export "constraint_properties_for_video.dart";
 export "picture_ratio.dart";
 export "config.dart";
 export "social_media_item_with_constrains.dart";
+export "update_publication_response.dart";

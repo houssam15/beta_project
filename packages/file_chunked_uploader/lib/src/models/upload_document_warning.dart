@@ -39,6 +39,18 @@ class UploadDocumentWarning extends Equatable{
     return messages.isNotEmpty;
   }
 
+  bool isNetworksValid(){
+    for(UploadDocumentNetwork network in networks){
+      if(
+           ((network.isRatioUndersized || network.isResizeRequired || network.isUndersized) && network.messages.isNotEmpty)||
+           ((!network.isRatioUndersized && !network.isResizeRequired & !network.isUndersized) && network.messages.isEmpty)
+      ) {
+        return true;
+      }
+    }
+    return false;
+  }
+
   @override
   List<Object?> get props => [isRotationRequired,realRatio,height,width,messages,networks];
 }

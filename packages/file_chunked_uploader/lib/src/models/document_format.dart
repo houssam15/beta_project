@@ -6,9 +6,9 @@ class DocumentFormat extends Equatable{
 
   DocumentFormat({required this.type,required this.url});
 
-  static DocumentFormat fromJson(dynamic data){
+  static DocumentFormat fromJson(dynamic data,String? token){
     try {
-      return DocumentFormat(type: data["type"], url: data["url"]);
+      return DocumentFormat(type: data["type"], url: "${data["url"]}?token=$token");
     }catch(err){
       rethrow;
     }

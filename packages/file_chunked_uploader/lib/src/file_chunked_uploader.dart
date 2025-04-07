@@ -9,21 +9,22 @@ import 'package:flutter/foundation.dart';
 import 'package:uuid/uuid.dart';
 
 ///This class handle large file upload
-class FileChunkedUploader{
+class FileChunkedUploader<Response extends UploadResponse>{
     final Config config;
-    UploadDocumentResponse? uploadResult;
-    FileChunkedUploader(this.config);
+    Response? uploadResult;
+    final Response Function(Map<String, dynamic> json, {String? token}) fromJson;
+    FileChunkedUploader(this.config,this.fromJson);
 
     ///This function upload large images or videos to server , by split it to equal chunks
     ///
     /// - Send a uuid that make server able to group all uploaded chunks to a valid file under header property File-Uuid
     ///
     /// - Send origin file name to server under header property File-Name
-    Stream<int> upload(File file) async*{
+    Stream<int> upload(File file,{Map<String,dynamic>? data}) async*{
         final StreamController<int> progressController = StreamController<int>();
 
             final dio = Dio(BaseOptions(
-                baseUrl: config.baseUrl,
+                baseUrl: config.baseUrl.toString(),
                 headers: {
                 'Content-Type': config.contentType,
                 'File-Name':file.uri.pathSegments.last,
@@ -42,6 +43,7 @@ class FileChunkedUploader{
                 fileDataStream: file.openRead(),
                 maxChunkSize: config.chunkMaxSize,
                 path: config.path,
+                data: data,
                 onUploadProgress: (progress) {
                     // ✅ Send progress updates
                     if(progress>1) {
@@ -51,7 +53,7 @@ class FileChunkedUploader{
                     }
                 },
             ).then((response) {
-                uploadResult = UploadDocumentResponse().fromJson(response?.data);
+                uploadResult = fromJson(response?.data,token:config.authorizationToken);
                 //uploadResult = UploadDocumentResponse().fromJson(UploadDocumentMockData.uploadDocumentForPublication[0]);
                 progressController.close();
             }).catchError((error) {

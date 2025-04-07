@@ -10,7 +10,8 @@ class MyButton extends StatefulWidget {
       this.onPressed,
       required this.title,
       this.activeColor,
-      this.disableColor
+      this.disableColor,
+      this.onPressState
   });
 
   final SocialMediaListFormRemoteState state;
@@ -18,7 +19,7 @@ class MyButton extends StatefulWidget {
   final Widget title;
   final Color? activeColor;
   final Color? disableColor;
-
+  final bool? onPressState;
   @override
   State<MyButton> createState() => _MyButtonState();
 }
@@ -32,11 +33,18 @@ class _MyButtonState extends State<MyButton> {
       child: widget.title,
       style: ButtonStyle(
         backgroundColor: MaterialStateProperty.resolveWith<Color>((states) {
-          if (states.contains(MaterialState.disabled)) {
-            return widget.disableColor ??Theme.of(context).colorScheme.secondary;
-          } else {
-            return widget.activeColor ?? Theme.of(context).colorScheme.tertiary;
+          if(widget.onPressState==null){
+                if (states.contains(MaterialState.disabled)) {
+                  return widget.disableColor ??Theme.of(context).colorScheme.secondary;
+                } else {
+                  return widget.activeColor ?? Theme.of(context).colorScheme.tertiary;
+                }
+          }else if(widget.onPressState==true){
+                return widget.activeColor ?? Theme.of(context).colorScheme.tertiary;
+          }else{
+                return widget.disableColor ?? Theme.of(context).colorScheme.secondary;
           }
+
         }),
       ),
     );

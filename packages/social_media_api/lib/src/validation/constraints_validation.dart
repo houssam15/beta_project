@@ -1,9 +1,7 @@
-import 'package:equatable/equatable.dart';
 import 'package:json_schema/json_schema.dart';
-import 'dart:convert';
 
-class ConstraintsValidation extends Equatable{
-   get _schema  => {
+class ConstraintsValidation {
+  get _schema  => {
     "title":"Constraints",
     "description":"validate constraints for supported files",
     "type":"object",
@@ -284,10 +282,7 @@ class ConstraintsValidation extends Equatable{
          "errorMessage": "At least one of the fields 'networks', 'constraints', 'error', or 'errors' must be provided."
        }
      ],
-   };
-
-
-
+  };
 
   ValidationResults? _validationResults;
 
@@ -307,8 +302,5 @@ class ConstraintsValidation extends Equatable{
   List<String> getErrors() {
     return _validationResults != null ? _validationResults!.errors.map((elm) => elm.message).toList():[];
   }
-
-  @override
-  List<Object?> get props => [];
 
 }

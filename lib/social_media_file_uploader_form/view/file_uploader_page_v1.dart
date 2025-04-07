@@ -58,7 +58,7 @@ class _FileUploaderPageState extends State<FileUploaderPage> {
                             height: 5
                           ),
                           Text(
-                              "File should be ${_config.supportedExtensions.toString()}",
+                              "File should be ${Config.supportedExtensions.toString()}",
                               style: Theme.of(context).textTheme.titleSmall
                           )
                         ],
@@ -379,7 +379,7 @@ class _FileUploaderPageState extends State<FileUploaderPage> {
                             ),
                           )
                       ),
-                      if(_config.nextPageAppRoute != null)
+                      if(Config.nextPageAppRoute != null)
                       ...[
                         SizedBox(height: 10,),
                         Expanded(
@@ -398,7 +398,7 @@ class _FileUploaderPageState extends State<FileUploaderPage> {
                                     },
                                   ),
                                   const SizedBox(width: 5),
-                                  if(_config.nextPageAppRoute!=null)
+                                  if(Config.nextPageAppRoute!=null)
                                   ElevatedButton(
                                     child: Text(
                                       "Next",
@@ -410,7 +410,7 @@ class _FileUploaderPageState extends State<FileUploaderPage> {
                                       ),*/
                                     ),
                                     onPressed: /*state.status!=FileUploaderStatus.success ? null: */() {
-                                      Navigator.of(context).pushNamed(_config.nextPageAppRoute!);
+                                      Navigator.of(context).pushNamed(Config.nextPageAppRoute!);
                                     },
                                     style: ButtonStyle(
                                       textStyle: WidgetStateTextStyle.resolveWith(

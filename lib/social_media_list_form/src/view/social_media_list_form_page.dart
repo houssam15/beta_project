@@ -1,6 +1,9 @@
+import "package:alert_banner/types/enums.dart";
+import "package:alert_banner/widgets/alert.dart";
 import "package:alpha_flutter_project/authentication/authentication.dart";
-import "package:alpha_flutter_project/social_media_file_uploader_form/file_uploader_app.dart";
+import "package:alpha_flutter_project/social_media_file_uploader_form/social_media_file_uploader_form_app.dart";
 import "package:alpha_flutter_project/social_media_list_form/src/models/models.dart";
+import "package:alpha_flutter_project/social_media_publication_form/social_media_publication_form.dart";
 import "package:flutter/material.dart";
 import "package:localization_service/localization_service.dart";
 import "../../../app.dart";
@@ -19,8 +22,7 @@ class SocialMediaListFormPage extends StatefulWidget {
 class _SocialMediaListFormPageState extends State<SocialMediaListFormPage> {
 
   _onResizeFailed(SocialMediaListFormLocalState state){
-    ScaffoldMessenger.of(context).hideCurrentSnackBar();
-    ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(state.message!)));
+    showAlertBanner(context,()=>print("TAPPED"),AlertBannerChild(text: context.tr(state.message!),color: Colors.red),alertBannerLocation: AlertBannerLocation.top);
   }
 
   @override
@@ -81,7 +83,13 @@ class _SocialMediaListFormPageState extends State<SocialMediaListFormPage> {
                               onPressed: (){
                                 if(navigatorKey.currentContext!=null){
                                   Navigator.of(navigatorKey.currentContext!).pushReplacementNamed(
-                                      SocialMediaFileUploaderForm.route
+                                      SocialMediaPublicationForm.route,
+                                      arguments: SocialMediaPublicationFormArguments(
+                                        uploadDocumentResponse: context.read<SocialMediaListFormRemoteBloc>().uploadDocumentResponse.getRepository(),
+                                        constrains: context.read<SocialMediaListFormRemoteBloc>().constrains?.getRepository(),
+                                        mediaType: context.read<SocialMediaListFormRemoteBloc>().mediaType,
+                                        currentState: context.read<SocialMediaListFormRemoteBloc>().previousState
+                                      )
                                   );
                                 }
                               },
@@ -90,10 +98,21 @@ class _SocialMediaListFormPageState extends State<SocialMediaListFormPage> {
                             SizedBox(width: 5,),
                             MyButton(
                               state,
-                              onPressed: !state.enableNextAction ? null : () {
-                                context.read<SocialMediaListFormRemoteBloc>().add(SocialMediaListFormSocialMediaItemsSelected());
+                              onPressed: !state.enableNextAction
+                                  ?(){
+                                    showAlertBanner(context,()=>print("TAPPED"),AlertBannerChild(text: context.tr("No element selected !"),color: Colors.grey,),alertBannerLocation: AlertBannerLocation.top);
+                                  }
+                                  :(){
+                                     if(state.isPublishing()){
+                                       showAlertBanner(context,()=>print("TAPPED"),AlertBannerChild(text: context.tr("Wait please !"),color: Colors.grey,),alertBannerLocation: AlertBannerLocation.top);
+                                     }else{
+                                       context.read<SocialMediaListFormRemoteBloc>().add(SocialMediaListFormSocialMediaItemsSelected());
+                                     }
                               },
-                              title: Text(context.tr("Next"),style: TextStyle(color: Theme.of(context).colorScheme.onError)),
+                              onPressState:state.isPublishing() ? null : state.enableNextAction,
+                              title: state.isPublishing()
+                                  ? Loading()
+                                  : Text(context.tr("Publish"),style: TextStyle(color: Theme.of(context).colorScheme.onError)),
                             ),
 
                           ],
