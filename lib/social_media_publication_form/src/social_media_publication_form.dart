@@ -36,7 +36,6 @@ class _SocialMediaPublicationFormState extends State<SocialMediaPublicationForm>
     return FeatureLayout<SocialMediaPublicationFormArguments>(
         params: args ?? SocialMediaPublicationFormArguments().create(),
         selectedRoute: Config.appRoute,
-        hideAppbar: true,
         lang: LangParams("${Config.featureName}/src/lang"),
         theme: ThemeParams(AppTheme().themeData),
         providers: [
@@ -70,7 +69,7 @@ class _SocialMediaPublicationFormState extends State<SocialMediaPublicationForm>
           selectedRoute: SocialMediaPublicationForm.route,
           hideAppbar: true,
           body: Theme(
-              data: AppTheme().themeData,
+              validation: AppTheme().themeData,
               child: args?.uploadDocumentResponse==null
                   ?ErrorMessageWidget(context.tr("No file selected"),refresh: false)
                   :BlocProvider<SocialMediaPublicationFormRemoteBloc>(

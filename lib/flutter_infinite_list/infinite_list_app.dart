@@ -1,7 +1,12 @@
+import 'package:flutter_bloc/flutter_bloc.dart';
+
+import 'bloc/post_bloc.dart';
 import 'infinite_list_app_params.dart';
 import '../common/common.dart';
-import 'package:alpha_flutter_project/flutter_infinite_list/view/posts_page.dart';
 import 'package:flutter/material.dart';
+import 'package:http/http.dart' as http;
+
+import 'view/posts_list.dart';
 
 class InfiniteListApp extends StatelessWidget {
   static final String route = "/infinite-list-app";
@@ -11,8 +16,14 @@ class InfiniteListApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return FeatureLayout<InfiniteListAppParams>(
         selectedRoute: "/infinite-list-app",
+        appBarTitle: "Infinite list",
         params: InfiniteListAppParams().create(),
-        child:PostsPage()
+        providers: [
+          BlocProvider<PostBloc>(
+            create: (_) => PostBloc(httpClient: http.Client())..add(PostFetched()),
+          )
+        ],
+        child:PostsList()
     );
   }
 }

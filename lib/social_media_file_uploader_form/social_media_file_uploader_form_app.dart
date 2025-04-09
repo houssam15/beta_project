@@ -82,7 +82,7 @@ class _SocialMediaFileUploaderFormState extends State<SocialMediaFileUploaderFor
           hideSidebar: args.hideSidebar??false,
           selectedRoute: SocialMediaFileUploaderForm.route,
           body: Theme(
-              data: AppTheme().themeData,
+              validation: AppTheme().themeData,
               child: BlocProvider<FileUploaderBloc>(
                 create: (_) => FileUploaderBloc(
                     uploadDocumentResponse:args.uploadDocumentResponse,

@@ -24,35 +24,17 @@ class _SocialMediaPublicationsListState extends State<SocialMediaPublicationsLis
 
   @override
   Widget build(BuildContext context) {
-    widget.params =widget.params ?? SocialMediaPublicationListParams().create(ModalRoute.of(context)?.settings.arguments);
-    final localizationService = LocalizationService(Localizations.localeOf(context),feature: SocialMediaPublicationsListConfig.langPath);
-    return MaterialApp(
-      debugShowCheckedModeBanner: false,
-      localeResolutionCallback: LocalizationService.localeResolutionCallback,
-      supportedLocales: LocalizationService.supportedLocales,
-      localizationsDelegates: localizationService.localizationsDelegate,
-      home: HomeLayout(
-          selectedRoute: SocialMediaPublicationsList.route,
-          hideAppbar: true,
-          body: Theme(
-              data: AppTheme().themeData,
-              child: widget.params==null || widget.params?.isValid()==false
-                  ? ErrorMessageWidget(context.tr("Invalid params"))
-                  : MultiBlocProvider(
-                  providers: [
-                    //Remote bloc
-                    BlocProvider<SocialMediaPublicationsListRemoteBloc>(
-                        create: (_) => SocialMediaPublicationsListRemoteBloc()
-                    ),
-                    //Local bloc
-                    /*BlocProvider<SocialMediaPublicationsListLocalBloc>(
-                        create: (_) => SocialMediaPublicationsListLocalBloc()
-                    )*/
-                  ],
-                  child: SocialMediaListPublicationsView()
-              )
+    return FeatureLayout<SocialMediaPublicationListParams>(
+        params: SocialMediaPublicationListParams().create(widget.params ?? SocialMediaPublicationListParams().create(ModalRoute.of(context)?.settings.arguments)),
+        selectedRoute: SocialMediaPublicationsListConfig.appRoute,
+        lang: LangParams(SocialMediaPublicationsListConfig.langPath),
+        theme: ThemeParams(AppTheme().themeData),
+        providers: [
+          BlocProvider<SocialMediaPublicationsListRemoteBloc>(
+              create: (_) => SocialMediaPublicationsListRemoteBloc()
           ),
-      ),
+        ],
+        child: SocialMediaListPublicationsView()
     );
   }
 }

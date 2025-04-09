@@ -13,6 +13,7 @@ class PostsList extends StatefulWidget {
 
 class _PostsListState extends State<PostsList> {
   final _scrollController = ScrollController();
+  final _sidebarTriggerWidth = 30.0;
 
   @override
   void initState() {
@@ -32,6 +33,7 @@ class _PostsListState extends State<PostsList> {
               return const Center(child: Text('no posts'));
             }
             return ListView.builder(
+              physics: const ClampingScrollPhysics(),
               itemBuilder: (BuildContext context, int index) {
                 return index >= state.posts.length
                     ? const BottomLoader()
@@ -43,7 +45,9 @@ class _PostsListState extends State<PostsList> {
               controller: _scrollController,
             );
           case PostStatus.initial:
-            return const Center(child: CircularProgressIndicator());
+            return const Expanded(  // Also wrap the loading indicator
+              child: Center(child: CircularProgressIndicator()),
+            );
         }
       },
     );

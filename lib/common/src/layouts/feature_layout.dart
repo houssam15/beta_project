@@ -39,7 +39,8 @@ class FeatureLayout<P extends FeatureParams> extends StatelessWidget {
     this.theme,
     this.hideAppbar = true,
     this.providers = const [],
-    this.errorWidget
+    this.errorWidget,
+    this.appBarTitle=""
   });
   final P params;
   final Widget child;
@@ -49,6 +50,7 @@ class FeatureLayout<P extends FeatureParams> extends StatelessWidget {
   final bool hideAppbar;
   final List<SingleChildWidget> providers;
   final Widget? errorWidget;
+  final String appBarTitle;
   @override
   Widget build(BuildContext context) {
     return Localizations(
@@ -56,6 +58,7 @@ class FeatureLayout<P extends FeatureParams> extends StatelessWidget {
       delegates: lang?.getLocalizationService(context).localizationsDelegate ?? LocalizationService.getFallbackDelegates(),
       child: HomeLayout(
         selectedRoute: selectedRoute,
+        title: appBarTitle,
         hideAppbar: hideAppbar,
         body: theme != null && theme?.isTheme()==true
             ? Theme(data: theme!.themeData!, child: _buildChild(context))

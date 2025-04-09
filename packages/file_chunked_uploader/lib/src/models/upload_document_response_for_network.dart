@@ -27,7 +27,7 @@ class UploadDocumentResponseForNetwork implements UploadResponse{
         "type":["number","string"],
         "description":"Unique id for document (uploaded file)"
       },
-      "data":{
+      "validation":{
         "type":"object",
         "properties":{
           "picture":{
@@ -105,7 +105,7 @@ class UploadDocumentResponseForNetwork implements UploadResponse{
     },
     "oneOf": [
       {
-        "required": ["id","data"],
+        "required": ["id","validation"],
         "not": {
           "anyOf": [
             { "required": ["error"] },
@@ -121,7 +121,7 @@ class UploadDocumentResponseForNetwork implements UploadResponse{
         "not": {
           "anyOf": [
             { "required": ["id"] },
-            { "required": ["data"] }
+            { "required": ["validation"] }
           ]
         }
       }
@@ -137,8 +137,8 @@ class UploadDocumentResponseForNetwork implements UploadResponse{
       }else{
         return UploadDocumentResponseForNetwork(
             id: data["id"],
-            pictureFormats: data["data"]?["picture"]?.map<DocumentFormat>((elm)=>DocumentFormat.fromJson(elm,token)).toList() ?? [],
-            videoFormats: data["data"]?["video"]?.map<DocumentFormat>((elm)=>DocumentFormat.fromJson(elm,token)).toList() ?? [],
+            pictureFormats: data["validation"]?["picture"]?.map<DocumentFormat>((elm)=>DocumentFormat.fromJson(elm,token)).toList() ?? [],
+            videoFormats: data["validation"]?["video"]?.map<DocumentFormat>((elm)=>DocumentFormat.fromJson(elm,token)).toList() ?? [],
             errors: data["errors"]!= null || data["error"]!= null ? data["errors"].map<String>((elm)=>elm.toString()).toList() ?? [data["error"]] :[],
             violations: UploadDocumentNetwork.fromJson(data["violations"])
         );

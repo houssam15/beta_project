@@ -51,8 +51,9 @@ dependencies:
     path: packages/video_viewer
   rive_animated_icon: ^2.0.3
   blinking_text: ^1.0.4
-  #video_player_with_awesome_package:
-  #  path: packages/video_player_with_awesome_package
+  social_media_publications_repository:
+    path: packages/social_media_publications_repository
+
 dev_dependencies:
   bloc_test: ^10.0.0
   build_runner: ^2.0.0

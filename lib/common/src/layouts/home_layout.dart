@@ -22,7 +22,7 @@ class HomeLayout extends StatefulWidget {
   const HomeLayout({
     required this.body,
     required this.selectedRoute,
-    this.title = " App & Features",
+    this.title = "",
     this.hideAppbar = false,
     this.hideSidebar = false,
     super.key
@@ -36,9 +36,10 @@ class _HomeLayoutState extends State<HomeLayout> {
   @override
   Widget build(BuildContext context) {
     return AdminScaffold(
-      appBar:widget.hideAppbar?null:AppBar(
+      appBar:/*widget.hideAppbar?null:*/AppBar(
             title: Text(widget.title),
-          ),
+      ),
+      leadingIcon: Icon(Icons.menu,color: Colors.grey),
       sideBar: widget.hideSidebar ? null: SideBar(
         items: [
           AdminMenuItem(title: 'Dashboard',route: HomeApp.route),

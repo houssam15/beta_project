@@ -1,9 +1,9 @@
 import '../common/common.dart';
 
-class CounterAppParams implements FeatureParams{
+class CounterAppParams implements FeatureParams<CounterAppParams>{
   @override
-  create([params]) {
-    CounterAppParams();
+  CounterAppParams create([params]) {
+    return CounterAppParams();
   }
 
   @override

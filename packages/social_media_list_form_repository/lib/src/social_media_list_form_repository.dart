@@ -102,7 +102,7 @@ class SocialMediaListFormRepository{
     try{
       /*social_media_api.DataState<String> ds = await socialMediaApi.uploadPictureForPublication(file,params:params);
       if(ds is social_media_api.DataFailed) uploadedFile.setError(ds.error!);
-      uploadedFile.setPictureUrl(ds.data!);*/
+      uploadedFile.setPictureUrl(ds.validation!);*/
       fcu.
     }catch(err){
       uploadedFile.setError(err.toString());
@@ -120,7 +120,7 @@ class SocialMediaListFormRepository{
 
   Future<List<SocialMediaItem>> getSocialMediaList(dynamic data) async {
     //social_media_api.DataState<dynamic> ds = await socialMediaApi.getSocialMediaList();
-    //if(ds is social_media_api.DataFailed) throw Exception("Can't get data");
+    //if(ds is social_media_api.DataFailed) throw Exception("Can't get validation");
     return SocialMediaItem.fromList(data);
   }
 

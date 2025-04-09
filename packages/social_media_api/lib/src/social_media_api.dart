@@ -24,7 +24,7 @@ class SocialMediaApi {
       if (response.statusCode == 200) {
         Directory dir = await _getTemporaryDirectory();
         String extension = _extractFileExtensionFromMimeType(response.headers.value('content-type'));
-        // Assuming the response data is a file (e.g., binary data)
+        // Assuming the response validation is a file (e.g., binary validation)
         final file = File("${dir.path}/${_generateFileName()}.$extension");
         // Provide the file path
         await file.writeAsBytes(response.data);
@@ -48,7 +48,7 @@ class SocialMediaApi {
                 "Authorization":"Bearer ${Config.token}"
               }
           ),
-          data: data
+          validation: validation
       );
       await Future.delayed(Duration(seconds: 3));
 
@@ -60,7 +60,7 @@ class SocialMediaApi {
 
   Future<DataState<List<SocialMediaItem>>> getSocialMediaList() async {
     try{
-      ///TODO : get data from api
+      ///TODO : get validation from api
       return DataSuccess(SocialMediaItem().fromList(MockData.getSocialMediaListData));
     }catch(err){
       return DataFailed('Error: ${err.toString()}');
@@ -109,7 +109,7 @@ class SocialMediaApi {
         options: Options(
           headers: {
             "Authorization": "Bearer ${Config.token}",
-            "Content-Type": "multipart/form-data"
+            "Content-Type": "multipart/form-validation"
           },
         ),
         data: FormData.fromMap({

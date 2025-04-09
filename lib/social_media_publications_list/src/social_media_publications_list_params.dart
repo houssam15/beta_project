@@ -1,8 +1,9 @@
+import "package:alpha_flutter_project/common/common.dart";
 import "package:alpha_flutter_project/social_media_common/social_media_common.dart";
-class SocialMediaPublicationListParams implements SocialMediaCommonParams<SocialMediaPublicationListParams>{
+class SocialMediaPublicationListParams implements FeatureParams<SocialMediaPublicationListParams>{
 
   @override
-  SocialMediaPublicationListParams create(dynamic params){
+  SocialMediaPublicationListParams create([dynamic params]){
     if (params == null) {
       return SocialMediaPublicationListParams();
     } else {

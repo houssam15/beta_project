@@ -28,7 +28,7 @@ class SocialMediaListFormArguments implements FeatureParams<SocialMediaListFormA
 
   @override
   bool isValid() {
-    return this.uploadDocumentResponse != null;
+    return this.uploadDocumentResponse != null && this.uploadDocumentResponse?.getRepository() != null;
   }
 
 }

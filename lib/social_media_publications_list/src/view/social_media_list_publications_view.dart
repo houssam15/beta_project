@@ -1,4 +1,10 @@
+import "package:alpha_flutter_project/social_media_publications_list/src/view/pages/social_media_list_publications_publication_details_page.dart";
 import "package:flutter/material.dart";
+import "package:flutter_bloc/flutter_bloc.dart";
+import "pages/social_media_list_publications_failed_page.dart";
+import "pages/social_media_list_publications_initial_page.dart";
+import "pages/social_media_list_publications_success_page.dart";
+import "../bloc/remote/social_media_publications_list_remote_bloc.dart";
 
 class SocialMediaListPublicationsView extends StatefulWidget {
   const SocialMediaListPublicationsView({super.key});
@@ -12,7 +18,19 @@ class _SocialMediaListPublicationsViewState extends State<SocialMediaListPublica
   Widget build(BuildContext context) {
     return Scaffold(
       body: Center(
-        child: Text("Social media publications list"),
+        child: BlocConsumer<SocialMediaPublicationsListRemoteBloc,SocialMediaPublicationsListRemoteState>(
+            builder: (context, state) {
+              switch(state.status){
+                case SocialMediaPublicationsListRemoteStatus.initial: return SocialMediaListPublicationsInitialPage();
+                case SocialMediaPublicationsListRemoteStatus.failed: return SocialMediaListPublicationsFailedPage();
+                case SocialMediaPublicationsListRemoteStatus.success:  return SocialMediaListPublicationsSuccessPage();
+                case SocialMediaPublicationsListRemoteStatus.publicationDetails: return SocialMediaListPublicationsPublicationDetailsPage();
+              }
+            },
+            listener: (context, state) {
+
+            },
+        ),
       ),
     );
   }

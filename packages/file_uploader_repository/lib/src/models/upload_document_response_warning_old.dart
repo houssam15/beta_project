@@ -11,10 +11,10 @@ class UploadDocumentResponseWarning {
     this.networks = const []
   });
 
-  static UploadDocumentResponseWarning? fromApi(file_chunked_uploader.UploadDocumentWarning? data){
-    return data != null ?UploadDocumentResponseWarning(
-       globalMessages: data.messages,
-       networks: data.networks.map<UploadDocumentResponseWarning>(
+  static UploadDocumentResponseWarning? fromApi(file_chunked_uploader.UploadDocumentWarning? validation){
+    return validation != null ?UploadDocumentResponseWarning(
+       globalMessages: validation.messages,
+       networks: validation.networks.map<UploadDocumentResponseWarning>(
                (elm)=>UploadDocumentResponseWarning(name:elm.engine,typeIcon: UploadDocumentResponseWarning().getIconByKey(elm.engine.toLowerCase()), messages: elm.messages)
        ).toList()
     ):null;

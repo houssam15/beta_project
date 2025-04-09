@@ -32,11 +32,11 @@ class FileChunkedUploader<Response extends UploadResponse>{
                 'Authorization':"Bearer ${config.authorizationToken}"
                 },
                 connectTimeout: Duration(seconds: 3), // 3 seconds for connection
-                receiveTimeout: Duration(seconds: 3), // 3 seconds for receiving data
-                sendTimeout: Duration(seconds: 3), // 3 seconds for sending data
+                receiveTimeout: Duration(seconds: 3), // 3 seconds for receiving validation
+                sendTimeout: Duration(seconds: 3), // 3 seconds for sending validation
             ));
             final uploader = ChunkedUploader(dio);
-            // using data stream
+            // using validation stream
             uploader.upload(
                 fileName: file.uri.pathSegments.last,
                 fileSize: file.lengthSync(),

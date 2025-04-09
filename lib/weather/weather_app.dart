@@ -1,4 +1,6 @@
+import 'package:alpha_flutter_project/common/common.dart';
 import 'package:alpha_flutter_project/weather/weather.dart';
+import 'package:alpha_flutter_project/weather/weather_app_params.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:weather_repository/weather_repository.dart'
@@ -31,7 +33,7 @@ class WeatherAppView extends StatelessWidget {
     final seedColor = context.select(
           (WeatherCubit cubit) => cubit.state.weather.toColor
     );
-    return
+   /* return
       HomeLayout(
         selectedRoute:WeatherApp.route,
         body: MaterialApp(
@@ -46,7 +48,13 @@ class WeatherAppView extends StatelessWidget {
         ),
         home: const WeatherPage(),
             ),
-      );
+      );*/
+
+    return FeatureLayout<WeatherAppParams>(
+        params: WeatherAppParams().create(),
+        selectedRoute: "/weather",
+        child: Container(child: WeatherPage(),)
+    );
   }
 }
 

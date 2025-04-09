@@ -66,7 +66,7 @@ class UploadDocumentMockData{
       "status": "OK",
       "id": 114,
       "publication_id": 159,
-      "data": {
+      "validation": {
         "picture": [
           {
             "type": "original",

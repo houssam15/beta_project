@@ -51,7 +51,7 @@ class SocialMediaListFormRemoteBloc  extends Bloc<SocialMediaListFormRemoteEvent
       ));
     }catch(err){
       if(kDebugMode) print(err);
-      emit(state.copyWith(status: SocialMediaListFormRemoteStatus.socialMediaFailed,message: LocalizationService.tr("Can't load data")));
+      emit(state.copyWith(status: SocialMediaListFormRemoteStatus.socialMediaFailed,message: LocalizationService.tr("Can't load validation")));
     }
   }
 
