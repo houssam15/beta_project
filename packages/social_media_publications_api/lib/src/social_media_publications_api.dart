@@ -1,6 +1,8 @@
 import "package:common/common.dart";
 import "package:dio/dio.dart";
 import "package:social_media_publications_api/src/models/models.dart";
+
+import "mock_data/get_publications_mock_data.dart";
 class SocialMediaPublicationsApi{
   SocialMediaPublicationsApi({Dio? dio}) : _dio = dio ?? Dio();
 
@@ -21,6 +23,7 @@ class SocialMediaPublicationsApi{
         return DataFailed('Invalid data received from server',details:_publication.getValidator().getErrors());
       }else{
         List<SocialMediaPublication> publications = _publication.toList(response.data);
+        //List<SocialMediaPublication> publications = _publication.toList(GetPublicationsMockData.success);
         return DataSuccess(publications);
       }
     }catch(err){

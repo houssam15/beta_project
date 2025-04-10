@@ -14,4 +14,5 @@ class SocialMediaPublicationsRepository {
   Future<GetPublicationsResponse> getPublications(GetPublicationsRequest request) async {
     return GetPublicationsUseCase().setApi(_api).call(request);
   }
+
 }

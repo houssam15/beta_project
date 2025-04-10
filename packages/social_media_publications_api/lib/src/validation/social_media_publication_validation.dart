@@ -53,19 +53,19 @@ class SocialMediaPublicationValidation extends ValidationBase{
         "type":"string"
       },
       "height":{
-        "type":"string"
+        "type":"number"
       },
       "width":{
-        "type":"string"
+        "type":"number"
       },
       "extension":{
         "type":"string"
       },
       "size":{
-        "type":"string"
+        "type":"number"
       },
       "duration":{
-        "type":["string","null"]
+        "type":"number"
       },
       "file":fileSchema,
       "is_valid":{
@@ -82,6 +82,9 @@ class SocialMediaPublicationValidation extends ValidationBase{
   Map<String,dynamic> get errorSchema => {
     "type":"string"
   };
+
+  String get datePattern => r'^\d{4}-(0[1-9]|1[0-2])-(0[1-9]|[12][0-9]|3[01]) (0[0-9]|1[0-9]|2[0-3]):([0-5][0-9]):([0-5][0-9])$';
+
 
   @override
   Map<String, dynamic> get schema => {
@@ -102,10 +105,12 @@ class SocialMediaPublicationValidation extends ValidationBase{
               "type":"string"
             },
             "dated_at":{
-              "type":["string","null"]
+              "type":["string","null"],
+              "pattern": datePattern
             },
             "created_at":{
-              "type":"string"
+              "type":"string",
+              "pattern": datePattern
             },
             "title":{
               "type":"string"

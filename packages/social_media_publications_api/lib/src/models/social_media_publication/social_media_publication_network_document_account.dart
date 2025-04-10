@@ -1,3 +1,5 @@
+part of "social_media_publication.dart";
+
 class SocialMediaPublicationNetworkDocumentAccount {
   String? id;
   String? name;

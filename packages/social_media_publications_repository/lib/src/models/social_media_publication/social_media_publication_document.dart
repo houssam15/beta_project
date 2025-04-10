@@ -1,32 +1,55 @@
-import 'social_media_publication_network_document_account.dart';
-import 'social_media_publication_document_format.dart';
+part of "social_media_publication.dart";
 
 class SocialMediaPublicationDocument{
   //Shared between original document and network specific document
-  String? id;
-  String? height;
-  String? width;
-  String? extension;
-  String? size;
-  String? duration;
-  String? fileType;
+  String id;
+  SocialMediaPublicationDocumentFileType fileType;
   List<SocialMediaPublicationDocumentFormat> formats;
   //only for network specific document
   SocialMediaPublicationNetworkDocumentAccount? account;
-  bool isValid;
+  SocialMediaPublicationNetworkEngineState engineState;
 
 
   SocialMediaPublicationDocument({
-    this.id,
-    this.height,
-    this.width,
-    this.extension,
-    this.size,
-    this.duration,
-    this.fileType,
+    required this.id,
+    required this.fileType,
     this.formats = const [],
     this.account,
-    this.isValid = false
+    required this.engineState
   });
+
+  static SocialMediaPublicationDocument fromApi(smpa.SocialMediaPublicationDocument data){
+    try{
+      return SocialMediaPublicationDocument(
+          id: data.id.toString(),
+          fileType: data.fileType.toFileType(),
+          formats: SocialMediaPublicationDocumentFormat.toList(data.formats),
+          account: data.account == null ? null : SocialMediaPublicationNetworkDocumentAccount.fromApi(data.account!),
+          engineState: data.account == null ? SocialMediaPublicationNetworkEngineState.noStateForOriginDocument : data.getEngineState()
+      );
+    }catch(err){
+      rethrow;
+    }
+  }
+
+  static List<SocialMediaPublicationDocument> fromList(List<smpa.SocialMediaPublicationDocument> data) {
+    List<SocialMediaPublicationDocument> items = [];
+    for(smpa.SocialMediaPublicationDocument item in data){
+      SocialMediaPublicationDocument? doc;
+      try{
+        doc = SocialMediaPublicationDocument.fromApi(item);
+        //if account is invalid document should be ignored
+        if(doc.account == null && doc.engineState != SocialMediaPublicationNetworkEngineState.noStateForOriginDocument){
+          throw Exception("Account should not be empty for network document");
+        }
+
+        items.add(doc);
+      }catch(err){
+        //Invalid documents should be ignored
+      }
+
+    }
+    return items;
+  }
 
 }

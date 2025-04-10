@@ -8,8 +8,9 @@ class GetPublicationsUseCase extends CommonUseCase<GetPublicationsUseCase>{
   Future<GetPublicationsResponse> call(GetPublicationsRequest request) async {
     GetPublicationsResponse response = GetPublicationsResponse();
     final ds = await getApi().getPublications(request.toApiParams());
-    if(ds is DataFailed) response.setErrorMessage(ds.error.toString());
-    return response.setPublications(SocialMediaPublication().toList(ds.data!));
+    if(ds is DataFailed) return response.setErrorMessage(ds.error.toString());
+    return response.setPublications(SocialMediaPublication.toList(ds.data!))
+        .setInvalidPublications(SocialMediaPublication.getInvalidItems());//in case some items are not valid , they will saved in invalidPublications list
   }
 
 }

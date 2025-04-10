@@ -12,11 +12,11 @@ class GetPublicationsMockData {
         "status": "UPLOAD",
         "document": {
           "id": "394",
-          "height": "500",
-          "width": "500",
+          "height": 500,
+          "width": 500,
           "extension": "jpg",
-          "size": "56294",
-          "duration": "0",
+          "size": 56294,
+          "duration": 0,
           "file": {
             "picture": [
               {
@@ -41,11 +41,11 @@ class GetPublicationsMockData {
         "documents": [
           {
             "id": "18",
-            "height": "500",
-            "width": "500",
+            "height": 500,
+            "width": 500,
             "extension": "jpg",
-            "size": "56294",
-            "duration": null,
+            "size": 56294,
+            "duration": 0,
             "account": {
               "id": "1",
               "name": "Facebook-ouath3",
@@ -53,6 +53,41 @@ class GetPublicationsMockData {
               "engine": "Facebook"
             },
             "is_valid": false,
+            "file": {
+              "picture": [
+                {
+                  "type": "original",
+                  "url": "https://bridge.ewebsolutionskech-dev.com/customers/socialnetwork/manager/download/publication/document/18/1000028686.jpg"
+                },
+                {
+                  "type": "small",
+                  "url": "https://bridge.ewebsolutionskech-dev.com/customers/socialnetwork/manager/download/publication/document/pictures/18/small/1000028686.jpg"
+                },
+                {
+                  "type": "medium",
+                  "url": "https://bridge.ewebsolutionskech-dev.com/customers/socialnetwork/manager/download/publication/document/pictures/18/medium/1000028686.jpg"
+                },
+                {
+                  "type": "thumb",
+                  "url": "https://bridge.ewebsolutionskech-dev.com/customers/socialnetwork/manager/download/publication/document/pictures/18/thumb/1000028686.jpg"
+                }
+              ]
+            }
+          },
+          {
+            "id": "19",
+            "height": 5200,
+            "width": 5040,
+            "extension": "png",
+            "size": 562794,
+            "duration": 5000,
+            "account": {
+              "id": "2",
+              "name": "Facebook-ouath3",
+              "page": "123254577",
+              "engine": "Instagram"
+            },
+            "is_valid": true,
             "file": {
               "picture": [
                 {

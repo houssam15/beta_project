@@ -1,5 +1,4 @@
-import 'social_media_publication_network_document_account.dart';
-import 'social_media_publication_document_format.dart';
+part of "social_media_publication.dart";
 
 class SocialMediaPublicationDocument{
   //Shared between original document and network specific document
@@ -14,6 +13,7 @@ class SocialMediaPublicationDocument{
   //only for network specific document
   SocialMediaPublicationNetworkDocumentAccount? account;
   bool isValid;
+  bool isWorking;
 
 
   SocialMediaPublicationDocument({
@@ -26,7 +26,8 @@ class SocialMediaPublicationDocument{
     this.fileType,
     this.formats = const [],
     this.account,
-    this.isValid = false
+    this.isValid = false,
+    this.isWorking = false
   });
 
   SocialMediaPublicationDocument? fromJson(data){
@@ -47,7 +48,8 @@ class SocialMediaPublicationDocument{
         fileType: fileType,
         formats: fileType == null ? [] : SocialMediaPublicationDocumentFormat().toList(data["file"]?[fileType]),
         account: data["account"] == null ? null : SocialMediaPublicationNetworkDocumentAccount().fromJson(data["account"]),
-        isValid: data["is_valid"] == true
+        isValid: data["is_valid"] == true,
+        isWorking: data["is_working"] == true
       );
     }catch(err){
       return null;

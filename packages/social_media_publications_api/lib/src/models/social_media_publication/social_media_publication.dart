@@ -1,5 +1,8 @@
-import 'package:social_media_publications_api/src/models/social_media_publication/social_media_publication_document.dart';
 import 'package:social_media_publications_api/src/validation/social_media_publication_validation.dart';
+
+part "social_media_publication_document.dart";
+part 'social_media_publication_document_format.dart';
+part 'social_media_publication_network_document_account.dart';
 
 class SocialMediaPublication{
   //Attributes
@@ -65,10 +68,10 @@ class SocialMediaPublication{
     try{
       return SocialMediaPublication(
           id: data["id"].toString(),
-          datedAt: data["dated_at"].toString(),
+          datedAt: data["dated_at"],
           createdAt: data["created_at"].toString(),
-          title: data["title"].toString(),
-          description: data['description'].toString(),
+          title: data["title"],
+          description: data['description'],
           state: data["state"].toString(),
           status: data['status'].toString(),
           document: SocialMediaPublicationDocument().fromJson(data["document"]),

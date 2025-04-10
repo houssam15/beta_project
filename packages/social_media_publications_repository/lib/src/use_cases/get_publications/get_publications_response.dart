@@ -3,8 +3,10 @@ import "../../models/models.dart";
 class GetPublicationsResponse {
   List<SocialMediaPublication> _publications;
   String? _errorMessage;
+  List<SocialMediaPublicationWithError> _invalidPublications;
   GetPublicationsResponse()
-  :_publications = [];
+  :_publications = []
+  ,_invalidPublications = [];
 
   GetPublicationsResponse setErrorMessage(String err){
     _errorMessage = err;
@@ -25,6 +27,15 @@ class GetPublicationsResponse {
 
   GetPublicationsResponse setPublications(List<SocialMediaPublication> publications){
     _publications = publications;
+    return this;
+  }
+
+  List<SocialMediaPublicationWithError> getInvalidPublications(){
+    return _invalidPublications;
+  }
+
+  GetPublicationsResponse setInvalidPublications(List<SocialMediaPublicationWithError> publications){
+    _invalidPublications = publications;
     return this;
   }
 }

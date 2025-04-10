@@ -1,1 +1,1 @@
-export "social_media_publication.dart";
+export "social_media_publication/social_media_publication.dart";

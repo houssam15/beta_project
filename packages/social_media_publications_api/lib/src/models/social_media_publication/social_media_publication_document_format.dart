@@ -1,3 +1,5 @@
+part of "social_media_publication.dart";
+
 class SocialMediaPublicationDocumentFormat{
     String? type;
     String? url;
