@@ -25,6 +25,7 @@ class AppTheme{
     errorContainer: Colors.red.shade200,
     error: Colors.white,
 
+
   );
 
   CardTheme get cardTheme => CardTheme(

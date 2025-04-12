@@ -21,10 +21,10 @@ class _SocialMediaListPublicationsViewState extends State<SocialMediaListPublica
         child: BlocConsumer<SocialMediaPublicationsListRemoteBloc,SocialMediaPublicationsListRemoteState>(
             builder: (context, state) {
               switch(state.status){
-                case SocialMediaPublicationsListRemoteStatus.initial: return SocialMediaListPublicationsInitialPage();
-                case SocialMediaPublicationsListRemoteStatus.failed: return SocialMediaListPublicationsFailedPage();
-                case SocialMediaPublicationsListRemoteStatus.success:  return SocialMediaListPublicationsSuccessPage();
-                case SocialMediaPublicationsListRemoteStatus.publicationDetails: return SocialMediaListPublicationsPublicationDetailsPage();
+                case SocialMediaPublicationsListRemoteStatus.initial: return SocialMediaListPublicationsInitialPage(remoteState: state);
+                case SocialMediaPublicationsListRemoteStatus.failed: return SocialMediaListPublicationsFailedPage(remoteState: state);
+                case SocialMediaPublicationsListRemoteStatus.success:  return SocialMediaListPublicationsSuccessPage(remoteState: state);
+                case SocialMediaPublicationsListRemoteStatus.publicationDetails: return SocialMediaListPublicationsPublicationDetailsPage(remoteState: state);
               }
             },
             listener: (context, state) {

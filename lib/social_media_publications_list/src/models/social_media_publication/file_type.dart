@@ -3,11 +3,9 @@ import "package:social_media_publications_repository/social_media_publications_r
 class FileType{
   smpr.SocialMediaPublicationDocumentFileType type;
   IconData icon;
-  Color iconColor;
 
   FileType({
     required this.type,
     required this.icon,
-    required this.iconColor
   });
 }

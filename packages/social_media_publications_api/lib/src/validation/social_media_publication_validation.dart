@@ -1,27 +1,30 @@
-import "package:common/common.dart";
-class SocialMediaPublicationValidation extends ValidationBase{
+import "package:creacom_common/creacom_common.dart";
+class SocialMediaPublicationValidation extends CreacomBaseValidation{
+
+  Map<String,dynamic> get fileItemSchema => {
+    "type":"array",
+    "minItems":1,
+    "items":{
+      "type":"object",
+      "required":["type","url"],
+      "properties":{
+        "type":{
+          "type":"string",
+          "enum":["original","small","medium","thumb"]
+        },
+        "url":{
+          "type":"string",
+          "format":"uri"
+        }
+      }
+    }
+  };
 
   Map<String,dynamic> get fileSchema => {
     "type":"object",
     "properties":{
-      "picture":{
-        "type":"array",
-        "minItems":1,
-        "items":{
-          "type":"object",
-          "required":["type","url"],
-          "properties":{
-            "type":{
-              "type":"string",
-              "enum":["original","small","medium","thumb"]
-            },
-            "url":{
-              "type":"string",
-              "format":"uri"
-            }
-          }
-        }
-      }
+      "picture":fileItemSchema,
+      "video":fileItemSchema
     }
   };
 
@@ -83,8 +86,6 @@ class SocialMediaPublicationValidation extends ValidationBase{
     "type":"string"
   };
 
-  String get datePattern => r'^\d{4}-(0[1-9]|1[0-2])-(0[1-9]|[12][0-9]|3[01]) (0[0-9]|1[0-9]|2[0-3]):([0-5][0-9]):([0-5][0-9])$';
-
 
   @override
   Map<String, dynamic> get schema => {
@@ -133,14 +134,19 @@ class SocialMediaPublicationValidation extends ValidationBase{
         }
       },
       "error":errorSchema,
-      "errors":errorsSchema
+      "errors":errorsSchema,
+      "total_of_items":{
+        "type":"integer"
+      },
+      "number_of_items":{
+        "type":"integer"
+      },
+      "number_of_pages":{
+        "type":"integer"
+      }
     },
     "allOf": [
-      {
-        "not": {
-          "required": ["error", "errors"]
-        }
-      }
+      ...commonListRequirementForAllOf,
     ]
   };
 }

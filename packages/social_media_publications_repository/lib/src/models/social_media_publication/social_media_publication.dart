@@ -101,10 +101,11 @@ class SocialMediaPublication{
   static List<SocialMediaPublicationWithError>? _invalidItems;
 
   static List<SocialMediaPublicationWithError> addInvalidItem(SocialMediaPublicationWithError error){
-    if(_invalidItems == null){
-      _invalidItems = [];
-    }
-    _invalidItems!.add(error);
+    _invalidItems ??= []; // Initialize if null
+    //final exists = _invalidItems!.any((data) => data.item.id == error.item.id);
+    //if (!exists) {
+      _invalidItems!.add(error);
+    //}
     return _invalidItems!;
   }
 

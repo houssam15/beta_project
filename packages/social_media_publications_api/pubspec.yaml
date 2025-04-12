@@ -12,6 +12,8 @@ dependencies:
     sdk: flutter
   common:
     path: ../common
+  creacom_common:
+    path: ../creacom_common
   dio: ^5.8.0+1
 
 dev_dependencies:
