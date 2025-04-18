@@ -6,6 +6,7 @@ import "package:alpha_flutter_project/social_media_list_form/src/bloc/local/soci
 import "package:alpha_flutter_project/social_media_list_form/src/widgets/error_list_tile.dart";
 import "package:alpha_flutter_project/social_media_list_form/src/widgets/flex_text.dart";
 import "package:alpha_flutter_project/social_media_list_form/src/widgets/my_icon.dart";
+import "package:alpha_flutter_project/social_media_list_form/src/widgets/widgets.dart";
 import "package:flutter/foundation.dart";
 import "package:flutter/material.dart";
 import "package:flutter/rendering.dart";
@@ -94,16 +95,24 @@ class _SocialMediaCheckboxWidgetState extends State<SocialMediaCheckboxWidget> {
                         onTap:()=>setState(() {
                           widget.socialMediaItem.toggleShowText();
                         }),
-                        child: Row(
-                          children: [
-                            FlexText(widget.socialMediaItem),
-                            if(widget.socialMediaItem.hasUrl())
-                              MyIcon(icon: Icons.remove_red_eye,onTap: _onViewPicture),
-                            if(widget.socialMediaItem.hasError()&&widget.socialMediaItem.error?.errorType==SocialMediaErrorType.invalidDimensions)
-                              MyIcon(icon: Icons.crop,onTap: _onCrop),
-                            if(widget.socialMediaItem.hasError()&&widget.socialMediaItem.error?.errorType==SocialMediaErrorType.invalidFile)
-                              MyIcon(icon: FontAwesomeIcons.arrowUpFromBracket,onTap: _onChange)
-                          ],
+                        child: BlocBuilder<SocialMediaListFormLocalBloc,SocialMediaListFormLocalState>(
+                          builder: (context, state) => Row(
+                            children: [
+                              FlexText(widget.socialMediaItem),
+                              if(widget.socialMediaItem.hasUrl())
+                                MyIcon(icon: Icons.remove_red_eye,onTap: _onViewPicture),
+                              if(
+                              widget.socialMediaItem.hasError()&&widget.socialMediaItem.error?.errorType==SocialMediaErrorType.invalidDimensions
+                              )
+                                !widget.socialMediaItem.isLoading
+                                    ?widget.socialMediaItem.isUploading
+                                        ?UploadingWithProgress(progress: widget.socialMediaItem.progress)
+                                        :MyIcon(icon: Icons.crop,onTap: _onCrop)
+                                    :Loading(color: Theme.of(context).colorScheme.tertiary),
+                              if(widget.socialMediaItem.hasError()&&widget.socialMediaItem.error?.errorType==SocialMediaErrorType.invalidFile)
+                                MyIcon(icon: FontAwesomeIcons.arrowUpFromBracket,onTap: _onChange)
+                            ],
+                          ),
                         ),
                       )
                     ],

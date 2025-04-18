@@ -62,6 +62,7 @@ class SocialMediaPublicationFormRemoteState extends Equatable{
     :DateTime(publishDate.year,publishDate.month,publishDate.day,publishTime.hour,publishTime.minute);
     return DateFormat('yyyy-MM-dd HH:mm:ss').format(fullDateTime);
   }
+
   bool showPublishCalendar(){
     return !publishNow && !decidePublishTimeLater;
   }

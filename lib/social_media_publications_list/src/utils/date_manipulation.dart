@@ -1,6 +1,7 @@
 import '../config/config.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:localization_service/localization_service.dart';
+import 'package:intl/intl.dart';
 
 class DateManipulation {
   /// Gets human-readable time difference (past/future) with translations
@@ -62,6 +63,33 @@ class DateManipulation {
     } catch (e) {
       return 'fr_FR';
     }
+  }
+
+  static getLocalFormat({
+    required DateTime date,
+    required BuildContext context,
+    bool showTime = false
+  }){
+    final locale = getLocaleWithFallback(context);
+    final formatPattern = _getDateFormatPattern(locale, showTime);
+    return DateFormat(formatPattern, locale).format(date);
+  }
+
+  static String _getDateFormatPattern(String locale, bool showTime) {
+    // Default to European-style date format (day/month/year)
+    String datePattern = 'dd/MM/yyyy';
+
+    // For US locales, use month/day/year format
+    if (locale.startsWith('en_US')) {
+      datePattern = 'MM/dd/yyyy';
+    }
+
+    // Add time if requested
+    if (showTime) {
+      return '$datePattern HH:mm';
+    }
+
+    return datePattern;
   }
 
 }

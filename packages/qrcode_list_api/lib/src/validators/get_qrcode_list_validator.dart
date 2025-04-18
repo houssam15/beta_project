@@ -26,22 +26,25 @@ class GetQrcodeListValidator extends CreacomBaseValidation{
   String get schemaDescription => "Qrcode list validation";
 
   Map<String,dynamic> get itemsSchema =>{
-    "type":"object",
-    "required":["id","link","created_at","picture","pdf"],
-    "properties":{
-      "id":{
-        "type":"string"
-      },
-      "link":{
-        "type":"string",
-        "format":"uri"
-      },
-      "created_at":{
-        "type":"string",
-        "pattern": datePattern
-      },
-      "picture":pictureSchema,
-      "pdf":pdfSchema
+    "type":"array",
+    "items":{
+      "type":"object",
+      "required":["id","link","created_at","picture","pdf"],
+      "properties":{
+        "id":{
+          "type":"string"
+        },
+        "link":{
+          "type":"string",
+          "format":"uri"
+        },
+        "created_at":{
+          "type":"string",
+          "pattern": datePattern
+        },
+        "picture":pictureSchema,
+        "pdf":pdfSchema
+      }
     }
   };
 

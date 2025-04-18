@@ -173,6 +173,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "1.1.9"
+  calendar_view:
+    dependency: "direct main"
+    description:
+      name: calendar_view
+      sha256: "94b5ccc06f6ab11fa3e40eda19f6f925bc49a355dfad8cfafece3bad54ce9773"
+      url: "https://pub.dev"
+    source: hosted
+    version: "1.4.0"
   characters:
     dependency: transitive
     description:
@@ -252,6 +260,13 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "1.11.1"
+  creacom_common:
+    dependency: transitive
+    description:
+      path: "packages/creacom_common"
+      relative: true
+    source: path
+    version: "0.0.1"
   crop:
     dependency: transitive
     description:
@@ -454,6 +469,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "9.0.0"
+  flutter_date_range_picker:
+    dependency: "direct main"
+    description:
+      name: flutter_date_range_picker
+      sha256: a8f8f4e11721e9d1bcc42e143129676488c5724136038670211865fc28ff779f
+      url: "https://pub.dev"
+    source: hosted
+    version: "0.1.1"
   flutter_localization:
     dependency: "direct main"
     description:
@@ -585,26 +608,26 @@ packages:
     dependency: transitive
     description:
       name: image_cropper
-      sha256: "0c6ea3f96ccdcbe855fc86e9de582fdd6a94d578be8d817a05d9ecef9f1a258b"
+      sha256: "4e9c96c029eb5a23798da1b6af39787f964da6ffc78fd8447c140542a9f7c6fc"
       url: "https://pub.dev"
     source: hosted
-    version: "9.0.0"
+    version: "9.1.0"
   image_cropper_for_web:
     dependency: transitive
     description:
       name: image_cropper_for_web
-      sha256: "34256c8fb7fcb233251787c876bb37271744459b593a948a2db73caa323034d0"
+      sha256: fd81ebe36f636576094377aab32673c4e5d1609b32dec16fad98d2b71f1250a9
       url: "https://pub.dev"
     source: hosted
-    version: "6.0.2"
+    version: "6.1.0"
   image_cropper_platform_interface:
     dependency: transitive
     description:
       name: image_cropper_platform_interface
-      sha256: e8e9d2ca36360387aee39295ce49029362ae4df3071f23e8e71f2b81e40b7531
+      sha256: "6ca6b81769abff9a4dcc3bbd3d75f5dfa9de6b870ae9613c8cd237333a4283af"
       url: "https://pub.dev"
     source: hosted
-    version: "7.0.0"
+    version: "7.1.0"
   image_picker:
     dependency: transitive
     description:
@@ -898,6 +921,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "1.0.4"
+  native_exif:
+    dependency: transitive
+    description:
+      name: native_exif
+      sha256: "40cecacec6ecb36505e648b2e95dcf1be27f85d9f28fd6f61a2baf6581dafa03"
+      url: "https://pub.dev"
+    source: hosted
+    version: "0.6.0"
   nested:
     dependency: transitive
     description:
@@ -1096,6 +1127,13 @@ packages:
       relative: true
     source: path
     version: "0.0.1"
+  picture_resizer_v2:
+    dependency: transitive
+    description:
+      path: "packages/picture_resizer_v2"
+      relative: true
+    source: path
+    version: "0.0.1"
   platform:
     dependency: transitive
     description:
@@ -1152,6 +1190,20 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "1.5.0"
+  qrcode_list_api:
+    dependency: transitive
+    description:
+      path: "packages/qrcode_list_api"
+      relative: true
+    source: path
+    version: "0.0.1"
+  qrcode_list_repository:
+    dependency: "direct main"
+    description:
+      path: "packages/qrcode_list_repository"
+      relative: true
+    source: path
+    version: "0.0.1"
   quiver:
     dependency: transitive
     description:

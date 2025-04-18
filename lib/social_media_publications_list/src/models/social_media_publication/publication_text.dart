@@ -8,10 +8,11 @@ class PublicationText {
   bool isEmpty;
   String label;
   PublicationText({
-    required this.fullValue,
+    required String fullValue,
     this.isEmpty = false,
     required this.label
-  });
+  }):
+  fullValue = fullValue.isEmpty ? "No $label":fullValue;
 
 
   static PublicationText fromRepository(String? data,{required BuildContext context,required String label,TextStyle? textStyle}){

@@ -43,12 +43,20 @@ class _SocialMediaPublicationFormState extends State<SocialMediaPublicationForm>
             create: (_) => SocialMediaPublicationFormRemoteBloc(
                 uploadDocumentResponse: args!.uploadDocumentResponse!,
                 fileUploaderRepository:fur.FileUploaderRepository.create<fcu.UploadDocumentResponse>(
-                  globalParams: fur.GlobalParams(
+                  /*globalParams: fur.GlobalParams(
                       baseUrl: Config.baseUrl,
                       fileChunkedUploadPath: Config.updateDocumentEndpoint,
                       authorizationToken: Config.token
-                  ),
-                  fromJson: (json, {token}) => fcu.UploadDocumentResponse().fromJson(json,token: token),
+                  ),*/
+                  //fromJson: (json, {token}) => fcu.UploadDocumentResponse().fromJson(json,token: token),
+                  fileChunkedUploader: fcu.FileChunkedUploader(
+                    fcu.Config(
+                      baseUrl: Config.baseUrl,
+                      path: Config.updateDocumentEndpoint,
+                      authorizationToken: Config.token
+                    ),
+                    (json, {token}) => fcu.UploadDocumentResponse().fromJson(json,token: token)
+                  )
                 ),
                 mediaType: args.mediaType,
                 constrains: args.constrains,

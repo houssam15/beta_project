@@ -25,6 +25,10 @@ class _SocialMediaListFormPageState extends State<SocialMediaListFormPage> {
     showAlertBanner(context,()=>print("TAPPED"),AlertBannerChild(text: context.tr(state.message!),color: Colors.red),alertBannerLocation: AlertBannerLocation.top);
   }
 
+  _onProgressForPublicationFailed(SocialMediaListFormRemoteState state){
+    showAlertBanner(context,()=>print("TAPPED"),AlertBannerChild(text: context.tr(state.message),color: Colors.red),alertBannerLocation: AlertBannerLocation.top);
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -67,7 +71,7 @@ class _SocialMediaListFormPageState extends State<SocialMediaListFormPage> {
                                     }
                                   },
                                   listener: (context, state) {
-                              
+                                     if(state.action == SocialMediaListFormRemoteActions.progressForPublicationFailed) _onProgressForPublicationFailed(state);
                                   }
                               ),
                             ),

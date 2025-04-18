@@ -27,7 +27,7 @@ class UploadDocumentResponseForNetwork implements UploadResponse{
         "type":["number","string"],
         "description":"Unique id for document (uploaded file)"
       },
-      "validation":{
+      "data":{
         "type":"object",
         "properties":{
           "picture":{
@@ -105,7 +105,7 @@ class UploadDocumentResponseForNetwork implements UploadResponse{
     },
     "oneOf": [
       {
-        "required": ["id","validation"],
+        "required": ["id","data"],
         "not": {
           "anyOf": [
             { "required": ["error"] },
@@ -121,7 +121,7 @@ class UploadDocumentResponseForNetwork implements UploadResponse{
         "not": {
           "anyOf": [
             { "required": ["id"] },
-            { "required": ["validation"] }
+            { "required": ["data"] }
           ]
         }
       }

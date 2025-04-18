@@ -62,6 +62,29 @@ extension EngineStateMapping on smpr.SocialMediaPublicationNetworkEngineState{
   }
 }
 
+extension StringMapper on String? {
+  String getFirstTwoLetters(){
+    if(this==null || this?.isEmpty==true) return "";
+    final words = this!.trim().split(" ").where((word)=>word.isNotEmpty).toList();
+    if(words.isEmpty) return "";
+    if(words.length == 1){
+      return words[0][0].toUpperCase();
+    }else {
+      return '${words[0][0].toUpperCase()}${words[1][0].toUpperCase()}';
+    }
+  }
+}
+
+extension SocialMediaPublicationNetworkDocumentAccountMapping on SocialMediaPublicationNetworkDocumentAccount{
+  bool hasDuplicate(List<SocialMediaPublicationDocument> documents){
+    int count = 0;
+    for(SocialMediaPublicationDocument doc in documents){
+       if(doc.account?.engineType == this.engineType) count++;
+    }
+    return count>=2;
+  }
+}
+
 class SocialMediaPublication{
   String id;
   FormattedDate? datedAt;
@@ -121,5 +144,7 @@ class SocialMediaPublication{
       return null;
     }
   }
+
+
 
 }

@@ -12,7 +12,7 @@ class FailedToGetData extends StatelessWidget {
         mainAxisAlignment: MainAxisAlignment.center,
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
-          Image.asset("assets/images/social_media_publications_list/error.png"),
+          Image.asset("assets/images/common/error.png"),
           SizedBox(height: 20),
           Text(remoteState.errorMessage)
         ]

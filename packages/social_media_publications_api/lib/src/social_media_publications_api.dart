@@ -9,11 +9,14 @@ class SocialMediaPublicationsApi extends BaseApi{
   Future<DataState<GetPublicationsResponse>> getPublications(GetPublicationsRequest request) async{
     SocialMediaPublication _publication = SocialMediaPublication();
     try{
-      Response response = await getApi().get("https://bridge.ewebsolutionskech-dev.com//api/mob/customers/socialnetwork/manager/admin/ListPublication?page=${request.page}",options: Options(
-          headers: {
-            "Authorization":"Bearer 0kaibvma8vdlv3ilpjsflheq86"
-          }
-      ));
+      Response response = await getApi().post("https://bridge.ewebsolutionskech-dev.com//api/mob/customers/socialnetwork/manager/admin/ListPublication",
+          options: Options(
+            headers: {
+              "Authorization":"Bearer 0kaibvma8vdlv3ilpjsflheq86"
+            },
+          ),
+          data: request.formatDataForApi()
+      );
 
       if (response.statusCode != 200) {
         return DataFailed('Failed to fetch file',details: response);

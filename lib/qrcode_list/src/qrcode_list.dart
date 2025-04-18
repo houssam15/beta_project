@@ -33,7 +33,7 @@ class _QrcodeListState extends State<QrcodeList> {
                 create: (_) => QrcodeListLocalBloc()
             ),
             BlocProvider<QrcodeListRemoteBloc>(
-                create: (_) => QrcodeListRemoteBloc()
+                create: (_) => QrcodeListRemoteBloc()..add(QrcodeListRemoteItemsRequested(context: context))
             ),
         ],
         child: QrcodeListView()

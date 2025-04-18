@@ -24,7 +24,9 @@ class SocialMediaPublicationDocument{
               : SocialMediaPublicationNetworkDocumentAccount(
                   icon: data.account!.engine.getIcon(),
                   color: data.account!.engine.getColor(),
-                  engine: EngineState(color: data.engineState.getColor())
+                  engineState: EngineState(color: data.engineState.getColor()),
+                  twoWordIndicator: data.account?.name==null ? null : data.account?.name.getFirstTwoLetters(),
+                  engineType: data.account!.engine
               )
       );
     }catch(err){

@@ -17,21 +17,10 @@ class SocialMediaListPublicationsSuccessPage extends StatelessWidget {
           child: Column(
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
-                Container(
-                  padding: EdgeInsets.all(10),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Text(context.tr("Search")),
-                      Text("${remoteState.totalInvalidItems}")
-                    ],
-                  ),
-                ),
-                Expanded(
-                    child: remoteState.publications.isEmpty
-                        ? PublicationsListEmpty(remoteState:remoteState)
-                        : PublicationsList(remoteState:remoteState)
-                )
+                PublicationsFilter(),
+                remoteState.publications.isEmpty
+                    ? PublicationsListEmpty(remoteState:remoteState)
+                    : PublicationsList(remoteState:remoteState)
               ]
           ),
         ),

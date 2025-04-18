@@ -78,12 +78,20 @@ class _SocialMediaListFormState extends State<SocialMediaListForm> {
                               mediaType: args.mediaType,
                               constrains:args.constrains,
                               fileUploaderRepository:  fur.FileUploaderRepository.create<fcu.UploadDocumentResponse>(
-                                globalParams: fur.GlobalParams(
+                                /*globalParams: fur.GlobalParams(
                                     baseUrl: Config.baseUrl,
                                     fileChunkedUploadPath: Config.mediaLargeFileUploadEndpoint,
                                     authorizationToken: Config.authorizationToken
-                                ),
-                                fromJson: (json, {token}) => fcu.UploadDocumentResponse().fromJson(json,token: token),
+                                ),*/
+                                //fromJson: (json, {token}) => fcu.UploadDocumentResponse().fromJson(json,token: token),
+                                fileChunkedUploader: fcu.FileChunkedUploader(
+                                  fcu.Config(
+                                    baseUrl: Config.baseUrl,
+                                    authorizationToken: Config.authorizationToken,
+                                    path: Config.mediaLargeFileUploadEndpoint,
+                                  ),
+                                  (json, {token}) => fcu.UploadDocumentResponse().fromJson(json,token: token)
+                                )
                               ),
                               previousState: args.previousState
                           )
@@ -105,82 +113,6 @@ class _SocialMediaListFormState extends State<SocialMediaListForm> {
         )
     );
 
-    return MaterialApp(
-      debugShowCheckedModeBanner: false,
-      localeResolutionCallback: LocalizationService.localeResolutionCallback,
-      supportedLocales: LocalizationService.supportedLocales,
-      localizationsDelegates: localizationService.localizationsDelegate,
-      home: HomeLayout(
-          selectedRoute: SocialMediaListForm.route,
-          hideAppbar: true,
-          body: Theme(
-              data: AppTheme().themeData,
-              child: args?.uploadDocumentResponse==null
-                  ? ErrorMessageWidget(context.tr("No file selected"),refresh: false)
-                  : RepositoryProvider(
-                create: (context) => SocialMediaListFormEventBus(),
-                child: Builder(
-                    builder: (context) {
-                      final eventBus = context.read<SocialMediaListFormEventBus>();
-                      return MultiBlocProvider(
-                          providers: [
-                            BlocProvider<SocialMediaListFormRemoteBloc>(
-                                create: (_) => SocialMediaListFormRemoteBloc(
-                                    args!.uploadDocumentResponse!,
-                                    socialMediaListFormRepository: smlfr.SocialMediaListFormRepository(
-                                      globalParams: smlfr.GlobalParams(
-                                        baseUrl:Config.baseUrl,
-                                          authorizationToken: Config.authorizationToken,
-                                          fileChunkedUploadPath: Config.mediaLargeFileUploadForPublicationEndpoint
-                                      )
-                                    ),
-                                    socialMediaListFormEventBus: eventBus,
-                                    mediaType: args.mediaType,
-                                    constrains:args.constrains,
-                                    previousState:args.previousState
-                                )
-                            ),
-                            BlocProvider<SocialMediaListFormLocalBloc>(
-                                create: (_) => SocialMediaListFormLocalBloc(
-                                    socialMediaListFormRepository: smlfr.SocialMediaListFormRepository(
-                                        globalParams: smlfr.GlobalParams(
-                                            baseUrl:Config.baseUrl,
-                                            authorizationToken: Config.authorizationToken,
-                                            fileChunkedUploadPath: Config.mediaLargeFileUploadForPublicationEndpoint
-                                        )
-                                    ),
-                                    args!.uploadDocumentResponse!,
-                                    socialMediaListFormEventBus: eventBus,
-                                    mediaType: args.mediaType,
-                                    constrains:args.constrains,
-                                    fileUploaderRepository:  fur.FileUploaderRepository.create<fcu.UploadDocumentResponse>(
-                                        globalParams: fur.GlobalParams(
-                                            baseUrl: Config.baseUrl,
-                                            fileChunkedUploadPath: Config.mediaLargeFileUploadEndpoint,
-                                            authorizationToken: Config.authorizationToken
-                                        ),
-                                        fromJson: (json, {token}) => fcu.UploadDocumentResponse().fromJson(json,token: token),
-                                    ),
-                                  previousState: args.previousState
-                                )
-                            ),
-                          ],
-                          child: Builder(
-                              builder: (context) {
-                                eventBus.setBlocs(
-                                    socialMediaListFormLocalBloc: context.read<SocialMediaListFormLocalBloc>(),
-                                    socialMediaListFormRemoteBloc: context.read<SocialMediaListFormRemoteBloc>()
-                                );
-                                eventBus.listen();
-                                return SocialMediaListFormPage();
-                              }
-                          )
-                      );
-                    }
-                ),
-              )
-          )
-      ),
-    );
+
   }
 }

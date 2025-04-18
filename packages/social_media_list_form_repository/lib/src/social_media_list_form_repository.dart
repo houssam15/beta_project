@@ -20,7 +20,7 @@ class SocialMediaListFormRepository{
   }):
   pictureResizer = pictureResizer??PictureResizer(),
   socialMediaApi = socialMediaApi ?? social_media_api.SocialMediaApi(),
-  _fileChunkedUploader = fileChunkedUploader??fcu.FileChunkedUploader<fcu.UploadDocumentResponse>(
+  _fileChunkedUploader = fileChunkedUploader??fcu.FileChunkedUploader<fcu.UploadDocumentResponseForNetwork>(
       fcu.Config(
       baseUrl: globalParams.baseUrl,
       path: globalParams.fileChunkedUploadPath,
@@ -28,14 +28,14 @@ class SocialMediaListFormRepository{
       contentType: globalParams.fileChunkedUploadContentType,
       authorizationToken:globalParams.authorizationToken
       ),
-      (json,{token}) => fcu.UploadDocumentResponse().fromJson(json,token: token)
+      (json,{token}) => fcu.UploadDocumentResponseForNetwork().fromJson(json,token: token)
   );
 
   List<ValidConstraints>? _validConstraints;
   FileParams? _fileParams;
   BuildContext? _context;
 
-  UploadDocumentForPublicationResponse? _uploadDocumentForPublicationResponse;
+  UploadDocumentForPublicationResponseForNetwork? _uploadDocumentForPublicationResponseForNetwork;
 
   List<ValidConstraints>? get validConstraints => _validConstraints;
   SocialMediaListFormRepository setValidConstraints(List<ValidConstraints>? p){
@@ -55,30 +55,39 @@ class SocialMediaListFormRepository{
     return this;
   }
 
-  setUploadDocumentForPublicationResponse(UploadDocumentForPublicationResponse? result){
-    _uploadDocumentForPublicationResponse = result;
+  setUploadDocumentForPublicationResponseForNetwork(UploadDocumentForPublicationResponseForNetwork? result){
+    _uploadDocumentForPublicationResponseForNetwork = result;
   }
 
-  UploadDocumentForPublicationResponse? getUploadDocumentForPublicationResponse(){
-    return _uploadDocumentForPublicationResponse;
+  UploadDocumentForPublicationResponseForNetwork? getUploadDocumentForPublicationResponseForNetwork(){
+    return _uploadDocumentForPublicationResponseForNetwork;
   }
 
 
-  Future<ResizedFile> loadFileAndResize() async{
+  Future<social_media_api.UploadedPicture> loadFile() async{
     try{
       if(fileParams==null) throw Exception("Invalid params");
-
       social_media_api.DataState<social_media_api.UploadedPicture> ds = await socialMediaApi.getUploadedPicture(
         baseUrl: fileParams!.fileRequestOptions.baseUrl,
         method: fileParams!.fileRequestOptions.method,
         bearerToken: fileParams!.fileRequestOptions.token
       );
       if(ds is social_media_api.DataFailed) throw Exception("Can't load file");
+      //return file
+      return ds.data!;
+    }catch(err){
+      if(kDebugMode) print(err);
+      throw Exception("Can't resize file");
+    }
+  }
+
+  Future<ResizedFile> resizeFile(social_media_api.UploadedPicture data) async {
+    try{
       final resizedPicture = await pictureResizer
           .setValidConstraints(validConstraints?.map<picture_resizer.ValidConstraints>(((elm) => elm.toPictureResizerModel())).toList())
           .setContext(context)
-          .setFile(ds.data!.file)
-          .setExtension(ds.data!.extension.toExtensionString())
+          .setFile(data.file)
+          .setExtension(data.extension.toExtensionString())
           .resizePicture();
       if(resizedPicture == null) throw Exception("Failed to resize file");
       return ResizedFile(resizedPicture);
@@ -88,14 +97,14 @@ class SocialMediaListFormRepository{
     }
   }
 
-  Future<File> loadFile() async {
+  /*Future<File> loadFile() async {
     try{
       return File("path");
     }catch(err){
       if(kDebugMode) print(err);
       throw Exception("Can't load file");
     }
-  }
+  }*/
 
   /*Future<UploadedFile> uploadPictureForPublication(File file,{dynamic params}) async {
     UploadedFile uploadedFile = UploadedFile();
@@ -115,7 +124,7 @@ class SocialMediaListFormRepository{
       if(kDebugMode) print("UploadFileToServer error : $error");
       throw Exception("Server unavailable");
     });
-    setUploadDocumentForPublicationResponse(UploadDocumentForPublicationResponse.create(_fileChunkedUploader.uploadResult as fcu.UploadDocumentForPublicationResponse?));
+    setUploadDocumentForPublicationResponseForNetwork(UploadDocumentForPublicationResponseForNetwork.create(_fileChunkedUploader.uploadResult as fcu.UploadDocumentResponseForNetwork?));
   }
 
   Future<List<SocialMediaItem>> getSocialMediaList(dynamic data) async {

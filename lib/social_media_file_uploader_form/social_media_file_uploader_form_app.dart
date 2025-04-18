@@ -46,20 +46,36 @@ class _SocialMediaFileUploaderFormState extends State<SocialMediaFileUploaderFor
                 currentState:args.previousState,
                 fileUploaderRepository:args.modifySingleDocumentForPublication?
                 FileUploaderRepository.create<fcu.UploadDocumentResponseForNetwork>(
-                  globalParams: GlobalParams(
+                  /*globalParams: GlobalParams(
                       baseUrl: Config.mediaUploadBaseUrl,
                       fileChunkedUploadPath: Config.mediaLargeFileUploadForNetworkEndpoint,
                       authorizationToken: Config.authorizationToken
-                  ),
-                  fromJson: (json, {token}) => fcu.UploadDocumentResponseForNetwork().fromJson(json,token: token),
+                  ),*/
+                  //fromJson: (json, {token}) => fcu.UploadDocumentResponseForNetwork().fromJson(json,token: token),
+                  fileChunkedUploader: fcu.FileChunkedUploader(
+                    fcu.Config(
+                      baseUrl: Config.mediaUploadBaseUrl,
+                      path: Config.mediaLargeFileUploadForNetworkEndpoint,
+                      authorizationToken: Config.authorizationToken
+                    ),
+                    (json, {token}) => fcu.UploadDocumentResponseForNetwork().fromJson(json,token: token)
+                  )
                 )
-                    :FileUploaderRepository.create<fcu.UploadDocumentResponse>(
-                  globalParams: GlobalParams(
+                :FileUploaderRepository.create<fcu.UploadDocumentResponse>(
+                  /*globalParams: GlobalParams(
                       baseUrl: Config.mediaUploadBaseUrl,
                       fileChunkedUploadPath: Config.mediaLargeFileUploadEndpoint,
                       authorizationToken: Config.authorizationToken
-                  ),
-                  fromJson: (json, {token}) => fcu.UploadDocumentResponse().fromJson(json,token: token),
+                  ),*/
+                  //fromJson: (json, {token}) => fcu.UploadDocumentResponse().fromJson(json,token: token),
+                  fileChunkedUploader: fcu.FileChunkedUploader(
+                    fcu.Config(
+                        baseUrl: Config.mediaUploadBaseUrl,
+                        path: Config.mediaLargeFileUploadEndpoint,
+                        authorizationToken: Config.authorizationToken
+                    ),
+                    (json, {token}) => fcu.UploadDocumentResponse().fromJson(json,token: token)
+                  )
                 ),
                 modifySingleDocumentForPublication:args.modifySingleDocumentForPublication,
                 publicationId:args.publicationId,

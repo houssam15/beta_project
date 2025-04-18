@@ -19,30 +19,31 @@ Messages :
 class FileUploaderRepository<Response extends fcu.UploadResponse>{
     final FileUploaderPermissionsHandler _fileUploaderPermissionsHandler;
     final local_file_picker.LocalFilePicker _localFilePicker;
-    late fcu.FileChunkedUploader _fileChunkedUploader;
-    final GlobalParams globalParams;
+    late fcu.FileChunkedUploader fileChunkedUploader;
     final sma.SocialMediaApi _socialMediaApi;
 
     static FileUploaderRepository<Response> create<Response extends fcu.UploadResponse>(
-        {required GlobalParams globalParams,
-            required Response Function(Map<String, dynamic> json, {String? token}) fromJson}) {
+        {
+            //required GlobalParams globalParams,
+            //required Response Function(Map<String, dynamic> json, {String? token}) fromJson,
+            required fcu.FileChunkedUploader fileChunkedUploader
+        }) {
         return FileUploaderRepository<Response>._(
-            globalParams: globalParams,
-            fromJson: fromJson,
+            //fromJson: fromJson,
+            fileChunkedUploader: fileChunkedUploader
         );
     }
 
     FileUploaderRepository._({
         FileUploaderPermissionsHandler? fileUploaderPermissionsHandler,
         local_file_picker.LocalFilePicker? localFilePicker,
-        fcu.FileChunkedUploader? fileChunkedUploader,
-        required this.globalParams,
-        required Response Function(Map<String, dynamic> json, {String? token}) fromJson,
+        required this.fileChunkedUploader,
+        //required Response Function(Map<String, dynamic> json, {String? token}) fromJson,
     })
     :_fileUploaderPermissionsHandler = fileUploaderPermissionsHandler ?? FileUploaderPermissionsHandler(),
      _socialMediaApi = sma.SocialMediaApi(),
      _localFilePicker = localFilePicker ?? local_file_picker.LocalFilePicker(){
-        _fileChunkedUploader = fileChunkedUploader??fcu.FileChunkedUploader<Response>(
+        /*_fileChunkedUploader = fileChunkedUploader??fcu.FileChunkedUploader<Response>(
             fcu.Config(
                 baseUrl: globalParams.baseUrl,
                 path: globalParams.fileChunkedUploadPath,
@@ -51,7 +52,7 @@ class FileUploaderRepository<Response extends fcu.UploadResponse>{
                 authorizationToken:globalParams.authorizationToken
             ),
             fromJson
-        );
+        );*/
      }
 
      UploadDocumentResponse? _uploadDocumentResponse;
@@ -113,17 +114,17 @@ class FileUploaderRepository<Response extends fcu.UploadResponse>{
     }
 
     Stream<int> uploadFileToServer(File file) async* {
-        yield* _fileChunkedUploader.upload(file).handleError((error){
+        yield* fileChunkedUploader.upload(file).handleError((error){
             throw Exception("Server unavailable");
         });
-        setUploadDocumentResponse(UploadDocumentResponse.create(_fileChunkedUploader.uploadResult as fcu.UploadDocumentResponse?));
+        setUploadDocumentResponse(UploadDocumentResponse.create(fileChunkedUploader.uploadResult as fcu.UploadDocumentResponse?));
     }
 
     Stream<int> uploadFileToServerForNetwork(File file,{String? publicationId,String? accountId}) async* {
-        yield* _fileChunkedUploader.upload(file,data:{"publication":publicationId,"account_id":accountId}).handleError((error){
+        yield* fileChunkedUploader.upload(file,data:{"publication":publicationId,"account_id":accountId}).handleError((error){
             throw Exception("Server unavailable");
         });
-        setUploadDocumentResponseForNetwork(UploadDocumentResponseForNetwork.create(_fileChunkedUploader.uploadResult as fcu.UploadDocumentResponseForNetwork?));
+        setUploadDocumentResponseForNetwork(UploadDocumentResponseForNetwork.create(fileChunkedUploader.uploadResult as fcu.UploadDocumentResponseForNetwork?));
     }
 
     Future<Constrains> getConstrains() async {

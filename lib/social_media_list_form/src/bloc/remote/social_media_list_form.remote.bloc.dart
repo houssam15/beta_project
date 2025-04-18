@@ -104,19 +104,23 @@ class SocialMediaListFormRemoteBloc  extends Bloc<SocialMediaListFormRemoteEvent
         emit(state.copyWith(action: SocialMediaListFormRemoteActions.progressForPublication,itemToEdit:event.socialMediaItem.setProgress(progress).setUploading(true)));
       }
 
-      if(socialMediaListFormRepository.getUploadDocumentForPublicationResponse()==null){
+      await Future.delayed(Duration(seconds: 1));
+      if(socialMediaListFormRepository.getUploadDocumentForPublicationResponseForNetwork()==null){
         throw new Exception("Invalid response");
-      }else if(!socialMediaListFormRepository.getUploadDocumentForPublicationResponse()!.isValid()){
-        emit(state.copyWith(
+      }else if(
+          !socialMediaListFormRepository.getUploadDocumentForPublicationResponseForNetwork()!.isValid()
+      ){
+        emit(
+            state.copyWith(
             action: SocialMediaListFormRemoteActions.progressForPublicationFailed,
-            message: socialMediaListFormRepository.getUploadDocumentForPublicationResponse()!.getErrors().first,
+            message: socialMediaListFormRepository.getUploadDocumentForPublicationResponseForNetwork()!.getErrors().first,
             itemToEdit:event.socialMediaItem.setProgress(null).setUploading(false)
         ));
       }else{
         emit(
             state.copyWith(
                 action: SocialMediaListFormRemoteActions.progressForPublicationSuccess,
-                itemToEdit:event.socialMediaItem.setProgress(null).setUploading(false).setUploadUrl(socialMediaListFormRepository.getUploadDocumentForPublicationResponse()?.getUploadUrl()))
+                itemToEdit:event.socialMediaItem.setProgress(null).setUploading(false).setUploadUrl(socialMediaListFormRepository.getUploadDocumentForPublicationResponseForNetwork()?.getUploadUrl()))
         );
       }
 
@@ -128,7 +132,7 @@ class SocialMediaListFormRemoteBloc  extends Bloc<SocialMediaListFormRemoteEvent
       }*/
     }catch(err){
       if(kDebugMode) print(err);
-      emit(state.copyWith(status: SocialMediaListFormRemoteStatus.socialMediaFailed,itemToEdit:event.socialMediaItem.setLoading(false),message: LocalizationService.tr("Can't upload resized picture")));
+      //emit(state.copyWith(status: SocialMediaListFormRemoteStatus.socialMediaFailed,itemToEdit:event.socialMediaItem.setLoading(false),message: LocalizationService.tr("Can't upload resized picture")));
     }
   }
 

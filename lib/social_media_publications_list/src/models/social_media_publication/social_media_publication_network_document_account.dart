@@ -3,12 +3,21 @@ part of "social_media_publication.dart";
 class SocialMediaPublicationNetworkDocumentAccount {
   IconData icon;
   Color color;
-  EngineState engine;
+  smpr.SocialMediaPublicationNetworkDocumentAccountEngine engineType;
+  EngineState engineState;
+  String? twoWordIndicator;
 
   SocialMediaPublicationNetworkDocumentAccount({
      required this.icon,
      required this.color,
-     required this.engine
+     required this.engineState,
+     required this.engineType,
+     required this.twoWordIndicator
   });
+
+
+
+
+
 
 }

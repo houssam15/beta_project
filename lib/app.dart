@@ -1,3 +1,5 @@
+import "package:alpha_flutter_project/calendar/src/calendar.dart";
+
 import "i18n_testing/src/i18n_testing.dart";
 import "social_media_file_uploader_form/social_media_file_uploader_form.dart";
 import "package:flutter/material.dart";
@@ -88,7 +90,8 @@ class _AppViewState extends State<AppView> {
         SocialMediaListForm.route:(context) => const SocialMediaListForm(),
         I18nTesting.route:(context) => const I18nTesting(),
         SocialMediaPublicationsList.route:(context)=> SocialMediaPublicationsList(),
-        QrcodeList.route:(context) => QrcodeList()
+        QrcodeList.route:(context) => QrcodeList(),
+        Calendar.route:(context) => Calendar()
       },
       builder: (context, child) {
         return BlocListener<AuthenticationBloc, AuthenticationState>(

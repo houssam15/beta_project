@@ -8,6 +8,8 @@ enum SocialMediaListFormLocalAction {
   changeSuccess
 }
 
+
+
 class SocialMediaListFormLocalState extends Equatable{
 
   SocialMediaListFormLocalState({

@@ -6,15 +6,30 @@ import 'package:flutter/material.dart';
 import 'package:image_cropper/image_cropper.dart';
 import 'package:image/image.dart' as img;  // Image manipulation library
 import 'package:picture_resizer/src/utils/image_helper.dart';
+import 'package:picture_resizer_v2/picture_resizer_v2.dart' as prv2;
 import 'models/models.dart';
 import "view/view.dart";
 import 'dart:ui' as ui;
+
+extension ValidConstraintsMapping on ValidConstraints{
+  prv2.ValidConstraints toValidConstraintsV2(){
+    return prv2.ValidConstraints(
+      minHeight: this.minHeight,
+      maxHeight: this.maxHeight,
+      minWidth: this.minWidth,
+      maxWidth: this.maxWidth,
+      ratio: this.ratio
+    );
+  }
+}
 
 class PictureResizer {
   List<ValidConstraints>? _validConstraints;
   File? _file;
   BuildContext? _context;
   String? _extension;
+  dynamic _originalBytes;
+  dynamic _originalMetaData;
 
   PictureResizer setValidConstraints(List<ValidConstraints>? validConstraints) {
     _validConstraints = validConstraints;
@@ -24,6 +39,10 @@ class PictureResizer {
   PictureResizer setFile(File? file) {
     _file = file;
     return this;
+  }
+
+  File? getFile(){
+    return _file;
   }
 
   PictureResizer setContext(BuildContext? context){
@@ -36,23 +55,35 @@ class PictureResizer {
     return this;
   }
 
+  PictureResizer setOriginalBytes(bytes){
+    _originalBytes = bytes;
+    return this;
+  }
+
+  getOriginalBytes(){
+    return _originalBytes;
+  }
+
+  getOriginalMetaData(){
+    return _originalMetaData;
+  }
+
+  PictureResizer setOriginalMetaData(metaData){
+    _originalMetaData = metaData;
+    return this;
+  }
+
   Future<File?> resizePicture() async {
     try{
       if(_context==null || _file==null || _validConstraints==null || _extension==null) throw Exception("Invalid params !");
-      //if(_validConstraints?.isValid()==false) throw Exception("Valid constrains are not valid !");
-      ui.Image? crop = await Navigator.push(
-        _context!,
-        MaterialPageRoute(
-          builder: (context) => CropImage(
-              file: _file!,
-              context: _context!,
-              validConstraints: _validConstraints!,
-              extension: _extension,
-          )
-        ),
-      );
-      File? file = await crop?.toFile(extension: _extension);
-      if(file is File) return file;
+      String? cropFilePath = await prv2.PictureResizerV2(
+          file: _file!,
+          context: _context!,
+          validConstraints: _validConstraints!.map<prv2.ValidConstraints>(((elm)=>elm.toValidConstraintsV2())).toList(),
+          extension: _extension
+      ).cropPicture();
+      if(cropFilePath==null) return null;
+      return await cropFilePath.toFile(extension: _extension);
     }catch(err){
       if(kDebugMode) print(err);
       return null;

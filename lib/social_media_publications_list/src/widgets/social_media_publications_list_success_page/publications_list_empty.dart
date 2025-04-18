@@ -9,14 +9,16 @@ class PublicationsListEmpty extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        crossAxisAlignment: CrossAxisAlignment.center,
-        children: [
-          Image.asset("assets/images/social_media_publications_list/empty_box.png"),
-          SizedBox(height: 20),
-          Text(context.tr("No element found !"))
-        ]
+    return Expanded(
+      child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: [
+            Image.asset("assets/images/common/empty_box.png"),
+            SizedBox(height: 20),
+            Text(context.tr("No element found !"))
+          ]
+      ),
     );
   }
 }

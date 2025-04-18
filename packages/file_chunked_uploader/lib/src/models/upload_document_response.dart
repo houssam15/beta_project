@@ -33,7 +33,7 @@ class UploadDocumentResponse implements UploadResponse{
           "type":["number","string"],
           "description":"Unique id for publication"
         },
-        "validation":{
+        "data":{
           "type":"object",
           "properties":{
             "picture":{
@@ -144,7 +144,7 @@ class UploadDocumentResponse implements UploadResponse{
       },
       "oneOf": [
         {
-          "required": ["id", "publication_id","validation"],
+          "required": ["id", "publication_id","data"],
           "not": {
             "anyOf": [
               { "required": ["error"] },
@@ -161,7 +161,7 @@ class UploadDocumentResponse implements UploadResponse{
             "anyOf": [
               { "required": ["id"] },
               { "required": ["publication_id"] },
-              { "required": ["validation"] }
+              { "required": ["data"] }
             ]
           }
         }
@@ -178,8 +178,8 @@ class UploadDocumentResponse implements UploadResponse{
         return UploadDocumentResponse(
           documentId: data["id"],
           publicationId: data["publication_id"],
-          pictureFormats: data["validation"]?["picture"]?.map<DocumentFormat>((elm)=>DocumentFormat.fromJson(elm,token)).toList() ?? [],
-          videoFormats: data["validation"]?["video"]?.map<DocumentFormat>((elm)=>DocumentFormat.fromJson(elm,token)).toList() ?? [],
+          pictureFormats: data["data"]?["picture"]?.map<DocumentFormat>((elm)=>DocumentFormat.fromJson(elm,token)).toList() ?? [],
+          videoFormats: data["data"]?["video"]?.map<DocumentFormat>((elm)=>DocumentFormat.fromJson(elm,token)).toList() ?? [],
           errors: data["errors"]!= null || data["error"]!= null ? data["errors"].map<String>((elm)=>elm.toString()).toList() ?? [data["error"]] :[],
           warning: UploadDocumentWarning.fromJson(data["warnings"])
         );

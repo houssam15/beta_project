@@ -66,7 +66,7 @@ class ImageProvider{
        }
        //2 - convert binary to memory image
        Uint8List uint8List = byteData.buffer.asUint8List();
-       _imageProvider =  image_provider.MemoryImage(uint8List);
+       _imageProvider = image_provider.MemoryImage(uint8List);
     }catch(err){
       if(kDebugMode) print(err);
     }

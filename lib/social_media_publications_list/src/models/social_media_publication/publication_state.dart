@@ -10,7 +10,10 @@ class PublicationState {
   });
 
   static PublicationState fromRepository(String value,Color? backgroundColor){
-    return PublicationState(value: value, backgroundColor: backgroundColor);
+    return PublicationState(
+        value: value,
+        backgroundColor: backgroundColor
+    );
   }
 
 }

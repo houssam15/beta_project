@@ -18,3 +18,26 @@ class SocialMediaPublicationsListRemotePublicationFetched extends SocialMediaPub
   @override
   List<Object?> get props => [context,simulateLoading];
 }
+
+
+class SocialMediaPublicationsListRemoteSearchFiltersUpdated extends SocialMediaPublicationsListRemoteEvent{
+  String? query;
+  DateRange? dateRange;
+  SocialMediaAccount? updatedAccount;
+  BuildContext context;
+  bool fetchData;
+  bool overrideRangeDate;
+  bool clearFilter;
+  SocialMediaPublicationsListRemoteSearchFiltersUpdated({
+    this.query,
+    this.dateRange,
+    this.updatedAccount,
+    this.fetchData = true,
+    this.overrideRangeDate = false,
+    required this.context,
+    this.clearFilter = false
+  });
+
+  @override
+  List<Object?> get props => [query,dateRange,updatedAccount,context,fetchData,overrideRangeDate];
+}

@@ -41,7 +41,9 @@ class SocialMediaListFormLocalBloc  extends Bloc<SocialMediaListFormLocalEvent,S
 
   Future<void> _resizePicture(SocialMediaListFormLocalResizePictureRequested event, Emitter<SocialMediaListFormLocalState> emit) async {
     try{
-      social_media_list_form_repository.ResizedFile result = await socialMediaListFormRepository
+      event.socialMediaItem.setLoading(true);
+      emit(state.copyWith(random:Random().nextInt(100000).toString() ));
+      dynamic result = await socialMediaListFormRepository
           .setValidConstraints(event.socialMediaItem.error?.validConstraints.map(((elm) => elm.toRepository())).toList())
           .setFileParams(social_media_list_form_repository.FileParams(
             fileRequestOptions: social_media_list_form_repository.RequestOptions(
@@ -51,14 +53,17 @@ class SocialMediaListFormLocalBloc  extends Bloc<SocialMediaListFormLocalEvent,S
             )
           ))
           .setContext(event.context)
-          .loadFileAndResize();
+          .loadFile();
+      event.socialMediaItem.setLoading(false);
+      emit(state.copyWith(random:Random().nextInt(100000).toString() ));
+      social_media_list_form_repository.ResizedFile resizedFile = await socialMediaListFormRepository.resizeFile(result);
       //Set edited file
-      event.socialMediaItem.error?.setEditedFile(result.file);
+      event.socialMediaItem.error?.setEditedFile(resizedFile.file);
       //emit(state.copyWith(action: SocialMediaListFormLocalAction.resizeSuccess,socialMediaItem: event.socialMediaItem,message: "File resized successfully"));
       this.socialMediaListFormEventBus.getEventBus()?.fire(SocialMediaListFormUploadResizedPictureEvent(event.socialMediaItem));
     }catch(err){
       if(kDebugMode) print(err);
-      emit(state.copyWith(action: SocialMediaListFormLocalAction.resizeFailed,message: LocalizationService.tr("failed to resize picture"),random: Random().nextInt(100000).toString()));
+      //emit(state.copyWith(action: SocialMediaListFormLocalAction.resizeFailed,message: LocalizationService.tr("failed to resize picture"),random: Random().nextInt(100000).toString()));
     }
   }
 

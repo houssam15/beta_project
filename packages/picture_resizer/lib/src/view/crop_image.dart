@@ -42,7 +42,7 @@ class _CropImageState extends State<CropImage> {
       width = widget.validConstraints.first.minWidth;
       height = widget.validConstraints.first.minHeight;
       _selectedAspectRatio = widget.validConstraints.first.ratio;
-      controller = CropController(aspectRatio: widget.validConstraints.first.toValue()!);
+      controller = CropController(aspectRatio: widget.validConstraints.first.toValue()!,);
     }else{
       controller = CropController();
     }
@@ -57,7 +57,8 @@ class _CropImageState extends State<CropImage> {
     final ui.Image? cropped = await controller.crop(pixelRatio: pixelRatio);
 
     if (cropped == null || !mounted) return;
-
+    //check meta data
+    //ui.iImage is just a binary format of image without meta data
     final  isSave = await Navigator.of(context).push(
       MaterialPageRoute(
         builder: (context) => CropImageResult(image: cropped,extension: widget.extension,width:width,height:height),

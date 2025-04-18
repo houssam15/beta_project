@@ -10,3 +10,4 @@ export 'flex_text.dart';
 export 'button.dart';
 export "alert_banner_child.dart";
 export 'loading.dart';
+export "uploading_with_progress.dart";

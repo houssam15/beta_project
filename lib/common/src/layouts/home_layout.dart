@@ -1,3 +1,4 @@
+import "package:alpha_flutter_project/calendar/src/calendar.dart";
 import "package:alpha_flutter_project/i18n_testing/src/i18n_testing.dart";
 import "package:alpha_flutter_project/social_media_file_uploader_form/social_media_file_uploader_form.dart";
 import "package:flutter/material.dart";
@@ -51,7 +52,8 @@ class _HomeLayoutState extends State<HomeLayout> {
           AdminMenuItem(title: 'Social media list form', route: SocialMediaListForm.route),
           AdminMenuItem(title: 'I18n testing', route: I18nTesting.route),
           AdminMenuItem(title: "Social media publications list",route:SocialMediaPublicationsList.route),
-          AdminMenuItem(title: "Qrcode list",route: QrcodeList.route)
+          AdminMenuItem(title: "Qrcode list",route: QrcodeList.route),
+          AdminMenuItem(title: "Calendar",route: Calendar.route)
         ],
         selectedRoute: widget.selectedRoute,
         onSelected: (item) {

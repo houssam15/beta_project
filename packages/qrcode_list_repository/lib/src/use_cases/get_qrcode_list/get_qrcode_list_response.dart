@@ -1,9 +1,9 @@
 import 'package:qrcode_list_repository/src/models/models.dart';
-
+import "package:qrcode_list_api/qrcode_list_api.dart" as qrla;
 class GetQrCodeListResponse {
   List<QrcodeItem> _items;
   String? _errorMessage;
-  List<QrcodeItemWithError> _invalidItems;
+  List<qrla.QrcodeItemWithError> _invalidItems;
   int _totalItems;
   int _totalItemsByPage;
 
@@ -26,20 +26,20 @@ class GetQrCodeListResponse {
     return _errorMessage == null;
   }
 
-  List<QrcodeItem> getPublications(){
+  List<QrcodeItem> getItems(){
     return _items;
   }
 
-  GetQrCodeListResponse setPublications(List<QrcodeItem> items){
+  GetQrCodeListResponse setItems(List<QrcodeItem> items){
     _items = items;
     return this;
   }
 
-  List<QrcodeItemWithError> getInvalidItems(){
+  List<qrla.QrcodeItemWithError> getInvalidItems(){
     return _invalidItems;
   }
 
-  GetQrCodeListResponse setInvalidItems(List<QrcodeItemWithError> items){
+  GetQrCodeListResponse setInvalidItems(List<qrla.QrcodeItemWithError> items){
     _invalidItems = items;
     return this;
   }

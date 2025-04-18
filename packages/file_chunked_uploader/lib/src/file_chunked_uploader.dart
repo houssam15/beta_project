@@ -31,9 +31,9 @@ class FileChunkedUploader<Response extends UploadResponse>{
                 'File-uuid': _getUuid(),
                 'Authorization':"Bearer ${config.authorizationToken}"
                 },
-                connectTimeout: Duration(seconds: 3), // 3 seconds for connection
-                receiveTimeout: Duration(seconds: 3), // 3 seconds for receiving validation
-                sendTimeout: Duration(seconds: 3), // 3 seconds for sending validation
+                //connectTimeout: Duration(seconds: 3), // 3 seconds for connection
+               // receiveTimeout: Duration(seconds: 3), // 3 seconds for receiving validation
+                //sendTimeout: Duration(seconds: 3), // 3 seconds for sending validation
             ));
             final uploader = ChunkedUploader(dio);
             // using validation stream

@@ -54,6 +54,10 @@ dependencies:
   social_media_publications_repository:
     path: packages/social_media_publications_repository
   loading_animation_widget: ^1.3.0
+  qrcode_list_repository:
+    path: packages/qrcode_list_repository
+  calendar_view: ^1.4.0
+  flutter_date_range_picker: ^0.1.1
 dev_dependencies:
   bloc_test: ^10.0.0
   build_runner: ^2.0.0
@@ -70,6 +74,7 @@ flutter:
   assets:
     - assets/
     - assets/images/
+    - assets/images/common/
     - assets/images/social_media_publications_list/
     - assets/localization/
     - lib/i18n_testing/src/lang/
