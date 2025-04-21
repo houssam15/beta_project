@@ -12,13 +12,11 @@ class UploadDocumentResponseForNetwork{
   }
 
   bool isValid(){
-    return _response.errors.isEmpty;
+    return _response.isValid();
   }
 
-  List<String>? getErrors(){
-    return _response.errors;
+  List<String>? getErrorMessages(){
+    return _response.getMessages();
   }
-
-
 
 }

@@ -15,7 +15,11 @@ class MyIcon extends StatelessWidget {
               color: Theme.of(context).colorScheme.tertiary.withOpacity(0.8),
               borderRadius: BorderRadius.all(Radius.circular(20))
           ),
-          child: Icon(icon,color: Theme.of(context).colorScheme.onError)
+          child: Icon(
+              icon,
+              color: Theme.of(context).colorScheme.onError,
+              size: 15,
+          )
       ),
     );
   }

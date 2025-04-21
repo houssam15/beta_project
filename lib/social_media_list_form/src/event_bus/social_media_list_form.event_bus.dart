@@ -35,6 +35,11 @@ class SocialMediaListFormEventBus{
     _eventBus?.on<SocialMediaListFormUploadResizedPictureEvent>().listen((event){
       _socialMediaListFormRemoteBloc?.add(SocialMediaListFormRemoteResizedFileUpload(event.socialMediaItem));
     });
+
+    //Update fixed item
+    _eventBus?.on<SocialMediaListFormFileChangedSuccessfullyEvent>().listen((event){
+      _socialMediaListFormRemoteBloc?.add(SocialMediaListFormRemoteFileChangedSuccessfully(event.socialMediaItem));
+    });
   }
 
 

@@ -4,7 +4,7 @@ import "package:flutter_bloc/flutter_bloc.dart";
 import "package:font_awesome_flutter/font_awesome_flutter.dart";
 import "failed_to_load_more_items.dart";
 import "bottom_loader.dart";
-import "qrcode_list_item.dart";
+import "qrcode_list_item/qrcode_list_item.dart";
 class QrcodeList extends StatefulWidget {
   const QrcodeList({super.key});
 

@@ -62,7 +62,7 @@ class UploadDocumentResponseForNetwork implements UploadResponse{
       },
       "violations":{
         "type":"object",
-        "required":["is_rotation_required","is_undersized","is_resized_required","ratio","real_ratio","height","width","messages"],
+        "required":["is_rotation_required","is_undersized","is_resized_required","ratio","real_ratio","height","width"/*,"messages"*/],
         "properties":{
           "is_rotation_required":{
             "type":"boolean"
@@ -146,6 +146,21 @@ class UploadDocumentResponseForNetwork implements UploadResponse{
     }catch(err){
       return UploadDocumentResponseForNetwork(errors: ["Something went wrong. Please try again later or contact support."]);
     }
+  }
+
+  bool isValid(){
+    return errors.isEmpty && !isViolationsExist();
+  }
+
+  bool isViolationsExist(){
+    return violations?.isExist() ?? false;
+  }
+
+  List<String> getMessages(){
+    return [
+      ...errors,
+      if(isViolationsExist()) ...violations!.messages
+    ];
   }
 
 }

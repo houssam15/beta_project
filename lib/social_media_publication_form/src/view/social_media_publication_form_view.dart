@@ -27,7 +27,7 @@ class _SocialMediaPublicationFormViewState extends State<SocialMediaPublicationF
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: MyAppBar(),
+      //appBar: MyAppBar(),
       body: Center(
         child: Container(
             width: double.infinity,

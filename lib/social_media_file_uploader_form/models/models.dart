@@ -3,3 +3,4 @@ export "local_file.dart";
 export "config.dart";
 export "constraints.dart";
 export "upload_document_response.dart";
+export "upload_document_response_for_network.dart";

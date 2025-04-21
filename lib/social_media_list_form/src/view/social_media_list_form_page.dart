@@ -29,6 +29,15 @@ class _SocialMediaListFormPageState extends State<SocialMediaListFormPage> {
     showAlertBanner(context,()=>print("TAPPED"),AlertBannerChild(text: context.tr(state.message),color: Colors.red),alertBannerLocation: AlertBannerLocation.top);
   }
 
+  _onChangeSuccess(SocialMediaListFormLocalState state) async{
+    showAlertBanner(context,()=>print("TAPPED"),AlertBannerChild(text: context.tr(state.message!),color: Colors.green),alertBannerLocation: AlertBannerLocation.top);
+    state
+  }
+
+  _onChangeFailed(SocialMediaListFormLocalState state){
+    showAlertBanner(context,()=>print("TAPPED"),AlertBannerChild(text: context.tr(state.message!),color: Colors.grey),alertBannerLocation: AlertBannerLocation.top);
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -47,8 +56,10 @@ class _SocialMediaListFormPageState extends State<SocialMediaListFormPage> {
                           padding: const EdgeInsets.symmetric(horizontal: 0,vertical: 16),
                           child: Scrollbar(
                             child: BlocListener<SocialMediaListFormLocalBloc,SocialMediaListFormLocalState>(
-                              listener: (context, state) {
+                              listener: (context, state) async{
                                   if(state.action == SocialMediaListFormLocalAction.resizeFailed) _onResizeFailed(state);
+                                  if(state.action == SocialMediaListFormLocalAction.changeSuccess) await _onChangeSuccess(state);
+                                  if(state.action == SocialMediaListFormLocalAction.changeFailed)  _onChangeFailed(state);
                               },
                               child: BlocConsumer<SocialMediaListFormRemoteBloc,SocialMediaListFormRemoteState>(
                                   builder: (context, state) {

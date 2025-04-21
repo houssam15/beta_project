@@ -70,7 +70,7 @@ class SocialMediaListFormLocalBloc  extends Bloc<SocialMediaListFormLocalEvent,S
   Future<void> _changeFile(SocialMediaListFormLocalUploadPictureRequested event, Emitter<SocialMediaListFormLocalState> emit) async {
     try{
       if(event.context==null) return;
-      dynamic result =await showModalBottomSheet(
+      dynamic result = await showModalBottomSheet(
         context: event.context!,
         isScrollControlled: true, // Allows full-screen height if needed
         shape: RoundedRectangleBorder(
@@ -78,38 +78,39 @@ class SocialMediaListFormLocalBloc  extends Bloc<SocialMediaListFormLocalEvent,S
         ),
         builder: (BuildContext bottomSheetContext) {
           return //SizedBox(
-             DraggableScrollableSheet(
             //height: MediaQuery.of(event.context!).size.height * 0.9, // Adjust height
-              initialChildSize: 0.9, // Start at 50% of screen height
-              minChildSize: 0.3, // Minimum 30% of screen height
-              maxChildSize: 0.9,
-              //child: Navigator(
-              builder: (context, scrollController) {
-                return Container(
-                  child: Navigator(
-                    onGenerateRoute: (settings) {
-                      return MaterialPageRoute(
-                        builder: (_) =>
-                            SocialMediaFileUploaderForm(
-                              arguments: SocialMediaFileUploaderFormArguments(
-                                  mediaType: MediaType.none.toString(),
-                                  modifySingleDocumentForPublication: true,
-                                  previousState: previousState,
-                                  hideSidebar: true,
-                                  uploadPath: Config.mediaLargeFileUploadForPublicationEndpoint,
-                                  publicationId:uploadDocumentResponse.getPublicationId(),
-                                  accountId: event.socialMediaItem.id
-                              ),
-                            ),
-                      );
-                    },
-                  ),
-                );
-              }
-          );
+            SizedBox(
+              height: MediaQuery.of(event.context!).size.height * 0.9,
+              child: Navigator(
+                onGenerateRoute: (settings) {
+                  return MaterialPageRoute(
+                    builder: (_) =>
+                        SocialMediaFileUploaderForm(
+                          arguments: SocialMediaFileUploaderFormArguments(
+                              mediaType: MediaType.none.toString(),
+                              modifySingleDocumentForPublication: true,
+                              previousState: previousState,
+                              hideSidebar: true,
+                              hideAppbar: true,
+                              uploadPath: Config.mediaLargeFileUploadForPublicationEndpoint,
+                              publicationId:uploadDocumentResponse.getPublicationId(),
+                              accountId: event.socialMediaItem.id
+                          ),
+                        ),
+                  );
+                },
+              ),
+            );
         },
       );
-      print(result);
+
+      //Success
+      if(result!=null){
+        this.socialMediaListFormEventBus.getEventBus()?.fire(SocialMediaListFormFileChangedSuccessfullyEvent(event.socialMediaItem));
+        emit(state.copyWith(action: SocialMediaListFormLocalAction.changeSuccess,message: LocalizationService.tr("File changed successfully"),random: Random().nextInt(100000).toString()));
+      }else{
+        emit(state.copyWith(action: SocialMediaListFormLocalAction.changeFailed,message: LocalizationService.tr("File is invalid , try an other one !"),random: Random().nextInt(100000).toString()));
+      }
     }catch(err){
       if(kDebugMode) print(err);
       emit(state.copyWith(action: SocialMediaListFormLocalAction.changeFailed,message: LocalizationService.tr("failed to change picture"),random: Random().nextInt(100000).toString()));

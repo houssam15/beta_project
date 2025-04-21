@@ -30,6 +30,7 @@ class SocialMediaListFormRemoteBloc  extends Bloc<SocialMediaListFormRemoteEvent
     on<SocialMediaListFormSocialMediaItemsSelected>(_verifySelectedSocialMediaItems);
     on<SocialMediaListFormSocialMediaItemEdited>(_updateEditedElementState);
     on<SocialMediaListFormRemoteResizedFileUpload>(_uploadResizedPicture);
+    on<SocialMediaListFormRemoteFileChangedSuccessfully>(_onFileChangedSuccessfully);
   }
 
   final UploadDocumentResponse uploadDocumentResponse;
@@ -133,6 +134,14 @@ class SocialMediaListFormRemoteBloc  extends Bloc<SocialMediaListFormRemoteEvent
     }catch(err){
       if(kDebugMode) print(err);
       //emit(state.copyWith(status: SocialMediaListFormRemoteStatus.socialMediaFailed,itemToEdit:event.socialMediaItem.setLoading(false),message: LocalizationService.tr("Can't upload resized picture")));
+    }
+  }
+
+  _onFileChangedSuccessfully(SocialMediaListFormRemoteFileChangedSuccessfully event,Emitter<SocialMediaListFormRemoteState> emit) async {
+    try{
+      event.socialMediaItem.setAsValid();
+    }catch(err){
+
     }
   }
 

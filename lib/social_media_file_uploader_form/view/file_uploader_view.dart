@@ -1,4 +1,5 @@
   import "package:alert_banner/exports.dart";
+import "package:alpha_flutter_project/app.dart";
 import "package:alpha_flutter_project/authentication/authentication.dart";
 import "package:alpha_flutter_project/social_media_file_uploader_form/bloc/file_uploader.bloc.dart";
 import "package:alpha_flutter_project/social_media_file_uploader_form/widgets/title_and_extensions.dart";
@@ -55,6 +56,18 @@ class _FileUploaderViewState extends State<FileUploaderView> {
     );
   }
 
+  _onUploadSuccessForPublication(FileUploaderState state){
+    if(navigatorKey.currentContext!=null){
+      Navigator.of(navigatorKey.currentContext!).pop(state.uploadDocumentResponseForNetwork);
+    }
+  }
+
+  _onFailedForPublication(FileUploaderState state){
+    if(navigatorKey.currentContext!=null){
+      Navigator.of(navigatorKey.currentContext!).pop(null);
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Center(
@@ -89,6 +102,14 @@ class _FileUploaderViewState extends State<FileUploaderView> {
                                 }
                                 if(state.action == FileUploaderAction.progressFailure){
                                   _onProgressFailure(state);
+                                }
+
+                                if(state.action == FileUploaderAction.successForPublication){
+                                  _onUploadSuccessForPublication(state);
+                                }
+
+                                if(state.action == FileUploaderAction.progressFailureForPublication){
+                                  _onFailedForPublication(state);
                                 }
                               },
                               builder: (context, state) {

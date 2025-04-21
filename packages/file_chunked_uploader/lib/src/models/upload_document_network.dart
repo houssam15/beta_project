@@ -38,6 +38,10 @@ class UploadDocumentNetwork extends Equatable {
     }
   }
 
+  bool isExist(){
+    return messages.isNotEmpty;
+  }
+
   @override
   List<Object?> get props => [id,engine,isResizeRequired,isUndersized,isRatioUndersized,ratio,messages];
 }

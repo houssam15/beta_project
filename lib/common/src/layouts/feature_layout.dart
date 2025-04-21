@@ -31,6 +31,7 @@ class ThemeParams {
 }
 
 class FeatureLayout<P extends FeatureParams> extends StatelessWidget {
+
   FeatureLayout({
     required this.params,
     this.lang,
@@ -38,19 +39,23 @@ class FeatureLayout<P extends FeatureParams> extends StatelessWidget {
     required this.child,
     this.theme,
     this.hideAppbar = true,
+    this.hideSidebar = false,
     this.providers = const [],
     this.errorWidget,
     this.appBarTitle=""
   });
+
   final P params;
   final Widget child;
   final LangParams? lang;
   final String selectedRoute;
   final ThemeParams? theme;
   final bool hideAppbar;
+  final bool hideSidebar;
   final List<SingleChildWidget> providers;
   final Widget? errorWidget;
   final String appBarTitle;
+
   @override
   Widget build(BuildContext context) {
     return Localizations(
@@ -60,6 +65,7 @@ class FeatureLayout<P extends FeatureParams> extends StatelessWidget {
         selectedRoute: selectedRoute,
         title: appBarTitle,
         hideAppbar: hideAppbar,
+        hideSidebar: hideSidebar,
         body: theme != null && theme?.isTheme()==true
             ? Theme(data: theme!.themeData!, child: _buildChild(context))
             :_buildChild(context),

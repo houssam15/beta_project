@@ -10,6 +10,7 @@ class SocialMediaFileUploaderFormArguments implements FeatureParams<SocialMediaF
   dynamic previousState;
   bool modifySingleDocumentForPublication;
   bool hideSidebar;
+  bool hideAppbar;
   String? publicationId;
   String? accountId;
   SocialMediaFileUploaderFormArguments({
@@ -21,6 +22,7 @@ class SocialMediaFileUploaderFormArguments implements FeatureParams<SocialMediaF
      this.constrains,
     this.previousState,
     this.hideSidebar = false,
+    this.hideAppbar = false,
     String? uploadPath
   }):uploadDocumentResponse = uploadDocumentResponse!=null?UploadDocumentResponse.create(uploadDocumentResponse):null,
     mediaType = mediaType == MediaType.picture.toString() ? MediaType.picture:MediaType.video;

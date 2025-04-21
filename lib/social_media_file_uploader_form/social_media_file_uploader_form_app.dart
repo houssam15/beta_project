@@ -37,6 +37,8 @@ class _SocialMediaFileUploaderFormState extends State<SocialMediaFileUploaderFor
         selectedRoute: Config.appRoute,
         lang: LangParams("social_media_file_uploader_form/lang"),
         theme: ThemeParams(AppTheme().themeData),
+        hideSidebar: args.hideSidebar,
+        hideAppbar: args.hideAppbar,
         providers: [
           BlocProvider<FileUploaderBloc>(
             create: (_) => FileUploaderBloc(

@@ -164,19 +164,19 @@ class FileUploaderBloc extends Bloc<FileUploaderEvent,FileUploaderState>{
       await for (int progress in fileUploaderRepository.uploadFileToServerForNetwork(state.file,publicationId: publicationId,accountId: accountId)) {
         emit(state.copyWith(action: FileUploaderAction.progress,isUploading: true, progress: progress));
       }
-      if(fileUploaderRepository.getUploadDocumentResponse()==null){
+      if(fileUploaderRepository.getUploadDocumentResponseForNetwork()==null){
         throw new Exception("Invalid response");
-      }else if(!fileUploaderRepository.getUploadDocumentResponse()!.isValid()){
+      }else if(!fileUploaderRepository.getUploadDocumentResponseForNetwork()!.isValid()){
         emit(state.copyWith(
-            action: FileUploaderAction.progressFailure,
+            action: FileUploaderAction.progressFailureForPublication,
             isUploading: false,
-            errorMessage: fileUploaderRepository.getUploadDocumentResponse()!.getErrors()!.first
+            errorMessage: fileUploaderRepository.getUploadDocumentResponseForNetwork()!.getErrorMessages()!.first
         ));
       }else{
-        emit(state.copyWith(action: FileUploaderAction.success,isUploading: false,uploadDocumentResponse: UploadDocumentResponse.create(fileUploaderRepository.getUploadDocumentResponse())));
+        emit(state.copyWith(action: FileUploaderAction.successForPublication,isUploading: false,uploadDocumentResponseForNetwork: UploadDocumentResponseForNetwork.create(fileUploaderRepository.getUploadDocumentResponseForNetwork())));
       }
     } catch (error) {
-      emit(state.copyWith(action: FileUploaderAction.progressFailure,isUploading: false, errorMessage: LocalizationService.tr("Server unavailable for the moment,try again later")).randomize());
+      emit(state.copyWith(action: FileUploaderAction.progressFailureForPublication,isUploading: false, errorMessage: LocalizationService.tr("Server unavailable for the moment,try again later")).randomize());
     }
   }
 

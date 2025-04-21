@@ -2,7 +2,7 @@
 part of 'file_uploader.bloc.dart';
 
 enum FileUploaderPageStatus{ initial,started,failure }
-enum FileUploaderAction{none, failure, permissionsDenied, progress, success, progressFailure }
+enum FileUploaderAction{none, failure, permissionsDenied, progress, success, progressFailure,successForPublication,progressFailureForPublication }
 enum FileUploaderStatus{initial,loading,picking,cameraOrGallery,pictureOrVideo,readyToUpload}
 
 final class FileUploaderState extends Equatable{
@@ -20,10 +20,12 @@ final class FileUploaderState extends Equatable{
     this.isUploading = false,
     Constrains? constrains,
     File? file ,
-    UploadDocumentResponse? uploadDocumentResponse
+    UploadDocumentResponse? uploadDocumentResponse,
+    UploadDocumentResponseForNetwork? uploadDocumentResponseForNetwork
   }): permissionsState = permissionsState ??  PermissionsState(),
       constrains = constrains ?? Constrains(),
       uploadDocumentResponse = uploadDocumentResponse ?? UploadDocumentResponse.create(null),
+      uploadDocumentResponseForNetwork = uploadDocumentResponseForNetwork ?? UploadDocumentResponseForNetwork.create(null),
     file = file??File("no_path");
 
   FileUploaderPageStatus pageStatus;
@@ -40,6 +42,7 @@ final class FileUploaderState extends Equatable{
   int random = 0;
   bool isUploading;
   UploadDocumentResponse uploadDocumentResponse;
+  UploadDocumentResponseForNetwork uploadDocumentResponseForNetwork;
   //Localization service for translation purpose
   FileUploaderState copyWith({
     FileUploaderPageStatus? pageStatus,
@@ -54,7 +57,8 @@ final class FileUploaderState extends Equatable{
     List<String>? supportedExtensions,
     bool? isUploading,
     Constrains? constrains,
-    UploadDocumentResponse? uploadDocumentResponse
+    UploadDocumentResponse? uploadDocumentResponse,
+    UploadDocumentResponseForNetwork? uploadDocumentResponseForNetwork
   }) {
     return FileUploaderState(
         pageStatus: pageStatus ?? this.pageStatus,
@@ -69,7 +73,8 @@ final class FileUploaderState extends Equatable{
         supportedExtensions:supportedExtensions??this.supportedExtensions,
         isUploading: isUploading??this.isUploading,
         constrains: constrains ?? this.constrains,
-        uploadDocumentResponse: uploadDocumentResponse ?? this.uploadDocumentResponse
+        uploadDocumentResponse: uploadDocumentResponse ?? this.uploadDocumentResponse,
+        uploadDocumentResponseForNetwork: uploadDocumentResponseForNetwork ?? this.uploadDocumentResponseForNetwork
     );
   }
 
@@ -83,5 +88,5 @@ final class FileUploaderState extends Equatable{
   }
 
   @override
-  List<Object> get props => [pageStatus,status,permissionsState,errorMessage,sourceType,mediaType,file,progress,random,isUploading,constrains,uploadDocumentResponse];
+  List<Object> get props => [pageStatus,status,permissionsState,errorMessage,sourceType,mediaType,file,progress,random,isUploading,constrains,uploadDocumentResponse,uploadDocumentResponseForNetwork];
 }

@@ -45,5 +45,9 @@
 	<true/>
 	<key>UIApplicationSupportsIndirectInputEvents</key>
 	<true/>
+    <key>NSDownloadsFolderUsageDescription</key>
+    <string>Need to download files</string>
+    <key>NSPhotoLibraryUsageDescription</key>
+    <string>Need to save photos</string>
 </dict>
 </plist>
