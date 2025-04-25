@@ -1,10 +1,13 @@
+import "dart:io";
+import "dart:typed_data";
+
 import "package:flutter/material.dart";
 import "package:font_awesome_flutter/font_awesome_flutter.dart";
 import 'dart:ui' as ui;
 import "package:image_viewer/image_viewer.dart" as image_viewer;
 import "../widgets/widgets.dart";
 class CropImageResult extends StatefulWidget {
-  final ui.Image? image;
+  final Uint8List? image;
   final String? extension;
   final double? width;
   final double? height;
@@ -60,8 +63,8 @@ class _CropImageResultState extends State<CropImageResult> {
               children: [
                 TableRow(
                   children: [
-                    TextIcon(icon: FontAwesomeIcons.arrowsUpDown,text: "${widget.height} px"),
-                    TextIcon(icon: FontAwesomeIcons.arrowsLeftRight,text: "${widget.width} px"),
+                    TextIcon(icon: FontAwesomeIcons.arrowsUpDown,text: "${widget.height?.toStringAsFixed(2)} px"),
+                    TextIcon(icon: FontAwesomeIcons.arrowsLeftRight,text: "${widget.width?.toStringAsFixed(2)} px"),
                     TextIcon(icon: FontAwesomeIcons.fileImage,text: "${widget.extension}")
                   ],
                 ),
@@ -75,7 +78,8 @@ class _CropImageResultState extends State<CropImageResult> {
                 image: widget.image
               ),*/
               child: FutureBuilder(
-                  future: imageProvider.setExtension(widget.extension).fromUiImage(widget.image),
+                  //future: imageProvider.setExtension(widget.extension).fromUiImage(widget.image),
+                  future: imageProvider.setExtension(widget.extension).fromMemory(widget.image),
                   builder: (context, snapshot) {
                     if(snapshot.connectionState==ConnectionState.waiting){
                       return Center(child: const CircularProgressIndicator());

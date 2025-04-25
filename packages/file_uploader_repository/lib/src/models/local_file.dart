@@ -60,7 +60,8 @@ class LocalFile extends Equatable{
   bool isError;
   bool isCanceled;
   bool isSuccess;
-
+  bool isAccessDenied;
+  bool isOpenSettingsRequired;
   LocalFile({
     required this.source,
     required this.type,
@@ -68,7 +69,9 @@ class LocalFile extends Equatable{
     required this.file,
     this.isCanceled=false,
     this.isError = false,
-    this.isSuccess = false
+    this.isSuccess = false,
+    this.isAccessDenied = false,
+    this.isOpenSettingsRequired = false
   });
 
   @override

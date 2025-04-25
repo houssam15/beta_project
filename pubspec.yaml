@@ -37,7 +37,7 @@ dependencies:
   google_fonts: ^6.2.1
   flutter_admin_scaffold: ^1.4.0
   dotted_border: ^2.1.0
-  permission_handler: ^11.4.0
+  permission_handler: ^12.0.0+1
   calendar_date_picker2: ^1.1.9
   flutter_localization: ^0.3.1
   http: ^1.0.0

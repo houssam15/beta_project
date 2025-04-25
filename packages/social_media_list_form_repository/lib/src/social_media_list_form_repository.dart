@@ -83,14 +83,18 @@ class SocialMediaListFormRepository{
 
   Future<ResizedFile> resizeFile(social_media_api.UploadedPicture data) async {
     try{
-      final resizedPicture = await pictureResizer
+      await pictureResizer
           .setValidConstraints(validConstraints?.map<picture_resizer.ValidConstraints>(((elm) => elm.toPictureResizerModel())).toList())
           .setContext(context)
           .setFile(data.file)
           .setExtension(data.extension.toExtensionString())
           .resizePicture();
-      if(resizedPicture == null) throw Exception("Failed to resize file");
-      return ResizedFile(resizedPicture);
+
+      if(pictureResizer.getResizedPicture() == null || pictureResizer.getResizedPicture()?.isValid() != true ) throw Exception("Failed to resize file");
+      return ResizedFile(
+        file: pictureResizer.getResizedPicture()!.getFile()!,
+        //exifData: pictureResizer.getResizedPicture()?.getExifData()
+      );
     }catch(err){
       if(kDebugMode) print(err);
       throw Exception("Can't resize file");
@@ -120,12 +124,13 @@ class SocialMediaListFormRepository{
   }*/
 
   Stream<int> uploadFileToServerForPublication(File file,{dynamic params}) async* {
+    List<String> _errors = [];
     yield* _fileChunkedUploader.upload(file,data: params).handleError((error){
-      if(kDebugMode) print("UploadFileToServer error : $error");
-      throw Exception("Server unavailable");
+      _errors = _extractErrorsFromResponse(error.response?.data);
     });
-    setUploadDocumentForPublicationResponseForNetwork(UploadDocumentForPublicationResponseForNetwork.create(_fileChunkedUploader.uploadResult as fcu.UploadDocumentResponseForNetwork?));
+    setUploadDocumentForPublicationResponseForNetwork(UploadDocumentForPublicationResponseForNetwork.create(_fileChunkedUploader.uploadResult as fcu.UploadDocumentResponseForNetwork?)..addErrors(_errors));
   }
+
 
   Future<List<SocialMediaItem>> getSocialMediaList(dynamic data) async {
     //social_media_api.DataState<dynamic> ds = await socialMediaApi.getSocialMediaList();
@@ -141,6 +146,25 @@ class SocialMediaListFormRepository{
 
     }
     return response;
+  }
+
+
+  List<String> _extractErrorsFromResponse(Map<String, dynamic> response) {
+    if (response.containsKey('error')) {
+      return [response['error'].toString()];
+    }
+
+    if (response.containsKey('errors')) {
+      final errors = response['errors'];
+      if (errors is Map) {
+        return errors.values.map((e) => e.toString()).toList();
+      } else if (errors is List) {
+        return errors.map((e) => e.toString()).toList();
+      }
+      return [errors.toString()];
+    }
+
+    return [response.toString()];
   }
 
 }

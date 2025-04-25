@@ -1,4 +1,5 @@
 import 'dart:io';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
 import "package:flutter/src/painting/image_provider.dart" as image_provider;
 import 'dart:ui' as ui;
@@ -90,6 +91,16 @@ class ImageProvider{
       _imageProvider = image_provider.MemoryImage(bytes);
     }catch(err){
       if(kDebugMode) print(err);
+    }
+    return this;
+  }
+
+  Future<ImageProvider> fromMemory(Uint8List? bytes) async {
+    try{
+      if(bytes == null) throw Exception("Invalid params");
+      _imageProvider =  image_provider.MemoryImage(bytes);
+    }catch(err){
+      print(err);
     }
     return this;
   }

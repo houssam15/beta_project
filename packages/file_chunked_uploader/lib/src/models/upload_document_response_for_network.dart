@@ -62,8 +62,15 @@ class UploadDocumentResponseForNetwork implements UploadResponse{
       },
       "violations":{
         "type":"object",
-        "required":["is_rotation_required","is_undersized","is_resized_required","ratio","real_ratio","height","width"/*,"messages"*/],
+        "required":["id","engine","is_rotation_required","is_undersized","is_resized_required","ratio","real_ratio","height","width"/*,"messages"*/],
         "properties":{
+          "id":{
+            "type":"string"
+          },
+          "engine":{
+            "type":"string",
+            "enum":["Facebook","Instagram","Linkedin","Google"]
+          },
           "is_rotation_required":{
             "type":"boolean"
           },
@@ -137,8 +144,8 @@ class UploadDocumentResponseForNetwork implements UploadResponse{
       }else{
         return UploadDocumentResponseForNetwork(
             id: data["id"],
-            pictureFormats: data["validation"]?["picture"]?.map<DocumentFormat>((elm)=>DocumentFormat.fromJson(elm,token)).toList() ?? [],
-            videoFormats: data["validation"]?["video"]?.map<DocumentFormat>((elm)=>DocumentFormat.fromJson(elm,token)).toList() ?? [],
+            pictureFormats: data["data"]?["picture"]?.map<DocumentFormat>((elm)=>DocumentFormat.fromJson(elm,token)).toList() ?? [],
+            videoFormats: data["data"]?["video"]?.map<DocumentFormat>((elm)=>DocumentFormat.fromJson(elm,token)).toList() ?? [],
             errors: data["errors"]!= null || data["error"]!= null ? data["errors"].map<String>((elm)=>elm.toString()).toList() ?? [data["error"]] :[],
             violations: UploadDocumentNetwork.fromJson(data["violations"])
         );
@@ -161,6 +168,16 @@ class UploadDocumentResponseForNetwork implements UploadResponse{
       ...errors,
       if(isViolationsExist()) ...violations!.messages
     ];
+  }
+
+  @override
+  List<String> getErrors(){
+    return errors;
+  }
+
+  @override
+  void addErrors(List<String> errors) {
+    this.errors = [...this.errors,...errors];
   }
 
 }

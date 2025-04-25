@@ -2,6 +2,6 @@ import 'dart:io';
 
 class ResizedFile {
     final File file;
-
-    const ResizedFile(this.file);
+    final Map<String,dynamic>? exifData;
+    const ResizedFile({required this.file,this.exifData});
 }

@@ -30,6 +30,7 @@ class PictureResizer {
   String? _extension;
   dynamic _originalBytes;
   dynamic _originalMetaData;
+  ResizedPicture? _resizedPicture;
 
   PictureResizer setValidConstraints(List<ValidConstraints>? validConstraints) {
     _validConstraints = validConstraints;
@@ -73,7 +74,17 @@ class PictureResizer {
     return this;
   }
 
-  Future<File?> resizePicture() async {
+  PictureResizer setResizedPicture(ResizedPicture? resizedPicture){
+    _resizedPicture = resizedPicture;
+    return this;
+  }
+
+  ResizedPicture? getResizedPicture(){
+    return _resizedPicture;
+  }
+
+
+  /*Future<File?> resizePicture() async {
     try{
       if(_context==null || _file==null || _validConstraints==null || _extension==null) throw Exception("Invalid params !");
       String? cropFilePath = await prv2.PictureResizerV2(
@@ -87,6 +98,27 @@ class PictureResizer {
     }catch(err){
       if(kDebugMode) print(err);
       return null;
+    }
+  }*/
+
+  resizePicture() async {
+    try{
+      if(_context==null || _file==null || _validConstraints==null || _extension==null) throw Exception("Invalid params !");
+      this.setResizedPicture(
+          await Navigator.push(
+            _context!,
+            MaterialPageRoute(
+                builder: (context) => CropImage(
+                  file: _file!,
+                  context: _context!,
+                  validConstraints: _validConstraints!,
+                  extension: _extension,
+                )
+            ),
+          )
+      );
+    }catch(err){
+      if(kDebugMode) print(err);
     }
   }
 

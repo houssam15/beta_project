@@ -52,4 +52,9 @@ class UploadDocumentResponse{
     return _response.publicationId;
   }
 
+  List<String> addErrors(List<String> errors){
+    _response.addErrors(errors);
+    return _response.getErrors();
+  }
+
 }

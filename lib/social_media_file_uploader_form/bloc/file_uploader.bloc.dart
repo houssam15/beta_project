@@ -103,11 +103,12 @@ class FileUploaderBloc extends Bloc<FileUploaderEvent,FileUploaderState>{
                 ? state.constrains.getGlobalPictureMaxSize()
                 : state.constrains.getGlobalVideoMaxSize()
         );
-        if(result.isError || result.isCanceled)  emit(state.copyWith(pageStatus: FileUploaderPageStatus.initial,action: FileUploaderAction.failure,errorMessage: LocalizationService.tr(result.message)));
-        else if(result.isSuccess) {
+        if(result.isError || result.isCanceled || result.isAccessDenied)  emit(state.copyWith(pageStatus: FileUploaderPageStatus.initial,action: FileUploaderAction.failure,errorMessage: LocalizationService.tr(result.message)));
+        if(result.isOpenSettingsRequired) {
+          await this.fileUploaderRepository.openSettingsToGrantPermissions();
+        }
+        if(result.isSuccess) {
           emit(state.copyWith(status: FileUploaderStatus.readyToUpload,file: result.file));
-        }else{
-          throw new Exception("Unknown state");
         }
       }
     }catch(err){

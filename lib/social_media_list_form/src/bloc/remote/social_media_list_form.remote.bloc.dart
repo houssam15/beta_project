@@ -99,18 +99,21 @@ class SocialMediaListFormRemoteBloc  extends Bloc<SocialMediaListFormRemoteEvent
           event.socialMediaItem.error!.editedFile!,
           params: {
             "account_id":event.socialMediaItem.id,
-            "publication":state.uploadDocumentResponse?.getPublicationId()
+            "publication":state.uploadDocumentResponse?.getPublicationId(),
+            //"data":event.socialMediaItem.error?.getExifData()
           }
       )) {
         emit(state.copyWith(action: SocialMediaListFormRemoteActions.progressForPublication,itemToEdit:event.socialMediaItem.setProgress(progress).setUploading(true)));
       }
 
       await Future.delayed(Duration(seconds: 1));
+      print(!(socialMediaListFormRepository.getUploadDocumentForPublicationResponseForNetwork()?.isValid()==true));
       if(socialMediaListFormRepository.getUploadDocumentForPublicationResponseForNetwork()==null){
         throw new Exception("Invalid response");
       }else if(
-          !socialMediaListFormRepository.getUploadDocumentForPublicationResponseForNetwork()!.isValid()
+          !(socialMediaListFormRepository.getUploadDocumentForPublicationResponseForNetwork()?.isValid()==true)
       ){
+       // print("xx");
         emit(
             state.copyWith(
             action: SocialMediaListFormRemoteActions.progressForPublicationFailed,
@@ -118,6 +121,7 @@ class SocialMediaListFormRemoteBloc  extends Bloc<SocialMediaListFormRemoteEvent
             itemToEdit:event.socialMediaItem.setProgress(null).setUploading(false)
         ));
       }else{
+       // print("xx");
         emit(
             state.copyWith(
                 action: SocialMediaListFormRemoteActions.progressForPublicationSuccess,
@@ -133,13 +137,13 @@ class SocialMediaListFormRemoteBloc  extends Bloc<SocialMediaListFormRemoteEvent
       }*/
     }catch(err){
       if(kDebugMode) print(err);
-      //emit(state.copyWith(status: SocialMediaListFormRemoteStatus.socialMediaFailed,itemToEdit:event.socialMediaItem.setLoading(false),message: LocalizationService.tr("Can't upload resized picture")));
+      emit(state.copyWith(action: SocialMediaListFormRemoteActions.progressForPublicationFailed,itemToEdit:event.socialMediaItem.setUploading(false).setProgress(null),message: LocalizationService.tr("Can't upload resized file, try again later")));
     }
   }
 
   _onFileChangedSuccessfully(SocialMediaListFormRemoteFileChangedSuccessfully event,Emitter<SocialMediaListFormRemoteState> emit) async {
     try{
-      event.socialMediaItem.setAsValid();
+      event.socialMediaItem.setUploadUrl(event.result.getUploadUrl());
     }catch(err){
 
     }

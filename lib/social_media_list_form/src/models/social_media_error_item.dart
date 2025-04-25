@@ -21,6 +21,7 @@ class SocialMediaErrorItem extends Equatable{
   bool isEditUploaded;
   List<ValidConstraintsByRatio> validConstraints;
   File? editedFile;
+  Map<String,dynamic>? _exifData;
 
   SocialMediaErrorItem({
     required this.errorType,
@@ -28,7 +29,7 @@ class SocialMediaErrorItem extends Equatable{
     this.isEdited = false,
     this.isEditUploaded = false,
     this.validConstraints = const [],
-    this.editedFile
+    this.editedFile,
   });
 
 
@@ -65,7 +66,16 @@ class SocialMediaErrorItem extends Equatable{
     return this;
   }
 
+  SocialMediaErrorItem setExifData(Map<String,dynamic>? exifData){
+    this._exifData = exifData;
+    return this;
+  }
+
+  Map<String,dynamic>? getExifData(){
+    return _exifData;
+  }
+
   @override
-  List<Object?> get props => [errorType,messages,isEdited,isEditUploaded,validConstraints,editedFile];
+  List<Object?> get props => [errorType,messages,isEdited,isEditUploaded,validConstraints,editedFile,_exifData];
 }
 

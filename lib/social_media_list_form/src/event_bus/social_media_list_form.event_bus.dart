@@ -38,7 +38,7 @@ class SocialMediaListFormEventBus{
 
     //Update fixed item
     _eventBus?.on<SocialMediaListFormFileChangedSuccessfullyEvent>().listen((event){
-      _socialMediaListFormRemoteBloc?.add(SocialMediaListFormRemoteFileChangedSuccessfully(event.socialMediaItem));
+      _socialMediaListFormRemoteBloc?.add(SocialMediaListFormRemoteFileChangedSuccessfully(event.socialMediaItem,event.result));
     });
   }
 

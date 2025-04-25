@@ -19,4 +19,8 @@ class UploadDocumentResponseForNetwork {
     return _repository != null && _repository!.isValid();
   }
 
+  String? getUploadUrl(){
+    return _repository?.getUploadUrl();
+  }
+
 }

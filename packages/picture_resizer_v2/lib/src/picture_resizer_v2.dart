@@ -48,16 +48,27 @@ class PictureResizerV2 {
         uiSettings: [
           AndroidUiSettings(
             aspectRatioPresets: getAspectRatios(),
+            lockAspectRatio: false,
+            showCropGrid: true,
+            cropGridColumnCount: 2,
+            cropGridRowCount: 2,
+            hideBottomControls: false,
           ),
           IOSUiSettings(
+            aspectRatioLockEnabled: false,
+            resetAspectRatioEnabled: false,
+            aspectRatioPickerButtonHidden: false,
             aspectRatioPresets: [
               CropAspectRatioPreset.original,
               CropAspectRatioPreset.square,
               ...getAspectRatios()
             ],
+
           )
         ],
       );
+
+    //debug
     return croppedFile?.path;
     }catch(err){
       return null;

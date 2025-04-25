@@ -206,4 +206,14 @@ class UploadDocumentResponse implements UploadResponse{
     return warning;
   }
 
+  @override
+  List<String> getErrors(){
+    return errors;
+  }
+
+  @override
+  void addErrors(List<String> errors) {
+    this.errors = [...this.errors,...errors];
+  }
+
 }

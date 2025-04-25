@@ -19,4 +19,19 @@ class UploadDocumentResponseForNetwork{
     return _response.getMessages();
   }
 
+  String? getUploadUrl(){
+    if(_response.pictureFormats.isNotEmpty){
+      return _response.pictureFormats.first.url;
+    }else if(_response.videoFormats.isNotEmpty){
+      return _response.videoFormats.first.url;
+    }else{
+      return null;
+    }
+  }
+
+  List<String> addErrors(List<String> errors){
+    _response.addErrors(errors);
+    return _response.getErrors();
+  }
+
 }

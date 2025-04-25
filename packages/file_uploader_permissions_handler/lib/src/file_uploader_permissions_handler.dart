@@ -1,15 +1,17 @@
+import 'dart:io';
+
 import 'package:file_uploader_permissions_handler/src/models/models.dart';
 import 'package:flutter/foundation.dart';
 import 'package:permission_handler/permission_handler.dart';
 
 class FileUploaderPermissionsHandler{
-  final List<Permission> _permissions = [
-    Permission.manageExternalStorage,
-    Permission.photos,
-    Permission.camera,
+
+  final List<PlatformPermission> _platformPermissions = [
+    PlatformPermission(permission: Permission.manageExternalStorage,supportedIn: [Platforms.android]),
+    PlatformPermission(permission: Permission.photos),
+    PlatformPermission(permission: Permission.camera)
   ];
 
-  List<Permission> get  permissions => _permissions;
 
   /// Check for all permissions required by file uploader.
   /// If any permission is not granted, it will request it.
@@ -18,11 +20,13 @@ class FileUploaderPermissionsHandler{
     PermissionsState permissionsState = PermissionsState();
     List<String> deniedPermissionNames = [];
     try{
+      //Supported permissions
+      List<Permission> supportedPermissions = _platformPermissions.where((pp)=>pp.isSupported()).map((pp)=>pp.permission).toList();
       // Check the status of each permission.
       Map<Permission, PermissionStatus> statuses = await Future.wait(
-        permissions.map((permission) => permission.status),
+        supportedPermissions.map((p) => p.status),
       ).then((statusesList) {
-        return Map.fromIterables(permissions, statusesList);
+        return Map.fromIterables(supportedPermissions, statusesList);
       });
 
       // Filter out the permissions that are not granted.
@@ -68,9 +72,7 @@ class FileUploaderPermissionsHandler{
 
   Future<bool> openSettingsToGrantpermissions() async {
     try{
-      bool canOpenSetting = await openAppSettings();
-      if(!canOpenSetting) return false;
-      return true;
+      return await openAppSettings();
     }catch(err){
       if (kDebugMode) print("Permission request error: $err");
       return false;

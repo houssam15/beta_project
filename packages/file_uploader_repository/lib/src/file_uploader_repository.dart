@@ -82,7 +82,7 @@ class FileUploaderRepository<Response extends fcu.UploadResponse>{
         return PermissionsState(
             status: result.isAllPermissionsGranted ? PermissionsStatus.granted:PermissionsStatus.denied,
             message: result.isAllPermissionsGranted?"permissions granted successfully":(
-                !result.isPermissionsNeedOpenSettings?"unable to load files from device":"please give us access to the permissions below :"
+                !result.isPermissionsNeedOpenSettings?"unable to load files from device":"please give us access to required permissions"
             ),
             openSettingDialog: result.isPermissionsNeedOpenSettings,
             permissionsNotRequestedYet: result.permissionsNotRequestedYet
@@ -90,11 +90,24 @@ class FileUploaderRepository<Response extends fcu.UploadResponse>{
     }
 
     Future<bool> openSettingsToGrantPermissions()async{
-        final result  = await _fileUploaderPermissionsHandler.openSettingsToGrantpermissions();
-        return true;
+        return await _fileUploaderPermissionsHandler.openSettingsToGrantpermissions();
     }
 
     Future<LocalFile> getFileFromSource(UploadSourceType source,MediaType type,{List<String>? supportedExtensions,double? minSize,double? maxSize}) async{
+
+        PermissionsState per = await this.requestPermissions();
+
+        if(per.status == PermissionsStatus.denied){
+            return LocalFile(
+                source: source,
+                type: type,
+                file: null,
+                isAccessDenied: true,
+                isOpenSettingsRequired: per.openSettingDialog,
+                message: per.message
+            );
+        }
+
         local_file_picker.LocalFile file = await _localFilePicker.pickFile(
             source.toLocalFileSource(),
             type.toLocalFileType(),
@@ -102,10 +115,11 @@ class FileUploaderRepository<Response extends fcu.UploadResponse>{
             minSize:minSize,
             maxSize:maxSize
         );
+
         return LocalFile(
             isSuccess: file.status==local_file_picker.LocalFileStatus.picked,
             isCanceled:file.status==local_file_picker.LocalFileStatus.canceled,
-            isError:file.status==local_file_picker.LocalFileStatus.failed,
+            isError:file.status==local_file_picker.LocalFileStatus.failed ,
             source: file.fileSource.toUploadSourceType(),
             type: file.fileType.toMediaType(),
             file:file.file,
@@ -114,17 +128,19 @@ class FileUploaderRepository<Response extends fcu.UploadResponse>{
     }
 
     Stream<int> uploadFileToServer(File file) async* {
-        yield* fileChunkedUploader.upload(file).handleError((error){
-            throw Exception("Server unavailable");
-        });
-        setUploadDocumentResponse(UploadDocumentResponse.create(fileChunkedUploader.uploadResult as fcu.UploadDocumentResponse?));
+            List<String> _errors = [];
+            yield* fileChunkedUploader.upload(file).handleError((error) {
+                _errors = _extractErrorsFromResponse(error.response?.data);
+            });
+        setUploadDocumentResponse(UploadDocumentResponse.create(fileChunkedUploader.uploadResult as fcu.UploadDocumentResponse?)..addErrors(_errors));
     }
 
     Stream<int> uploadFileToServerForNetwork(File file,{String? publicationId,String? accountId}) async* {
+        List<String> _errors = [];
         yield* fileChunkedUploader.upload(file,data:{"publication":publicationId,"account_id":accountId}).handleError((error){
-            throw Exception("Server unavailable");
+            _errors = _extractErrorsFromResponse(error.response?.data);
         });
-        setUploadDocumentResponseForNetwork(UploadDocumentResponseForNetwork.create(fileChunkedUploader.uploadResult as fcu.UploadDocumentResponseForNetwork?));
+        setUploadDocumentResponseForNetwork(UploadDocumentResponseForNetwork.create(fileChunkedUploader.uploadResult as fcu.UploadDocumentResponseForNetwork?)..addErrors(_errors));
     }
 
     Future<Constrains> getConstrains() async {
@@ -142,6 +158,24 @@ class FileUploaderRepository<Response extends fcu.UploadResponse>{
         }else{
             return UpdatePublicationResponse.success(data: ds.data);
         }
+    }
+
+    List<String> _extractErrorsFromResponse(Map<String, dynamic> response) {
+        if (response.containsKey('error')) {
+            return [response['error'].toString()];
+        }
+
+        if (response.containsKey('errors')) {
+            final errors = response['errors'];
+            if (errors is Map) {
+                return errors.values.map((e) => e.toString()).toList();
+            } else if (errors is List) {
+                return errors.map((e) => e.toString()).toList();
+            }
+            return [errors.toString()];
+        }
+
+        return [response.toString()];
     }
 
 

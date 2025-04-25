@@ -31,7 +31,6 @@ class _SocialMediaListFormPageState extends State<SocialMediaListFormPage> {
 
   _onChangeSuccess(SocialMediaListFormLocalState state) async{
     showAlertBanner(context,()=>print("TAPPED"),AlertBannerChild(text: context.tr(state.message!),color: Colors.green),alertBannerLocation: AlertBannerLocation.top);
-    state
   }
 
   _onChangeFailed(SocialMediaListFormLocalState state){

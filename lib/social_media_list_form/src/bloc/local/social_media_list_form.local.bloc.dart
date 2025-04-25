@@ -58,7 +58,7 @@ class SocialMediaListFormLocalBloc  extends Bloc<SocialMediaListFormLocalEvent,S
       emit(state.copyWith(random:Random().nextInt(100000).toString() ));
       social_media_list_form_repository.ResizedFile resizedFile = await socialMediaListFormRepository.resizeFile(result);
       //Set edited file
-      event.socialMediaItem.error?.setEditedFile(resizedFile.file);
+      event.socialMediaItem.error?.setEditedFile(resizedFile.file).setExifData(resizedFile.exifData);
       //emit(state.copyWith(action: SocialMediaListFormLocalAction.resizeSuccess,socialMediaItem: event.socialMediaItem,message: "File resized successfully"));
       this.socialMediaListFormEventBus.getEventBus()?.fire(SocialMediaListFormUploadResizedPictureEvent(event.socialMediaItem));
     }catch(err){
@@ -106,7 +106,7 @@ class SocialMediaListFormLocalBloc  extends Bloc<SocialMediaListFormLocalEvent,S
 
       //Success
       if(result!=null){
-        this.socialMediaListFormEventBus.getEventBus()?.fire(SocialMediaListFormFileChangedSuccessfullyEvent(event.socialMediaItem));
+        this.socialMediaListFormEventBus.getEventBus()?.fire(SocialMediaListFormFileChangedSuccessfullyEvent(event.socialMediaItem,result));
         emit(state.copyWith(action: SocialMediaListFormLocalAction.changeSuccess,message: LocalizationService.tr("File changed successfully"),random: Random().nextInt(100000).toString()));
       }else{
         emit(state.copyWith(action: SocialMediaListFormLocalAction.changeFailed,message: LocalizationService.tr("File is invalid , try an other one !"),random: Random().nextInt(100000).toString()));

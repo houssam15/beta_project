@@ -6,6 +6,7 @@ class SocialMediaListFormUploadResizedPictureEvent{
 
 class SocialMediaListFormFileChangedSuccessfullyEvent{
   final SocialMediaItem socialMediaItem;
-  SocialMediaListFormFileChangedSuccessfullyEvent(this.socialMediaItem);
+  final dynamic result;
+  SocialMediaListFormFileChangedSuccessfullyEvent(this.socialMediaItem,this.result);
 
 }

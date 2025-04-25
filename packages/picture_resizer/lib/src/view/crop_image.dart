@@ -3,10 +3,13 @@ import 'package:crop/crop.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:image/image.dart' as img;
+import 'package:path_provider/path_provider.dart';
 import "../widgets/widgets.dart";
 import "../models/models.dart";
 import "view.dart";
 import 'dart:ui' as ui;
+import "package:native_exif/native_exif.dart";
+
 
 class CropImage extends StatefulWidget {
 
@@ -14,6 +17,7 @@ class CropImage extends StatefulWidget {
   BuildContext context;
   List<ValidConstraints> validConstraints;
   String? extension;
+
   CropImage({
     super.key,
     required this.file,
@@ -28,7 +32,7 @@ class CropImage extends StatefulWidget {
 
 class _CropImageState extends State<CropImage> {
   //CropController get controller => CropController(aspectRatio: (widget.maxWidth/2) / (widget.maxHeight/2));
-  late CropController  controller ;
+  late CropController controller;
   late double width;
   late double height;
   double _rotation = 0;
@@ -53,22 +57,60 @@ class _CropImageState extends State<CropImage> {
   }
 
   void _cropImage() async {
-    final pixelRatio = MediaQuery.of(context).devicePixelRatio;
-    final ui.Image? cropped = await controller.crop(pixelRatio: pixelRatio);
+    try{
+      await controller.crop(pixelRatio: MediaQuery.of(context).devicePixelRatio);
+      if (controller.croppedImage == null || !mounted) return;
 
-    if (cropped == null || !mounted) return;
-    //check meta data
-    //ui.iImage is just a binary format of image without meta data
-    final  isSave = await Navigator.of(context).push(
-      MaterialPageRoute(
-        builder: (context) => CropImageResult(image: cropped,extension: widget.extension,width:width,height:height),
-        fullscreenDialog: true,
-      )
-    );
-    //if(kDebugMode) print(isSave);
-    if(isSave){
-      Navigator.of(context).pop(cropped);
+      // 1. Get raw image bytes
+      final directory = await getTemporaryDirectory();
+      final filePath = '${directory.path}/${DateTime.now().millisecondsSinceEpoch.toString()}.${widget.extension}';
+      //ByteData? bytes = await controller.croppedImage?.toByteData();
+      if(controller.croppedImage == null) throw Exception("Can't convert uiImage to ByteData");
+
+      // 2. Save initial cropped file (without EXIF)
+      File croppedFile = File(filePath);
+      await croppedFile.writeAsBytes(controller.croppedImage!);
+
+      // 3 decode cropped image
+      //final imageBytes = await croppedFile.readAsBytes();
+
+      // 4 update exif
+      final croppedExif = await Exif.fromPath(croppedFile.path);
+      dynamic originMetaDataAttributes = await croppedExif.getAttribute("TAG_ORIENTATION");
+      print(originMetaDataAttributes);
+      /*originMetaDataAttributes['PixelXDimension'] = controller.croppedImage?.width.toString();
+      originMetaDataAttributes['PixelYDimension'] = controller.croppedImage?.height.toString();
+      await originalExif.close();*/
+
+      // 5 update cropped image with new exif data
+      //final tempPath = '${directory.path}/${DateTime.now().millisecondsSinceEpoch.toString()}_edited.${widget.extension}';
+      //await File(tempPath).writeAsBytes(imageBytes);
+      //final exif = await Exif.fromPath(tempPath);
+      //await exif.writeAttribute("UserComment", "1000");
+      //await exif.close();
+      //await exif.writeAttributes(originMetaDataAttributes);
+
+      // 6 update cropped file with valid data
+      //await croppedFile.delete();
+      //await File(tempPath).rename(croppedFile.path);
+
+
+
+      final  isSave = await Navigator.of(context).push(
+          MaterialPageRoute(
+            builder: (context) => CropImageResult(image: controller.croppedImage,extension: widget.extension,width:width,height:height),
+            fullscreenDialog: true,
+          )
+      );
+
+      if(isSave){
+        Navigator.of(context).pop(ResizedPicture(file: croppedFile/* , exifData: originMetaDataAttributes*/));
+      }
+    }catch(err){
+      print(err);
+      Navigator.of(context).pop(null);
     }
+
   }
 
   ValidConstraints? _getSelectedConstraint() {
@@ -77,6 +119,39 @@ class _CropImageState extends State<CropImage> {
 
     return filteredList.isNotEmpty ? filteredList.first : null;
   }
+  
+
+  double getXMultiplayer(){
+    double? mpt = double.tryParse((_selectedAspectRatio?.split(":").first).toString());
+    if(mpt==null|| mpt <=0) return 1;
+    return mpt;
+  }
+
+  double getYMultiplayer(){
+    double? mpt = double.tryParse((_selectedAspectRatio?.split(":").last).toString());
+    if(mpt==null || mpt <=0 ) return 1;
+    return mpt;
+  }
+
+  double _getSizePercentage() {
+    final constraint = _getSelectedConstraint();
+    double per = 0;
+    if (constraint == null || constraint.minWidth >= width) {
+      per = 0.0;
+    }else {
+      final widthRange = constraint.maxWidth;
+      if (widthRange <= 0) {
+        per = 1.0;
+      }else{
+        per = (width / widthRange).clamp(0.0, 1.0);
+      }
+    }
+    //print("per : ${per * 100} %");
+    return per;
+  }
+
+
+  double _sliderValue = 0;
 
   @override
   Widget build(BuildContext context) {
@@ -87,7 +162,68 @@ class _CropImageState extends State<CropImage> {
           if(_selectedAspectRatio != null)
           Column(
             children: [
-              Text("Width: ${width.toInt()} px"),
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 25.0),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Text("Size : ${width.toInt()}/${height.toInt()} px"),
+                    Text(
+                        "Aspect ratio : ${_selectedAspectRatio.toString()}",
+                        style: TextStyle(
+                          color: Colors.grey
+                        ),
+                    )
+                  ],
+                ),
+              ),
+              Slider(
+                value: _sliderValue,
+                min: 0,
+                max: 100,
+                divisions: 100,
+                label: "${_sliderValue.toInt()} %",
+                /*onChanged: (value) {
+                  setState(() {
+                    double acw = (_getSelectedConstraint()!.maxWidth) * value/100;
+                    if(acw <= _getSelectedConstraint()!.minWidth){
+                      acw = _getSelectedConstraint()!.minWidth;
+                    }
+                    width = acw;
+                    height = acw * getYMultiplayer()/getXMultiplayer();
+                    _sliderValue = value;
+                    //controller.aspectRatio =  width / height;
+                    //controller.scale = (width/(_getSelectedConstraint()!.maxWidth - _getSelectedConstraint()!.minWidth).toInt());
+                  });
+                },*/
+                onChanged: (value) {
+                  setState(() {
+                    _sliderValue = value;
+
+                    final constraint = _getSelectedConstraint();
+                    if (constraint != null) {
+                      // Calculate width based on slider percentage
+                      double minWidth = constraint.minWidth;
+                      double maxWidth = constraint.maxWidth;
+
+                      // When slider is at 0, use minWidth
+                      if (value == 0) {
+                        width = minWidth;
+                      } else {
+                        // Linear interpolation between min and max width
+                        width = minWidth + (maxWidth - minWidth) * (value / 100);
+                      }
+
+                      // Maintain aspect ratio for height
+                      height = width * getYMultiplayer() / getXMultiplayer();
+
+                      // Update controller if needed
+                      controller.aspectRatio = width / height;
+                    }
+                  });
+                },
+              ),
+              /*Text("Width: ${width.toInt()} px"),
               Slider(
                 value: width,
                 min: _getSelectedConstraint()!.minWidth,
@@ -103,8 +239,8 @@ class _CropImageState extends State<CropImage> {
                     controller.aspectRatio =  width / height;
                   });
                 },
-              ),
-              Text("Height: ${height.toInt()} px"),
+              ),*/
+              /*Text("Height: ${height.toInt()} px"),
               Slider(
                 value: height,
                 min: _getSelectedConstraint()!.minHeight,
@@ -120,7 +256,7 @@ class _CropImageState extends State<CropImage> {
                     controller.aspectRatio =  width / height;
                   });
                 },
-              ),
+              ),*/
 
             ],
           ),
@@ -132,7 +268,9 @@ class _CropImageState extends State<CropImage> {
                     rotation: _rotation,
                     controller: controller,
                     shape: shape,
-                    imageFile: widget.file
+                    imageFile: widget.file,
+                    width:width,
+                    height: height,
                 ),
               )
           ),

@@ -12,13 +12,15 @@ dependencies:
     sdk: flutter
   image_cropper: ^9.0.0
   image: ^4.5.3
-  crop: ^0.5.5
+  crop:
+    path: ../flutter_crop
   image_viewer:
     path: ../image_viewer
   font_awesome_flutter: ^10.8.0
   path_provider: ^2.1.5
   uuid: ^4.5.1
-  native_exif: ^0.6.0
+  native_exif:
+    path: ../native_exif
   picture_resizer_v2:
     path: ../picture_resizer_v2
 dev_dependencies:

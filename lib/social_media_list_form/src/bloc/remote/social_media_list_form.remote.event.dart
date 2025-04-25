@@ -34,7 +34,8 @@ final class SocialMediaListFormRemoteResizedFileUpload extends SocialMediaListFo
 
 final class SocialMediaListFormRemoteFileChangedSuccessfully  extends SocialMediaListFormRemoteEvent {
   final SocialMediaItem socialMediaItem;
-  SocialMediaListFormRemoteFileChangedSuccessfully(this.socialMediaItem);
+  final dynamic result;
+  SocialMediaListFormRemoteFileChangedSuccessfully(this.socialMediaItem,this.result);
 }
 
 
