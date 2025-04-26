@@ -21,6 +21,25 @@ class CropAspectRatioPresetCustom implements CropAspectRatioPresetData {
   String get name => aspectName;
 }
 
+class CropperProperties {
+  CropAspectRatio aspectRatio;
+  ValidConstraints validConstraint;
+
+  CropperProperties._(this.aspectRatio,this.validConstraint);
+
+  static CropperProperties create(ValidConstraints vc){
+    return CropperProperties._(
+        CropAspectRatio(
+            ratioX:double.parse(vc.ratio.split(":")[0]) ,
+            ratioY:double.parse(vc.ratio.split(":")[1])
+        ),
+        vc
+    );
+  }
+
+}
+
+
 
 class PictureResizerV2 {
   PictureResizerV2({
@@ -41,29 +60,36 @@ class PictureResizerV2 {
     )).toList();
   }
 
+
+
   Future<String?> cropPicture() async {
     try{
+      CropperProperties cp = CropperProperties.create(validConstraints.first);
+
       CroppedFile? croppedFile = await ImageCropper().cropImage(
         sourcePath: file.path,
+        aspectRatio: cp.aspectRatio,
+        maxHeight: cp.validConstraint.maxHeight.toInt(),
+        maxWidth: cp.validConstraint.maxWidth.toInt(),
         uiSettings: [
           AndroidUiSettings(
-            aspectRatioPresets: getAspectRatios(),
-            lockAspectRatio: false,
+            //aspectRatioPresets: getAspectRatios(),
+            lockAspectRatio: true,
             showCropGrid: true,
             cropGridColumnCount: 2,
             cropGridRowCount: 2,
             hideBottomControls: false,
           ),
           IOSUiSettings(
-            aspectRatioLockEnabled: false,
+            aspectRatioLockEnabled: true,
             resetAspectRatioEnabled: false,
             aspectRatioPickerButtonHidden: false,
-            aspectRatioPresets: [
-              CropAspectRatioPreset.original,
-              CropAspectRatioPreset.square,
-              ...getAspectRatios()
-            ],
+            /*aspectRatioPresets: [
+              ...getAspectRatios(),
+             /* CropAspectRatioPreset.original,
+              CropAspectRatioPreset.square,*/
 
+            ],*/
           )
         ],
       );

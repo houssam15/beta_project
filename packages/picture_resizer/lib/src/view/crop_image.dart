@@ -98,7 +98,7 @@ class _CropImageState extends State<CropImage> {
 
       final  isSave = await Navigator.of(context).push(
           MaterialPageRoute(
-            builder: (context) => CropImageResult(image: controller.croppedImage,extension: widget.extension,width:width,height:height),
+            builder: (context) => CropImageResult(image: controller.croppedImage,extension: widget.extension,width:controller.width,height:controller.height),
             fullscreenDialog: true,
           )
       );
@@ -163,11 +163,25 @@ class _CropImageState extends State<CropImage> {
           Column(
             children: [
               Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 25.0),
+                padding: const EdgeInsets.symmetric(horizontal: 5,vertical: 1),
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    Text("Size : ${width.toInt()}/${height.toInt()} px"),
+                    //Text("Size : ${width.toInt()}/${height.toInt()} px"),
+                    AspectRatioWidget(
+                      controller:controller,
+                      aspectRatioOptions:aspectRatioOptions,
+                      onSelected: (x) {
+                        controller.aspectRatio = x;
+                        _selectedAspectRatio = aspectRatioOptions.firstWhere((elm)=>elm.value == x,orElse: () => aspectRatioOptions.first).title;
+                        final cons = _getSelectedConstraint();
+                        if(cons != null){
+                          width = cons.minWidth;
+                          height = cons.minHeight;
+                        }
+                        setState(() {});
+                      },
+                    ),
                     Text(
                         "Aspect ratio : ${_selectedAspectRatio.toString()}",
                         style: TextStyle(
@@ -183,19 +197,6 @@ class _CropImageState extends State<CropImage> {
                 max: 100,
                 divisions: 100,
                 label: "${_sliderValue.toInt()} %",
-                /*onChanged: (value) {
-                  setState(() {
-                    double acw = (_getSelectedConstraint()!.maxWidth) * value/100;
-                    if(acw <= _getSelectedConstraint()!.minWidth){
-                      acw = _getSelectedConstraint()!.minWidth;
-                    }
-                    width = acw;
-                    height = acw * getYMultiplayer()/getXMultiplayer();
-                    _sliderValue = value;
-                    //controller.aspectRatio =  width / height;
-                    //controller.scale = (width/(_getSelectedConstraint()!.maxWidth - _getSelectedConstraint()!.minWidth).toInt());
-                  });
-                },*/
                 onChanged: (value) {
                   setState(() {
                     _sliderValue = value;
@@ -274,40 +275,32 @@ class _CropImageState extends State<CropImage> {
                 ),
               )
           ),
-          Row(
-            children: [
-              UndoButtonWidget(
-                  popMenuIcon:const Icon(Icons.undo),
-                  popMenuTooltip:'Undo',
-                  controller:controller,
-                  rotation:_rotation
-              ),
-              RotationSlider(
-                  controller:controller,
-                  rotation:_rotation
-              ),
-              /*
-              CropShapeWidget(
-                  popMenuIcon:const Icon(Icons.crop_free),
-                  popMenuTooltip:'Crop Shape',
-                  shape: shape,
-                  cropShapesOptions: CropShapeOption.getTestingData()
-              ),*/
-              AspectRatioWidget(
-                  controller:controller,
-                  aspectRatioOptions:aspectRatioOptions,
-                  onSelected: (x) {
-                    controller.aspectRatio = x;
-                    _selectedAspectRatio = aspectRatioOptions.firstWhere((elm)=>elm.value == x,orElse: () => aspectRatioOptions.first).title;
-                    final cons = _getSelectedConstraint();
-                    if(cons != null){
-                      width = cons.minWidth;
-                      height = cons.minHeight;
-                    }
-                    setState(() {});
-                  },
-              )
-            ],
+          if(false)
+          Padding(
+            padding: const EdgeInsets.all(5.0),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.end,
+              children: [
+                /*UndoButtonWidget(
+                    popMenuIcon:const Icon(Icons.undo),
+                    popMenuTooltip:'Undo',
+                    controller:controller,
+                    rotation:_rotation
+                ),*/
+                /*RotationSlider(
+                    controller:controller,
+                    rotation:_rotation
+                ),*/
+                /*
+                CropShapeWidget(
+                    popMenuIcon:const Icon(Icons.crop_free),
+                    popMenuTooltip:'Crop Shape',
+                    shape: shape,
+                    cropShapesOptions: CropShapeOption.getTestingData()
+                ),*/
+
+              ],
+            ),
           )
         ],
       )

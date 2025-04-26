@@ -84,7 +84,7 @@ class PictureResizer {
   }
 
 
-  /*Future<File?> resizePicture() async {
+   resizePicture() async {
     try{
       if(_context==null || _file==null || _validConstraints==null || _extension==null) throw Exception("Invalid params !");
       String? cropFilePath = await prv2.PictureResizerV2(
@@ -94,14 +94,15 @@ class PictureResizer {
           extension: _extension
       ).cropPicture();
       if(cropFilePath==null) return null;
-      return await cropFilePath.toFile(extension: _extension);
+      this.setResizedPicture(
+        ResizedPicture(file: await cropFilePath.toFile(extension: _extension))
+      );
     }catch(err){
       if(kDebugMode) print(err);
-      return null;
     }
-  }*/
+  }
 
-  resizePicture() async {
+  /*resizePicture() async {
     try{
       if(_context==null || _file==null || _validConstraints==null || _extension==null) throw Exception("Invalid params !");
       this.setResizedPicture(
@@ -120,6 +121,6 @@ class PictureResizer {
     }catch(err){
       if(kDebugMode) print(err);
     }
-  }
+  }*/
 
 }
