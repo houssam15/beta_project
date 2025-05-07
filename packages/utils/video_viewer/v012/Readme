@@ -12,4 +12,4 @@
       WidgetsFlutterBinding.ensureInitialized();
       VideoViewer.ensureInitialized(); // REQUIRED by video_viewer
       runApp(MyApp());
-    }
+    }//
