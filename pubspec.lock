@@ -267,6 +267,20 @@ packages:
       relative: true
     source: path
     version: "0.0.1"
+  creacom_network_common:
+    dependency: transitive
+    description:
+      path: "modules/presentations/creacom_network_common"
+      relative: true
+    source: path
+    version: "0.0.1"
+  creacom_network_social_media_publications_list:
+    dependency: "direct main"
+    description:
+      path: "modules/presentations/creacom_network_social_media_publications_list"
+      relative: true
+    source: path
+    version: "0.0.1"
   crop:
     dependency: transitive
     description:
@@ -607,10 +621,10 @@ packages:
     dependency: transitive
     description:
       name: image
-      sha256: "13d3349ace88f12f4a0d175eb5c12dcdd39d35c4c109a8a13dfeb6d0bd9e31c3"
+      sha256: "4e973fcf4caae1a4be2fa0a13157aa38a8f9cb049db6529aa00b4d71abc4d928"
       url: "https://pub.dev"
     source: hosted
-    version: "4.5.3"
+    version: "4.5.4"
   image_cropper:
     dependency: transitive
     description:

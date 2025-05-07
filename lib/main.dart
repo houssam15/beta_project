@@ -15,7 +15,5 @@ void main() async{
         : HydratedStorageDirectory((await getTemporaryDirectory()).path),
   );
 
-
-
   runApp(const App());
 }

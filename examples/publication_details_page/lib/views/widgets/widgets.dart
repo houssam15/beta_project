@@ -1,0 +1,1 @@
+export "publication_details/publication_details.dart";

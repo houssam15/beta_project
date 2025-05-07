@@ -1,0 +1,7 @@
+- Fix bug : can't load translation
+- incorrect path of translation files assigned to rootBundle.loadString('path')
+- add packages as prefix in path , so it become like that
+"""
+    isSupported fix check logic
+    packages/PACKAGE_NAME/assets/lang/en.json
+"""

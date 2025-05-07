@@ -1,0 +1,2 @@
+- Fix bug : translation json loaded but context.tr don't get correct translation
+- Create a widget LocalizationWidget to simplify use of LocalizationService

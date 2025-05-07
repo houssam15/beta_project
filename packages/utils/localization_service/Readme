@@ -1,0 +1,21 @@
+Localization service is a package help us to implement a clean architecture for translation
+features :
+- translation by package
+- don't require MaterialApp global configuration
+
+How to use (>= v 0.1.0) :
+-  Wrap your widget with LocalizationWidget
+-  If it's a package please pass package name to LocalizationWidget like that :
+"""
+    LocalizationWidget(
+        packageName:"YOUR_PACKAGE_NAME"
+    )
+"""
+-  Create translation files in assets/lang like that LanguageCode.json (EX : en.json , fr.json , ar.json)
+-  Declare translation file path in pubspec.yaml in assets section like that
+"""
+    assets:
+        - assets/
+        - assets/lang/
+"""
+- access translations by context.tr("Your translation")

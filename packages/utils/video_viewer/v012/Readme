@@ -1,0 +1,15 @@
+- add ability to load video from File(UTF8)
+- better error handling
+- add validation to params "VideoProvider"
+- add try catch to fromAssets fromUrl fromFile methods in VideoProvider
+- Show beautiful ui errors , if VideoProvider is null or  VideoProvider.isValid() is false
+
+- IMPORTANT :
+    Before using `video_viewer`, call the following in your `main()` method:
+
+    ```dart
+    void main() {
+      WidgetsFlutterBinding.ensureInitialized();
+      VideoViewer.ensureInitialized(); // REQUIRED by video_viewer
+      runApp(MyApp());
+    }
